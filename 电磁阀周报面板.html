@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>怠速电磁阀周报面板 202635</title>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+<style>
+:root{--blue:#1F4E79;--blue2:#2E75B6;--bg:#f0f3f7;--card:#ffffff;--red:#C00000;--yellow:#BF8F00;--green:#00B050;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Microsoft YaHei','微软雅黑','SimHei',sans-serif;background:var(--bg);color:#333;padding:20px;}
+.header{background:linear-gradient(135deg,var(--blue),var(--blue2));color:#fff;border-radius:12px;padding:22px 28px;margin-bottom:18px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;}
+.header h1{font-size:22px;font-weight:700;}
+.header .sub{font-size:13px;opacity:.9;margin-top:6px;}
+.tag{background:rgba(255,255,255,.18);border-radius:20px;padding:6px 14px;font-size:12.5px;}
+.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:16px;}
+.kpi{background:var(--card);border-radius:10px;padding:14px 16px;box-shadow:0 2px 6px rgba(0,0,0,.06);border-top:4px solid var(--blue2);}
+.kpi .label{font-size:12px;color:#666;margin-bottom:5px;}
+.kpi .value{font-size:21px;font-weight:700;color:var(--blue);}
+.kpi .value small{font-size:12px;color:#888;font-weight:400;}
+.kpi .chg{font-size:12px;margin-top:4px;}
+.up{color:var(--red);}.down{color:var(--green);}.flat{color:#999;}
+.conclusion{background:#e8f4fd;border:1px solid #a8d4f0;border-left:6px solid var(--blue2);border-radius:8px;padding:14px 18px;margin-bottom:16px;font-size:13px;color:#1a3a5c;line-height:1.9;}
+.conclusion h3{color:var(--blue);margin-bottom:6px;font-size:15px;}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px;}
+.card{background:var(--card);border-radius:10px;padding:14px 16px;box-shadow:0 2px 6px rgba(0,0,0,.06);}
+.card h3{font-size:14px;color:var(--blue);margin-bottom:4px;border-left:4px solid var(--blue2);padding-left:8px;}
+.card .cmp{font-size:11.5px;color:#888;margin-bottom:8px;padding-left:12px;}
+.chart{width:100%;height:290px;}
+.table-card{background:var(--card);border-radius:10px;padding:14px 16px;box-shadow:0 2px 6px rgba(0,0,0,.06);margin-bottom:18px;}
+table{width:100%;border-collapse:collapse;font-size:12.5px;}
+th{background:var(--blue);color:#fff;padding:8px 10px;text-align:right;font-weight:600;}
+th:first-child,td:first-child{text-align:left;}
+td{padding:7px 10px;border-bottom:1px solid #e6e9ef;text-align:right;}
+tr:nth-child(even) td{background:#f7f9fc;}
+.notes{background:var(--card);border-radius:10px;padding:16px 18px;box-shadow:0 2px 6px rgba(0,0,0,.06);font-size:12.5px;line-height:1.9;color:#555;margin-bottom:16px;}
+.notes h3{color:var(--blue);margin-bottom:8px;font-size:14.5px;border-left:4px solid var(--blue2);padding-left:8px;}
+.notes b{color:#333;}
+.newold{border-left:5px solid var(--yellow);}
+.inv-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:14px;}
+.inv-card{background:var(--card);border-radius:10px;padding:16px 18px;box-shadow:0 2px 6px rgba(0,0,0,.06);border-top:4px solid var(--blue2);}
+.inv-card .iname{font-size:13.5px;font-weight:700;color:var(--blue);margin-bottom:8px;}
+.inv-card .irow{font-size:12.5px;color:#555;line-height:1.9;}
+.inv-card .irow b{color:var(--blue);font-size:15px;}
+.inv-card .oos{color:var(--red);font-weight:600;}
+.stock-note{background:#f0f7ff;border:1px solid #b8d8f5;border-left:5px solid var(--blue2);border-radius:8px;padding:12px 16px;font-size:12.5px;color:#1a3a5c;line-height:1.9;margin-bottom:14px;}
+@media(max-width:1100px){.kpis{grid-template-columns:repeat(2,1fr);}.grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div class="header">
+  <div>
+    <h1>⚙️ 怠速电磁阀 周报面板</h1>
+    <div class="sub">202635周（2026-08-23~08-29）｜ 数据源：SmartBI MCP（品类=怠速电磁阀，2026-09-01拉取）｜ 店铺：US19(KAX)/US22(PHILTOP)/US8(ZC纯自然)｜ 2026-09-03更新(BI回刷)</div>
+  </div>
+  <div style="text-align:right">
+    <div class="tag">运营分析口径 · 前台销量</div>
+    <div class="tag" style="margin-top:6px">新品36 ASIN / 老品66 ASIN</div>
+  </div>
+</div>
+
+<div class="kpis">
+  <div class="kpi" id="k1"></div>
+  <div class="kpi" id="k2"></div>
+  <div class="kpi" id="k3"></div>
+  <div class="kpi" id="k4"></div>
+  <div class="kpi" id="k5"></div>
+  <div class="kpi" id="k6"></div>
+  <div class="kpi" id="k7"></div>
+  <div class="kpi" id="k8"></div>
+  <div class="kpi" id="k9"></div>
+  <div class="kpi" id="k10"></div>
+</div>
+
+<div class="conclusion">
+  <h3>📌 本周整体结论（202635 vs 202634）</h3>
+  <b>① 销量362(+8.4%)回升：</b>自然单261(+4.4%)+广告单101(+20.2%)，连续两周增长（334→362）；<br>
+  <b>② 新老品双升（US19 KAX店铺内）：</b>新品133单(+3.9%，广告单56 +55.6%驱动)、老品130单(+8.3%，自然单+8.5%驱动)，新品占比50.6%；<br>
+  <b>③ 广告加码：</b>花费$1,613(+20.7%)，ACOS 10.06%仍在低位，新品ACOS 9.7%健康；<br>
+  <b>④ 店铺：</b>US19 KAX 263单(+6.0%)｜US22 PHILTOP 93单(+12.0%)｜US8 ZC 6单(+100%)纯自然；<br>
+  <b>⑤ 流量/转化：</b>流量2,359(+9.9%)，CVR 15.35%(-1.3%)；<br>
+  <b>⑥ 风险：</b>退款32单(+14.3%)连续走高；促销占比2.88%(促销$1,494)。
+</div>
+
+<div class="grid">
+  <div class="card"><h3>销量 & 销售额趋势（5周）</h3><div class="cmp" id="cmp1"></div><div class="chart" id="c1"></div></div>
+  <div class="card"><h3>销量构成：自然单 vs 广告单（5周）</h3><div class="cmp" id="cmp2"></div><div class="chart" id="c2"></div></div>
+  <div class="card"><h3>店铺对比 US19(KAX)/US22(PT)/US8(ZC)（3周 · 店铺=品牌）</h3><div class="cmp" id="cmp3"></div><div class="chart" id="c3"></div></div>
+  <div class="card"><h3>🆕 新老品销量对比 & 新品占比（5周 · US19 KAX店铺内）</h3><div class="cmp" id="cmp5"></div><div class="chart" id="c5"></div></div>
+  <div class="card"><h3>ACOS% & 转化率%（5周）</h3><div class="cmp" id="cmp6"></div><div class="chart" id="c6"></div></div>
+  <div class="card"><h3>📦 FBA库存 & 库销比（KAX/PT/ZC 最新快照）</h3><div class="cmp" id="cmp7"></div><div class="chart" id="c7"></div></div>
+</div>
+
+<div style="background:var(--card);border-radius:10px;padding:16px 18px;box-shadow:0 2px 6px rgba(0,0,0,.06);margin-bottom:16px;">
+  <h3 style="color:var(--blue);font-size:15px;margin-bottom:12px;border-left:4px solid var(--blue2);padding-left:8px;">📦 库存概览（电磁阀仅FBA，分店铺/品牌）</h3>
+  <div class="inv-cards" id="inv-cards"></div>
+  <div class="stock-note" id="stock-note"></div>
+</div>
+
+<div class="table-card newold">
+  <h3 style="color:var(--blue);font-size:14.5px;margin-bottom:10px;border-left:4px solid var(--yellow);padding-left:8px;">🆕 新老品周环比对比（US19 KAX店铺内：新品36 ASIN vs 老品22 ASIN）</h3>
+  <div id="newold"></div>
+</div>
+
+<div class="table-card">
+  <h3 style="color:var(--blue);font-size:14.5px;margin-bottom:10px;border-left:4px solid var(--blue2);padding-left:8px;">整体明细（怠速电磁阀品类，5周）</h3>
+  <div id="detail"></div>
+</div>
+
+<div class="notes">
+  <h3>📋 本周 vs 上周（202635 vs 202634）</h3>
+  <b>销量：</b>334→362（+8.4%），自然261+广告101<br>
+  <b>销售额：</b>⚠整体$13,281仅US22+US8（US19 KAX销售额BI脏值缺失）；新品/老品销售额见上表<br>
+  <b>新老品（US19 KAX店铺内）：</b>新品 128→133（+3.9%，广告单36→56 +55.6%）、老品 120→130（+8.3%，自然单106→115 +8.5%）<br>
+  <b>广告：</b>花费$1,336→$1,613（+20.7%），ACOS 9.34%→10.06%<br>
+  <b>退款：</b>28→32单（+14.3%），需定位退款ASIN<br>
+  <b>数据更新：</b>2026-09-03 BI回刷修正202635（US19 275→263，11个ASIN销量-1/-2）<br>
+  <br>
+  <h3>✅ 改进措施</h3>
+  1. 新品：广告单+55.6%效果显著（ACOS 9.7%），维持/适度加码；<br>
+  2. 老品：自然单+8.5%稳定增长，保基本盘；<br>
+  3. 退款32单(+14.3%)连续走高——定位退款ASIN；<br>
+  4. US19销售额BI脏值——跟进BI修复；<br>
+  5. 库存：US22(PT)断货40 SKU最需关注。
+</div>
+
+<script>
+window.addEventListener('load', function() {
+const P = {"weeks": ["202631", "202632", "202633", "202634", "202635"], "weeks3": ["202633", "202634", "202635"], "overall": {"sales_qty": [330.0, 357.0, 378.0, 334.0, 362.0], "sales_amount": [45217.0, 50871.0, 55454.0, 47434.0, 51883.0], "traffic": [2010.0, 2345.0, 2239.0, 2146.0, 2359.0], "cvr": [16.42, 15.22, 16.88, 15.56, 15.35], "ad_spend": [1313.0, 1450.0, 1242.0, 1336.0, 1613.0], "acos": [9.23, 7.54, 8.4, 8.87, 10.06], "ad_qty": [86.0, 114.0, 89.0, 84.0, 101.0], "natural_qty": [244.0, 243.0, 289.0, 250.0, 261.0], "refund_qty": [23.0, 21.0, 25.0, 28.0, 32.0], "promotion": [1191.0, 1083.0, 1376.0, 1391.0, 1494.0], "coupon": [87.0, 101.0, 379.0, 138.0, 151.0], "impressions": [62297.0, 53735.0, 41590.0, 40268.0, 42380.0], "clicks": [477.0, 531.0, 456.0, 425.0, 530.0], "page_views": [2950.0, 3563.0, 3404.0, 3203.0, 3488.0], "profit_rate": [26.38, 28.94, 30.35, 25.87, 36.76], "promo_ratio": [2.63, 2.13, 2.48, 2.93, 2.88], "spread_ratio": [5.73, 5.18, 5.4, 6.04, 6.28]}, "shops": {"US19": {"sales_qty": [266.0, 248.0, 263.0], "sales_amount": [40036.0, 36847.0, 38603.0], "ad_spend": [798.0, 882.0, 1183.0], "acos": [8.07, 10.75, 10.17], "ad_qty": [57.0, 50.0, 71.0], "natural_qty": [209.0, 198.0, 192.0], "refund_qty": [19.0, 22.0, 26.0], "traffic": [1630.0, 1561.0, 1729.0], "sales_amount_full": [40035.75, 36847.43, 38602.78]}, "US22": {"sales_qty": [103.0, 83.0, 93.0], "sales_amount": [13868.0, 10076.0, 12580.0], "ad_spend": [445.0, 455.0, 430.0], "acos": [9.05, 6.63, 9.77], "ad_qty": [32.0, 34.0, 30.0], "natural_qty": [71.0, 49.0, 63.0], "refund_qty": [6.0, 6.0, 6.0], "traffic": [519.0, 493.0, 555.0], "sales_amount_full": [13867.78, 10076.31, 12579.86]}, "US8": {"sales_qty": [9.0, 3.0, 6.0], "sales_amount": [1550.0, 510.0, 701.0], "ad_spend": [0.0, 0.0, 0.0], "acos": [null, null, null], "ad_qty": [0.0, 0.0, 0.0], "natural_qty": [9.0, 3.0, 6.0], "refund_qty": [0.0, 0.0, 0.0], "traffic": [88.0, 92.0, 75.0], "sales_amount_full": [1550.47, 509.8, 700.74]}}, "brands": {"KAX": {"sales_qty": [275.0, 251.0, 269.0], "ad_spend": [798.0, 882.0, 1183.0], "ad_qty": [57.0, 50.0, 71.0], "natural_qty": [218.0, 201.0, 198.0]}, "PHILTOP": {"sales_qty": [103.0, 83.0, 93.0], "ad_spend": [445.0, 455.0, 430.0], "ad_qty": [32.0, 34.0, 30.0], "natural_qty": [71.0, 49.0, 63.0]}}, "newold": {"new": {"sales_qty": [92.0, 111.0, 147.0, 128.0, 133.0], "sales_amount": [13689.0, 16252.0, 22697.0, 18913.0, 19239.0], "ad_qty": [30.0, 48.0, 40.0, 36.0, 56.0], "natural_qty": [62.0, 63.0, 107.0, 92.0, 77.0], "ad_spend": [490.0, 682.0, 563.0, 698.0, 923.0], "acos": [10.16, 8.16, 8.25, 11.94, 9.7]}, "old": {"sales_qty": [143.0, 150.0, 119.0, 120.0, 130.0], "sales_amount": [19009.0, 21075.0, 17339.0, 17935.0, 19364.0], "ad_qty": [16.0, 28.0, 17.0, 14.0, 15.0], "natural_qty": [127.0, 122.0, 102.0, 106.0, 115.0], "ad_spend": [285.0, 270.0, 235.0, 183.0, 260.0], "acos": [12.63, 6.58, 7.67, 7.79, 12.28]}, "new_asin": 36, "old_asin": 22, "scope": "US19 KAX店铺内"}, "inventory": {"FBA_total": {"sellable": 3755, "onway": 2091, "skus": 92, "oos": 14, "src": "BI库存明细报表(25) 怠速电磁阀FBA 9/1"}, "shops": {"US19": {"brand": "KAX", "sellable": 2726, "onway": 770, "skus": 56, "oos": 0, "src": "BI库存明细报表(25) 9/1", "sales_30d": 1115, "coverage_full": 3.14}, "US22": {"brand": "PT", "sellable": 914, "onway": 1321, "skus": 29, "oos": 14, "src": "BI库存明细报表(25) 9/1", "sales_30d": 405, "coverage_full": 5.52}, "US8": {"brand": "ZC", "sellable": 115, "onway": 0, "skus": 7, "oos": 0, "src": "BI库存明细报表(25) 9/1", "sales_30d": 26, "coverage_full": 4.42}}, "sales_30d_note": "近30天=前台销量(7/30-8/30, 各店铺)", "coverage_formula": "库销比=(可售库存+头程在途)/近30天销量", "snapshot": "2026-09-01 (BI库存明细报表口径)"}};
+const W = P.weeks, W3 = P.weeks3;
+const F = (v,d=0)=> (v===null||v===undefined||v==='')? d : v;
+const money = v => '$'+Number(v).toLocaleString();
+const num = v => Number(v).toLocaleString();
+const chg = (cur,prev) => prev>0 ? (cur-prev)/prev*100 : null;
+function kpiChg(cur,prev,inv=false){
+  if(prev===null||prev===undefined||prev===0) return '<span class="flat">—</span>';
+  const c = chg(cur,prev); const good = inv ? c<0 : c>0;
+  const cls = c>0.5 ? (good?'up':'down') : (c<-0.5?(good?'down':'up'):'flat');
+  const arrow = c>0?'▲':(c<0?'▼':'—');
+  return `<span class="${cls}">${arrow} ${Math.abs(c).toFixed(1)}%</span>`;
+}
+const o = P.overall, i=W.length-1, j=W.length-2;
+const kpis = [
+  ['k1','本周销量(自然+广告)', num(o.sales_qty[i])+' 单', `周环比 ${kpiChg(o.sales_qty[i],o.sales_qty[j])} ｜ 自然${num(o.natural_qty[i])} + 广告${num(o.ad_qty[i])}`],
+  ['k2','本周销售额', money(F(o.sales_amount[i])), `周环比 ${kpiChg(o.sales_amount[i],o.sales_amount[j])}`],
+  ['k3','利润率(毛利/销售额)', F(o.profit_rate[i],'-')+'%', `上周 ${F(o.profit_rate[j],'-')}%`],
+  ['k4','转化率(销量/流量)', o.cvr[i]+'%', `周环比 ${kpiChg(o.cvr[i],o.cvr[j])}`],
+  ['k5','广告ACOS(加权)', F(o.acos[i],'-')+'%', `上周 ${F(o.acos[j],'-')}%`],
+  ['k6','广告花费', money(o.ad_spend[i]), `周环比 ${kpiChg(o.ad_spend[i],o.ad_spend[j],true)} ｜ 广告单${num(o.ad_qty[i])}`],
+  ['k7','促销占比', F(o.promo_ratio[i],'-')+'%', `上周 ${F(o.promo_ratio[j],'-')}%`],
+  ['k8','推广占比', F(o.spread_ratio[i],'-')+'%', `上周 ${F(o.spread_ratio[j],'-')}%`],
+  ['k9','本周流量 / CVR', num(o.traffic[i])+'', `流量周环比 ${kpiChg(o.traffic[i],o.traffic[j])}`],
+  ['k10','退款数量', o.refund_qty[i]+' 单', `周环比 ${kpiChg(o.refund_qty[i],o.refund_qty[j],true)}`],
+];
+kpis.forEach(k=>{document.getElementById(k[0]).innerHTML=`<div class="label">${k[1]}</div><div class="value">${k[2]}</div><div class="chg">${k[3]}</div>`;});
+
+const axis = (name,data)=> ({name:name,type:'category',data:data,axisLabel:{fontSize:11},axisLine:{lineStyle:{color:'#2E75B6'}}});
+const baseOpt = (series,legend,dual)=> ({
+  tooltip:{trigger:'axis',valueFormatter:v=> v===null||v===undefined?'-':Number(v).toLocaleString()},
+  legend:legend||{top:0,textStyle:{fontSize:11}},
+  grid:{left:60,right:60,top:38,bottom:28},
+  xAxis:axis('',W), yAxis: dual ? [{type:'value',axisLabel:{fontSize:10}},{type:'value',axisLabel:{fontSize:10}}] : {type:'value',axisLabel:{fontSize:10}},
+  series
+});
+const LABEL_TOP = {show:true,position:'top',fontSize:10,color:'#444'};
+const LABEL_IN = {show:true,position:'inside',fontSize:10,color:'#fff'};
+const cmpTxt = (name,arr,unit='',ii=i,jj=j)=>{
+  const c = chg(arr[ii],arr[jj]);
+  const s = c===null? '' : (c>=0?'▲+':'▼')+Math.abs(c).toFixed(1)+'%';
+  return `${name}：本周 ${num(arr[ii])}${unit} ${s}`;
+};
+document.getElementById('cmp1').innerHTML = cmpTxt('销量',o.sales_qty,'单')+' ｜ '+cmpTxt('销售额',o.sales_amount,'$');
+document.getElementById('cmp2').innerHTML = cmpTxt('自然单',o.natural_qty,'单')+' ｜ '+cmpTxt('广告单',o.ad_qty,'单');
+document.getElementById('cmp3').innerHTML = cmpTxt('US19',P.shops.US19.sales_qty,'单',2,1)+' ｜ '+cmpTxt('US22',P.shops.US22.sales_qty,'单',2,1)+' ｜ '+cmpTxt('US8',P.shops.US8.sales_qty,'单',2,1);
+document.getElementById('cmp5').innerHTML = cmpTxt('新品',P.newold.new.sales_qty,'单')+' ｜ '+cmpTxt('老品',P.newold.old.sales_qty,'单')+' ｜ 新品占比'+(P.newold.new.sales_qty[i]/(P.newold.new.sales_qty[i]+P.newold.old.sales_qty[i])*100).toFixed(1)+'%';
+document.getElementById('cmp6').innerHTML = cmpTxt('ACOS',o.acos,'%')+' ｜ '+cmpTxt('CVR',o.cvr,'%');
+
+try {
+echarts.init(document.getElementById('c1')).setOption(baseOpt([
+  {name:'销量',type:'bar',data:o.sales_qty,itemStyle:{color:'#2E75B6'},barWidth:26,label:LABEL_TOP},
+  {name:'销售额',type:'line',yAxisIndex:1,data:o.sales_amount.map(v=>F(v)),itemStyle:{color:'#C00000'},lineStyle:{width:3},label:{show:true,fontSize:10,color:'#C00000',formatter:p=> p.value? '$'+(p.value/1000).toFixed(1)+'k':'-'}},
+],null,true));
+echarts.init(document.getElementById('c2')).setOption(baseOpt([
+  {name:'自然单',type:'bar',stack:'t',data:o.natural_qty,itemStyle:{color:'#2E75B6'},label:LABEL_IN},
+  {name:'广告单',type:'bar',stack:'t',data:o.ad_qty,itemStyle:{color:'#FFC000'},label:LABEL_IN},
+]));
+(function(){
+  const s=P.shops; const ch=echarts.init(document.getElementById('c3'));
+  ch.setOption({
+    tooltip:{trigger:'axis'},legend:{top:0,textStyle:{fontSize:11}},
+    grid:{left:50,right:50,top:38,bottom:28},
+    xAxis:{type:'category',data:W3,axisLabel:{fontSize:11}},
+    yAxis:{type:'value',axisLabel:{fontSize:10}},
+    series:['US19','US22','US8'].map((k,idx)=>({name:k,type:'bar',data:s[k].sales_qty,itemStyle:{color:['#2E75B6','#C00000','#70AD47'][idx]},label:LABEL_TOP}))
+  });
+})();
+// 新老品对比
+(function(){
+  const n=P.newold; const ch=echarts.init(document.getElementById('c5'));
+  const total = W.map((_,idx)=> n.new.sales_qty[idx]+n.old.sales_qty[idx]);
+  const share = W.map((_,idx)=> (n.new.sales_qty[idx]/total[idx]*100).toFixed(1));
+  ch.setOption({
+    tooltip:{trigger:'axis'},legend:{top:0,textStyle:{fontSize:11}},
+    grid:{left:50,right:70,top:38,bottom:28},
+    xAxis:{type:'category',data:W,axisLabel:{fontSize:11}},
+    yAxis:[{type:'value',name:'销量',axisLabel:{fontSize:10}},{type:'value',name:'新品占比%',min:0,max:100,axisLabel:{fontSize:10}}],
+    series:[
+      {name:'新品',type:'bar',stack:'n',data:n.new.sales_qty,itemStyle:{color:'#2E75B6'},label:LABEL_IN},
+      {name:'老品',type:'bar',stack:'n',data:n.old.sales_qty,itemStyle:{color:'#BDD7EE'},label:LABEL_IN},
+      {name:'新品占比%',type:'line',yAxisIndex:1,data:share,itemStyle:{color:'#C00000'},lineStyle:{width:2},label:{show:true,fontSize:9,color:'#C00000',formatter:p=>p.value+'%'}},
+    ]
+  });
+})();
+echarts.init(document.getElementById('c6')).setOption(baseOpt([
+  {name:'ACOS%',type:'line',data:o.acos,itemStyle:{color:'#C00000'},lineStyle:{width:3},label:{show:true,fontSize:10,color:'#C00000',formatter:p=>p.value+'%'}},
+  {name:'CVR%',type:'line',data:o.cvr,itemStyle:{color:'#00B050'},lineStyle:{width:2},label:{show:true,fontSize:10,color:'#00B050',formatter:p=>p.value+'%'}},
+]));
+// 新老品周环比对比表
+(function(){
+  const n=P.newold;
+  const rows=[
+    ['销量(单)',n.new.sales_qty,n.old.sales_qty,0],
+    ['销售额($)',n.new.sales_amount,n.old.sales_amount,0],
+    ['自然单',n.new.natural_qty,n.old.natural_qty,0],
+    ['广告单',n.new.ad_qty,n.old.ad_qty,0],
+    ['广告花费($)',n.new.ad_spend,n.old.ad_spend,0],
+    ['ACOS%',n.new.acos,n.old.acos,1],
+  ];
+  let h='<table><tr><th rowspan="2">指标</th><th colspan="6">新品 ('+n.new_asin+' ASIN)</th><th colspan="6">老品 ('+n.old_asin+' ASIN)</th></tr><tr>';
+  for(let k=0;k<2;k++){ for(const w of W){h+=`<th>${w}</th>`;} h+=`<th>本周环比</th>`; }
+  h+='</tr>';
+  for(const [name,nd,od,fmt] of rows){
+    h+=`<tr><td>${name}</td>`;
+    for(const arr of [nd,od]){
+      for(const v of arr){ h+=`<td>${v===null||v===undefined?'-':(fmt?v+'%':(fmt===0&&name.includes('$')||name.includes('花费')?money(v):num(v)))}</td>`; }
+      const c=arr[i],p=arr[j]; h+=`<td>${(p>0&&c!==null&&c!==undefined)?(((c-p)/p*100).toFixed(1)+'%'):'-'}</td>`;
+    }
+    h+='</tr>';
+  }
+  h+='</table>';
+  document.getElementById('newold').innerHTML=h;
+})();
+// c7: FBA库存&库销比 (可售+头程在途 / 近30天销量)
+(function(){
+  const iv = P.inventory;
+  const colors = {US19:'#2E75B6',US22:'#C00000',US8:'#70AD47'};
+  const names = {US19:'KAX(US19)',US22:'PT(US22)',US8:'ZC(US8)'};
+  const ch = echarts.init(document.getElementById('c7'));
+  ch.setOption({
+    tooltip:{trigger:'axis',valueFormatter:v=> v===null||v===undefined?'-':Number(v).toLocaleString()},
+    legend:{top:0,textStyle:{fontSize:11}},
+    grid:{left:55,right:55,top:38,bottom:28},
+    xAxis:{type:'category',data:['US19','US22','US8'].map(s=>names[s]),axisLabel:{fontSize:11}},
+    yAxis:[{type:'value',name:'库存(件)',axisLabel:{fontSize:10}},{type:'value',name:'库销比(月)',axisLabel:{fontSize:10}}],
+    series:[
+      {name:'可售库存',type:'bar',stack:'inv',data:['US19','US22','US8'].map(s=>iv.shops[s].sellable),itemStyle:{color:'#2E75B6'},barWidth:36,
+       label:{show:true,position:'inside',fontSize:10,color:'#fff',formatter:p=> p.value? Number(p.value).toLocaleString():''}},
+      {name:'头程在途',type:'bar',stack:'inv',data:['US19','US22','US8'].map(s=>iv.shops[s].onway),itemStyle:{color:'#BDD7EE'},
+       label:{show:true,position:'inside',fontSize:10,color:'#1F4E79',formatter:p=> p.value? Number(p.value).toLocaleString():''}},
+      {name:'库销比(月)',type:'line',yAxisIndex:1,data:['US19','US22','US8'].map(s=>iv.shops[s].coverage_full),
+       itemStyle:{color:'#C00000'},lineStyle:{width:3},
+       label:{show:true,position:'top',fontSize:10,color:'#C00000',formatter:p=>p.value+'个月'}},
+    ]
+  });
+  const s3 = ['US19','US22','US8'].map(s=>iv.shops[s]);
+  document.getElementById('cmp7').innerHTML =
+    `KAX: 可售${s3[0].sellable.toLocaleString()}+在途${s3[0].onway} 库销比<b>${s3[0].coverage_full}个月</b> ｜ `+
+    `PT: 可售${s3[1].sellable.toLocaleString()}+在途${s3[1].onway} 库销比<b>${s3[1].coverage_full}个月</b> ｜ `+
+    `ZC: 可售${s3[2].sellable.toLocaleString()} 库销比<b>${s3[2].coverage_full}个月</b>`;
+})();
+// ===== 库存区(FBA, 分店铺) =====
+(function(){
+  const iv = P.inventory;
+  const colors = {US19:'#2E75B6',US22:'#C00000',US8:'#70AD47'};
+  let h = '';
+  for(const s of ['US19','US22','US8']){
+    const d = iv.shops[s];
+    h += `<div class="inv-card" style="border-top-color:${colors[s]}">
+      <div class="iname">${s} · ${d.brand}品牌</div>
+      <div class="irow">可售库存：<b>${d.sellable.toLocaleString()}</b></div>
+      <div class="irow">库销比((可售+在途)÷近30天${d.sales_30d})：<b>${d.coverage_full}个月</b></div>
+      <div class="irow">SKU数：${d.skus} ｜ <span class="oos">断货：${d.oos}</span></div>
+    </div>`;
+  }
+  h += `<div class="inv-card" style="border-top-color:#BF8F00">
+    <div class="iname">FBA合计</div>
+    <div class="irow">可售库存：<b>${iv.FBA_total.sellable.toLocaleString()}</b></div>
+    <div class="irow">SKU数：${iv.FBA_total.skus} ｜ <span class="oos">断货SKU合计：${iv.FBA_total.oos}</span></div>
+    <div class="irow" style="font-size:11.5px;color:#888">数据源：${iv.FBA_total.src}</div>
+  </div>`;
+  document.getElementById('inv-cards').innerHTML = h;
+  document.getElementById('stock-note').innerHTML =
+    `<b>📦 库存说明：</b>电磁阀仅FBA渠道（库存明细报表：业务分类=怠速电磁阀，仓库类型=FBA，2026-09-01快照）。<b style="color:var(--red)">US22(PT)断货40 SKU（可售912，库销比2.25个月）</b>最需关注；US19(KAX)库存充足(2,712/2.43个月)；US8(ZC)体量小(112/4.38个月)。FBA合计可售3,736件、断货53 SKU。库销比=可售÷近30天前台销量(7/30-8/30)。`;
+})();
+// 明细表
+(function(){
+  const rows=[
+    ['流量',o.traffic,'#,##0'],['销量',o.sales_qty,'#,##0'],['销售额',o.sales_amount,'$'],
+    ['转化率',o.cvr,'%'],['利润率',o.profit_rate,'%'],['广告花费',o.ad_spend,'$'],['ACOS',o.acos,'%'],
+    ['广告sku销量',o.ad_qty,'#,##0'],['自然订单数',o.natural_qty,'#,##0'],['退款数量',o.refund_qty,'#,##0'],
+    ['促销折扣',o.promotion,'$'],['促销占比',o.promo_ratio,'%'],['推广占比',o.spread_ratio,'%'],
+    ['coupon使用费',o.coupon,'$'],['展示量',o.impressions,'#,##0'],['点击数',o.clicks,'#,##0'],['页面浏览量',o.page_views,'#,##0']];
+  let h='<table><tr><th>指标</th>'+W.map(w=>`<th>${w}</th>`).join('')+'<th>本周vs上周</th></tr>';
+  for(const [name,data,fmt] of rows){
+    const v=data.map(x=> x===null||x===undefined?'-':(fmt==='$'?money(x):(fmt==='%'?x+'%':num(x)))).join('</td><td>');
+    const cur=data[i],prev=data[j];
+    const cc = (cur!==null&&cur!==undefined&&prev>0)?(((cur-prev)/prev*100).toFixed(1)+'%'):'-';
+    h+=`<tr><td>${name}</td><td>${v}</td><td>${cc}</td></tr>`;
+  }
+  h+='</table>';
+  document.getElementById('detail').innerHTML=h;
+})();
+} catch(e) {
+  document.body.insertAdjacentHTML('afterbegin','<div style="background:#C00000;color:#fff;padding:12px;font-size:13px">面板脚本错误: '+e.message+'</div>');
+  console.error(e);
+}
+});
+</script>
+</body>
+</html>
