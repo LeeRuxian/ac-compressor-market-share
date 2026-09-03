@@ -116,12 +116,6 @@ tr:nth-child(even) td{background:#f7f9fc;}
   <div id="newold"></div>
 </div>
 
-<div class="table-card" style="border-left:5px solid var(--red);">
-  <h3 style="color:var(--blue);font-size:15px;margin-bottom:6px;border-left:4px solid var(--red);padding-left:8px;">⭐ 重点链接监控（US19/US22 · 高销量高毛利稳定增长）</h3>
-  <div style="font-size:12px;color:#888;margin-bottom:8px" id="key-note"></div>
-  <div id="key-table"></div>
-</div>
-
 <div class="table-card">
   <h3 style="color:var(--blue);font-size:14.5px;margin-bottom:10px;border-left:4px solid var(--blue2);padding-left:8px;">整体明细（怠速电磁阀品类，5周）</h3>
   <div id="detail"></div>
@@ -330,31 +324,6 @@ renderWarn();
   document.getElementById('inv-cards').innerHTML = h;
   document.getElementById('stock-note').innerHTML =
     `<b>📦 库存说明：</b>电磁阀仅FBA渠道（BI库存明细报表：怠速电磁阀+FBA，2026-09-01快照）。<b>断货两级口径：</b>断货=可售=0且无头程在途(真断供)；缺货在补=可售=0但头程在途>0(路上在补)。<b style="color:var(--red)">US22(PT)真断货0个</b>——14个可售=0的SKU<b>全部有头程在途在补</b>(合计1,321件)，属缺货在补非断供；US19(KAX)库存充足(2,726/3.14个月)；US8(ZC)体量小(115/4.42个月)。FBA合计可售3,755件，真断货0 SKU、缺货在补14 SKU。库销比=(可售+头程在途)÷近30天前台销量(7/30-8/30)。`;
-})();
-// ===== 重点链接监控表 =====
-(function(){
-  const K = P.key_links;
-  document.getElementById('key-note').innerText = K.note;
-  const tcol = r=> r.type==='新品' ? '<span style="color:#2E75B6;font-weight:600">新品</span>' : '<span style="color:#888">老品</span>';
-  const money = v=>'$'+Number(v).toLocaleString();
-  const num = v=>Number(v).toLocaleString();
-  const dash = (v,u='')=> (v===null||v===undefined?'<span style="color:#bbb">待补</span>':v+u);
-  let h = '<table><tr><th>ASIN</th><th>SKU(商品编码)</th><th>新老品</th><th>店铺</th><th>可售库存</th><th>头程在途</th><th>销量涨幅</th><th>毛利率</th><th>退款率</th><th>周销量(202635)</th><th>页面价格$</th><th>促销活动</th><th>星级/评论数</th><th>标题make词</th><th>购物车异常</th></tr>';
-  for(const r of K.rows){
-    const up = r.growth>=30?'color:var(--red);font-weight:700':(r.growth>=10?'color:#BF8F00;font-weight:600':'color:#333');
-    const promo = r.promo>0 ? `<span style="color:#C00000;font-weight:600">促销$${num(r.promo)}</span>` : '无';
-    h += `<tr><td>${r.asin}</td><td>${r.sku}</td><td>${tcol(r)}</td><td>${r.shop}</td>
-      <td>${r.sell}</td><td>${r.onway}</td>
-      <td style="${up}">+${r.growth}%</td>
-      <td>${r.gm}%</td><td>${r.refund}%</td>
-      <td>${r.wk_qty}</td>
-      <td>${dash(r.q_price)}</td>
-      <td>${promo}</td>
-      <td>${dash(r.rating)}${r.rating!==null&&r.rating!==undefined?'/':''}${r.reviews===null||r.reviews===undefined?'':'/'+r.reviews}</td>
-      <td>${dash(r.make_word)}</td>
-      <td>${dash(r.buybox)}</td></tr>`;
-  }
-  document.getElementById('key-table').innerHTML = h;
 })();
 // 明细表
 (function(){

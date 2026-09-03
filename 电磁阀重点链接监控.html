@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>怠速电磁阀 · 重点链接监控 202635</title>
+<style>
+:root{--blue:#1F4E79;--blue2:#2E75B6;--bg:#f0f3f7;--card:#fff;--red:#C00000;--yellow:#BF8F00;--green:#00B050;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Microsoft YaHei','微软雅黑',sans-serif;background:var(--bg);color:#333;padding:20px;}
+.header{background:linear-gradient(135deg,var(--blue),var(--blue2));color:#fff;border-radius:12px;padding:20px 26px;margin-bottom:14px;}
+.header h1{font-size:21px;}.header .sub{font-size:12.5px;opacity:.92;margin-top:6px;line-height:1.7;}
+.header a{color:#fff;text-decoration:underline;}
+.card{background:var(--card);border-radius:10px;padding:14px 16px;box-shadow:0 2px 6px rgba(0,0,0,.06);}
+.note{font-size:12px;color:#888;margin-bottom:10px;line-height:1.8;}
+.filters{margin-bottom:10px;font-size:13px;color:#333;}
+.filters select,.filters button{padding:5px 10px;border:1px solid var(--blue2);border-radius:5px;font-family:inherit;font-size:13px;margin-right:6px;}
+.filters button{background:var(--blue2);color:#fff;cursor:pointer;border:none;}
+table{width:100%;border-collapse:collapse;font-size:12.5px;}
+th{background:var(--blue);color:#fff;padding:7px 8px;text-align:right;font-weight:600;white-space:nowrap;}
+th:first-child,td:first-child{text-align:left;}
+td{padding:6px 8px;border-bottom:1px solid #e6e9ef;text-align:right;white-space:nowrap;}
+tr:nth-child(even) td{background:#f7f9fc;}
+.newt{color:#2E75B6;font-weight:600;}
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>⭐ 重点链接监控（怠速电磁阀 · US19/US22）</h1>
+  <div class="sub">202635周（2026-08-23~08-29）｜ 筛选：毛利率≥20% / 退款率&lt;10% / 月间平衡≤4 / 涨幅≥0 ｜ 数据源：SmartBI + BI库存明细(9/1) ｜ <a href="电磁阀周报面板.html">← 返回主面板</a></div>
+</div>
+<div class="card">
+  <div class="filters">
+    店铺筛选：<select id="f-shop"><option value="ALL">全部</option><option value="US19">US19 (KAX)</option><option value="US22">US22 (PT)</option></select>
+    新老品：<select id="f-type"><option value="ALL">全部</option><option value="新品">新品</option><option value="老品">老品</option></select>
+    <button id="f-sort">按周销量排序</button>
+    <span style="color:#888;font-size:12px;margin-left:8px">页面价格/星级评论/make词/购物车异常 = 待质量监控模型行权限修复后填充</span>
+  </div>
+  <div id="tbody"></div>
+</div>
+<script>
+window.addEventListener('load', function() {
+const K = {"rows": [{"asin": "B0D7H9DYSX", "sku": "KX1IAC00700", "shop": "US19", "type": "老品", "sell": 91, "onway": 250, "m1": 64, "m2": 82, "m3": 120, "qty": 266, "growth": 46.0, "gm": 50.3, "refund": 3.8, "wk_qty": 29, "promo": 0, "traffic": 1214, "spend": 408.0, "acos": 7.0, "adq": 45, "promo_ratio": 0.0, "spread_ratio": 1.59, "q_price": null, "rating": null, "reviews": null, "make_word": null, "buybox": null}, {"asin": "B0C9ZX1T55", "sku": "KX1IAC00100", "shop": "US22", "type": "老品", "sell": 67, "onway": 100, "m1": 60, "m2": 29, "m3": 30, "qty": 119, "growth": 3.0, "gm": 26.2, "refund": 6.7, "wk_qty": 4, "promo": 0, "traffic": 705, "spend": 1019.0, "acos": 9.9, "adq": 67, "promo_ratio": 0.0, "spread_ratio": 10.04, "q_price": null, "rating": null, "reviews": null, "make_word": null, "buybox": null}, {"asin": "B0G5HZQRKS", "sku": "KX1IAC00300", "shop": "US19", "type": "老品", "sell": 69, "onway": 65, "m1": 23, "m2": 35, "m3": 51, "qty": 109, "growth": 46.0, "gm": 43.8, "refund": 7.3, "wk_qty": 11, "promo": 0, "traffic": 397, "spend": 173.0, "acos": 9.2, "adq": 15, "promo_ratio": 0.0, "spread_ratio": 1.81, "q_price": null, "rating": null, "reviews": null, "make_word": null, "buybox": null}, {"asin": "B0CB13BHB8", "sku": "KX1IAC01900", "shop": "US22", "type": "老品", "sell": 90, "onway": 14, "m1": 32, "m2": 22, "m3": 30, "qty": 84, "growth": 36.0, "gm": 26.4, "refund": 3.6, "wk_qty": 7, "promo": 0, "traffic": 482, "spend": 521.0, "acos": 9.5, "adq": 24, "promo_ratio": 0.0, "spread_ratio": 3.53, "q_price": null, "rating": null, "reviews": null, "make_word": null, "buybox": null}, {"asin": "B0D7GWYLF8", "sku": "KX1IAC00900", "shop": "US19", "type": "老品", "sell": 132, "onway": 0, "m1": 17, "m2": 23, "m3": 38, "qty": 78, "growth": 65.0, "gm": 21.4, "refund": 9.0, "wk_qty": 10, "promo": 0, "traffic": 561, "spend": 113.0, "acos": 7.6, "adq": 8, "promo_ratio": 0.0, "spread_ratio": 1.21, "q_price": null, "rating": null, "reviews": null, "make_word": null, "buybox": null}, {"asin": "B0G5JY7G7T", "sku": "KX1IAC02000", "shop": "US19", "type": "老品", "sell": 41, "onway": 31, "m1": 27, "m2": 17, "m3": 24, "qty": 68, "growth": 41.0, "gm": 41.8, "refund": 4.4, "wk_qty": 4, "promo": 0, "traffic": 281, "spend": 114.0, "acos": 12.1, "adq": 9, "promo_ratio": 0.0, "spread_ratio": 1.98, "q_price": null, "rating": null, "reviews": null, "make_word": null, "buybox": null}, {"asin": "B0GHS1D7K2", "sku": "KX1IAC09600", "shop": "US19", "type": "新品", "sell": 90, "onway": 0, "m1": 0, "m2": 19, "m3": 31, "qty": 50, "growth": 63.0, "gm": 40.9, "refund": 2.0, "wk_qty": 8, "promo": 367.0, "traffic": 254, "spend": 308.0, "acos": 5.4, "adq": 39, "promo_ratio": 4.7, "spread_ratio": 9.05, "q_price": null, "rating": null, "reviews": null, "make_word": null, "buybox": null}, {"asin": "B0CB11CL55", "sku": "KX1IAC01600", "shop": "US22", "type": "老品", "sell": 7, "onway": 50, "m1": 23, "m2": 8, "m3": 10, "qty": 41, "growth": 25.0, "gm": 26.4, "refund": 9.8, "wk_qty": 5, "promo": 399.0, "traffic": 297, "spend": 46.0, "acos": 3.0, "adq": 7, "promo_ratio": 4.38, "spread_ratio": 5.21, "q_price": null, "rating": null, "reviews": null, "make_word": null, "buybox": null}, {"asin": "B0D7H4CRYY", "sku": "KX1IAC01400", "shop": "US19", "type": "老品", "sell": 63, "onway": 0, "m1": 10, "m2": 8, "m3": 22, "qty": 40, "growth": 175.0, "gm": 46.3, "refund": 0.0, "wk_qty": 9, "promo": 0, "traffic": 288, "spend": 96.0, "acos": 29.7, "adq": 3, "promo_ratio": 0.0, "spread_ratio": 2.62, "q_price": null, "rating": null, "reviews": null, "make_word": null, "buybox": null}, {"asin": "B0D7HPFJYS", "sku": "KX1IAC01300", "shop": "US19", "type": "老品", "sell": 70, "onway": 0, "m1": 0, "m2": 8, "m3": 27, "qty": 35, "growth": 238.0, "gm": 26.3, "refund": 2.9, "wk_qty": 9, "promo": 694.0, "traffic": 248, "spend": 147.0, "acos": 11.0, "adq": 6, "promo_ratio": 8.87, "spread_ratio": 11.12, "q_price": null, "rating": null, "reviews": null, "make_word": null, "buybox": null}, {"asin": "B0C9ZZ231N", "sku": "KX1IAC04600", "shop": "US22", "type": "老品", "sell": 48, "onway": 0, "m1": 10, "m2": 10, "m3": 11, "qty": 31, "growth": 10.0, "gm": 24.1, "refund": 9.7, "wk_qty": 2, "promo": 0, "traffic": 263, "spend": 357.0, "acos": 11.3, "adq": 12, "promo_ratio": 0.0, "spread_ratio": 5.61, "q_price": null, "rating": null, "reviews": null, "make_word": null, "buybox": null}, {"asin": "B0GHRXG7B5", "sku": "KX1IAC08700", "shop": "US19", "type": "新品", "sell": 21, "onway": 0, "m1": 0, "m2": 13, "m3": 14, "qty": 27, "growth": 8.0, "gm": 28.9, "refund": 7.4, "wk_qty": 4, "promo": 126.0, "traffic": 139, "spend": 119.0, "acos": 13.1, "adq": 9, "promo_ratio": 4.6, "spread_ratio": 9.36, "q_price": null, "rating": null, "reviews": null, "make_word": null, "buybox": null}, {"asin": "B0G5J38RJ6", "sku": "KX1IAC01600", "shop": "US19", "type": "老品", "sell": 65, "onway": 0, "m1": 5, "m2": 5, "m3": 9, "qty": 19, "growth": 80.0, "gm": 42.5, "refund": 5.3, "wk_qty": 3, "promo": 0, "traffic": 178, "spend": 95.0, "acos": 40.1, "adq": 1, "promo_ratio": 0.0, "spread_ratio": 2.51, "q_price": null, "rating": null, "reviews": null, "make_word": null, "buybox": null}, {"asin": "B0GHRYPQ71", "sku": "KX1IAC07700", "shop": "US19", "type": "新品", "sell": 81, "onway": 0, "m1": 0, "m2": 4, "m3": 14, "qty": 18, "growth": 250.0, "gm": 26.8, "refund": 0.0, "wk_qty": 3, "promo": 184.0, "traffic": 136, "spend": 155.0, "acos": 10.3, "adq": 7, "promo_ratio": 4.72, "spread_ratio": 9.09, "q_price": null, "rating": null, "reviews": null, "make_word": null, "buybox": null}, {"asin": "B0GHS13Q6X", "sku": "KX1IAC08000", "shop": "US19", "type": "新品", "sell": 33, "onway": 0, "m1": 0, "m2": 6, "m3": 11, "qty": 17, "growth": 83.0, "gm": 25.5, "refund": 5.9, "wk_qty": 3, "promo": 98.0, "traffic": 60, "spend": 33.0, "acos": 13.5, "adq": 2, "promo_ratio": 4.71, "spread_ratio": 6.68, "q_price": null, "rating": null, "reviews": null, "make_word": null, "buybox": null}, {"asin": "B0GHRX56VN", "sku": "KX1IAC08800", "shop": "US19", "type": "新品", "sell": 32, "onway": 0, "m1": 0, "m2": 4, "m3": 12, "qty": 16, "growth": 200.0, "gm": 23.0, "refund": 0.0, "wk_qty": 4, "promo": 74.0, "traffic": 109, "spend": 136.0, "acos": 12.5, "adq": 11, "promo_ratio": 5.0, "spread_ratio": 14.58, "q_price": null, "rating": null, "reviews": null, "make_word": null, "buybox": null}, {"asin": "B0GHRZHQN4", "sku": "KX1IAC08600", "shop": "US19", "type": "新品", "sell": 28, "onway": 2, "m1": 0, "m2": 7, "m3": 7, "qty": 14, "growth": 0.0, "gm": 30.1, "refund": 0.0, "wk_qty": 0, "promo": 156.0, "traffic": 112, "spend": 62.0, "acos": 5.9, "adq": 5, "promo_ratio": 5.35, "spread_ratio": 7.92, "q_price": null, "rating": null, "reviews": null, "make_word": null, "buybox": null}, {"asin": "B0GSZ3TT5J", "sku": "KX1IAC04300", "shop": "US22", "type": "老品", "sell": 37, "onway": 2, "m1": 0, "m2": 4, "m3": 8, "qty": 12, "growth": 100.0, "gm": 37.2, "refund": 8.3, "wk_qty": 2, "promo": 0, "traffic": 89, "spend": 18.0, "acos": 17.5, "adq": 1, "promo_ratio": 0.0, "spread_ratio": 1.82, "q_price": null, "rating": null, "reviews": null, "make_word": null, "buybox": null}, {"asin": "B0GHRZR7Q4", "sku": "KX1IAC07400", "shop": "US19", "type": "新品", "sell": 79, "onway": 0, "m1": 0, "m2": 3, "m3": 8, "qty": 11, "growth": 167.0, "gm": 27.7, "refund": 9.1, "wk_qty": 1, "promo": 105.0, "traffic": 31, "spend": 32.0, "acos": 7.6, "adq": 2, "promo_ratio": 4.55, "spread_ratio": 6.33, "q_price": null, "rating": null, "reviews": null, "make_word": null, "buybox": null}, {"asin": "B0GHRV1BWX", "sku": "KX1IAC08500", "shop": "US19", "type": "新品", "sell": 40, "onway": 0, "m1": 0, "m2": 3, "m3": 7, "qty": 10, "growth": 133.0, "gm": 29.0, "refund": 0.0, "wk_qty": 1, "promo": 52.0, "traffic": 35, "spend": 27.0, "acos": 8.7, "adq": 3, "promo_ratio": 5.0, "spread_ratio": 7.99, "q_price": null, "rating": null, "reviews": null, "make_word": null, "buybox": null}], "note": "重点链接筛选(放宽): 近3月销量≥10 | 毛利率≥20%(BI字段) | 退款率<10% | 月间平衡≤4 | 涨幅≥0%; 周销量=202635; 页面价格/星级评论/make词/购物车异常=待质量监控模型行权限修复后填充; 库存=BI库存明细9/1"};
+const money = v=>'$'+Number(v).toLocaleString();
+const num = v=>Number(v).toLocaleString();
+const dash = v=> (v===null||v===undefined?'<span style="color:#bbb">待补</span>':v);
+function render(){
+  const shop = document.getElementById('f-shop').value;
+  const type = document.getElementById('f-type').value;
+  const rows = K.rows.filter(r=> (shop==='ALL'||r.shop===shop) && (type==='ALL'||r.type===type));
+  const tcol = r=> r.type==='新品' ? '<span class="newt">新品</span>' : '<span style="color:#888">老品</span>';
+  let h = '<table><tr><th>ASIN</th><th>SKU(商品编码)</th><th>新老品</th><th>店铺</th><th>可售库存</th><th>头程在途</th><th>销量涨幅</th><th>毛利率</th><th>退款率</th><th>周销量(202635)</th><th>页面价格$</th><th>促销活动</th><th>星级/评论数</th><th>标题make词</th><th>购物车异常</th></tr>';
+  for(const r of rows){
+    const up = r.growth>=30?'color:var(--red);font-weight:700':(r.growth>=10?'color:#BF8F00;font-weight:600':'color:#333');
+    const promo = r.promo>0 ? `<span style="color:#C00000;font-weight:600">促销$${num(r.promo)}</span>` : '<span style="color:#999">无</span>';
+    h += `<tr><td>${r.asin}</td><td>${r.sku}</td><td>${tcol(r)}</td><td>${r.shop}</td>
+      <td>${r.sell}</td><td>${r.onway}</td>
+      <td style="${up}">+${r.growth}%</td>
+      <td>${r.gm}%</td><td>${r.refund}%</td>
+      <td>${r.wk_qty}</td>
+      <td>${dash(r.q_price)}</td>
+      <td>${promo}</td>
+      <td>${(r.rating===null&&r.reviews===null)?'<span style="color:#bbb">待补</span>':(r.rating!==null?r.rating:'-')+'/'+(r.reviews!==null?r.reviews:'-')}</td>
+      <td>${dash(r.make_word)}</td>
+      <td>${dash(r.buybox)}</td></tr>`;
+  }
+  document.getElementById('tbody').innerHTML = h + '<div style="padding:6px 2px;font-size:11.5px;color:#999">'+K.note+'</div>';
+}
+document.getElementById('f-shop').onchange = render;
+document.getElementById('f-type').onchange = render;
+document.getElementById('f-sort').onclick = ()=>{ K.rows.sort((a,b)=>b.wk_qty-a.wk_qty); render(); };
+render();
+});
+</script>
+</body>
+</html>
