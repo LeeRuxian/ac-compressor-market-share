@@ -288,11 +288,10 @@ function renderWarn(){
   const rows = W.rows.filter(r=> shop==='ALL' || r.shop===shop);
   if(!rows.length){ document.getElementById('warn-table').innerHTML='<div style="padding:14px;color:#888;font-size:13px">✅ 该店铺无预警ASIN</div>'; return; }
   const cls = {oos:'b-oos',back:'b-back',soon:'b-soon',low:'b-low'};
-  let h = '<table><tr><th>ASIN</th><th>SKU(商品编码)</th><th>店铺</th><th>可售</th><th>头程在途</th><th>近30天销量</th><th>库销比(月)</th><th>可售支撑</th><th>预警</th></tr>';
+  let h = '<table><tr><th>ASIN</th><th>SKU(商品编码)</th><th>店铺</th><th>可售</th><th>头程在途</th><th>近30天销量</th><th>库销比(月)</th><th>预警</th></tr>';
   for(const r of rows){
     h += `<tr><td>${r.asin}</td><td>${r.sku}</td><td>${r.shop}</td><td>${r.sell}</td><td>${r.onway}</td><td>${r.s30}</td>
       <td>${r.coverage===null||r.coverage===undefined?'-':r.coverage+'个月'}</td>
-      <td>${r.days===0?'0':r.days+'天'}</td>
       <td><span class="badge ${cls[r.lk]}">${r.level}</span></td></tr>`;
   }
   document.getElementById('warn-table').innerHTML = h + '<div style="padding:6px 2px;font-size:11.5px;color:#999">' + W.note + '</div>';
