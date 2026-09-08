@@ -107,12 +107,7 @@ tr:nth-child(even) td{background:#f7f9fc;}
   <div class="card"><h3>ACOS% & 转化率%（5周）</h3><div class="cmp" id="cmp6"></div><div class="chart" id="c6"></div></div>
 </div>
 
-<div style="background:var(--card);border-radius:10px;padding:16px 18px;box-shadow:0 2px 6px rgba(0,0,0,.06);margin-bottom:16px;">
-  <h3 style="color:var(--blue);font-size:15px;margin-bottom:12px;border-left:4px solid var(--blue2);padding-left:8px;">📦 库存概览（202636 ｜ 空压=翻新空调压缩机 ｜ FBA=ERP 9/8 / DF=进销存报表(78) / PO=202636PO更新(桌面) ｜ 近30天8/10-9/8）</h3>
-  <div class="inv-cards" id="inv-cards"></div>
-  <div class="stock-note" id="stock-note"></div>
-  <div class="chart" id="c7" style="height:260px"></div>
-</div>
+
 
 <div class="table-card">
   <h3 style="color:var(--blue);font-size:14.5px;margin-bottom:10px;border-left:4px solid var(--blue2);padding-left:8px;">整体明细（翻新空调压缩机品类，5周）</h3>
@@ -145,7 +140,13 @@ tr:nth-child(even) td{background:#f7f9fc;}
     <h1>📦 库存监控 · 三渠道（FBA / DF / PO）</h1>
     <div class="sub" id="inv-mon-note"></div>
   </div>
-  <div class="kpis" id="inv-summary"></div>
+<div style="background:var(--card);border-radius:10px;padding:16px 18px;box-shadow:0 2px 6px rgba(0,0,0,.06);margin-bottom:14px;">
+  <h3 style="color:var(--blue);font-size:15px;margin-bottom:12px;border-left:4px solid var(--blue2);padding-left:8px;">📦 库存概览（202636 ｜ 空压=翻新空调压缩机 ｜ FBA=ERP 9/8 / DF=进销存报表(78) / PO=202636PO更新(桌面) ｜ 近30天8/10-9/8）</h3>
+  <div class="inv-cards" id="inv-cards"></div>
+  <div class="stock-note" id="stock-note"></div>
+  <div class="chart" id="c7" style="height:260px"></div>
+</div>
+    <div class="kpis" id="inv-summary"></div>
   <div style="background:var(--card);border-radius:10px;padding:14px 16px;box-shadow:0 2px 6px rgba(0,0,0,.06);">
     <div class="inv-tabs" id="inv-chtabs">
       <button class="active" onclick="showCh('FBA')">FBA（亚马逊仓）</button>
@@ -177,7 +178,7 @@ function showTab(pg){
   document.getElementById('page-inv').style.display = pg==='inv'?'':'none';
   document.getElementById('tab-overview').className = pg==='overview'?'active':'';
   document.getElementById('tab-inv').className = pg==='inv'?'active':'';
-  if(pg==='inv'){ renderInvSummary(); renderInv(); }
+  if(pg==='inv'){ renderInvOverview(); renderInvSummary(); renderInv(); }
 }
 function showCh(ch){
   curCh = ch;
@@ -315,8 +316,10 @@ echarts.init(document.getElementById('c6')).setOption(baseOpt([
   {name:'ACOS%',type:'line',data:o.acos,itemStyle:{color:'#C00000'},lineStyle:{width:3},label:{show:true,fontSize:10,color:'#C00000',formatter:p=>p.value+'%'}},
   {name:'CVR%',type:'line',data:o.cvr,itemStyle:{color:'#00B050'},lineStyle:{width:2},label:{show:true,fontSize:10,color:'#00B050',formatter:p=>p.value+'%'}},
 ]));
-// ===== 库存区 =====
-(function(){
+// ===== 库存概览(移至库存监控页, 惰性渲染) =====
+let invOvDone = false;
+function renderInvOverview(){
+  if(invOvDone) return; invOvDone = true;
   const iv = P.inventory;
   const cn = {FBA:['FBA(亚马逊仓)','#2E75B6'],DF:['海外仓(谷仓/万邑通等)','#70AD47'],PO:['PO(FLUX国内仓)','#BF8F00']};
   let h = '';
@@ -351,7 +354,8 @@ echarts.init(document.getElementById('c6')).setOption(baseOpt([
        itemStyle:{color:'#C00000'},lineStyle:{type:'dashed',width:2},label:{show:true,fontSize:10,color:'#C00000',formatter:p=>p.value+'单'}},
     ]
   });
-})();
+}
+window.renderInvOverview = renderInvOverview;
 // ===== 明细表 =====
 (function(){
   const rows=[
