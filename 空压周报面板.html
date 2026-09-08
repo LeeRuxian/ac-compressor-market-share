@@ -154,7 +154,7 @@ tr:nth-child(even) td{background:#f7f9fc;}
       <button onclick="showCh('PO')">PO（VC供货·每周更新）</button>
     </div>
     <div class="inv-filters">
-      状态筛选：<select id="inv-status" onchange="renderInv()"><option value="ALL">全部</option><option value="ATN">仅需关注(断货/缺货/动销/滞销)</option><option value="oos">断货</option><option value="low_inv">可能缺货</option><option value="spd">加速动销</option><option value="slow">滞销</option><option value="ok">正常</option></select>
+      状态筛选：<select id="inv-status" onchange="renderInv()"><option value="ALL">全部</option><option value="oos">断货</option><option value="low_inv">可能缺货</option><option value="spd">加速动销</option><option value="slow">滞销</option><option value="ok">正常</option></select>
       <input id="inv-search" placeholder="搜索ASIN/SKU/品牌..." oninput="renderInv()" style="width:220px">
       <span id="inv-count" style="color:#888;font-size:12px"></span>
     </div>
@@ -203,8 +203,7 @@ function renderInv(){
   const st = document.getElementById('inv-status').value;
   const q = document.getElementById('inv-search').value.trim().toLowerCase();
   let rows = M.channels[curCh].filter(x=>{
-    if(st==='ATN' && x.lk==='ok') return false;
-    if(st!=='ALL' && st!=='ATN' && x.lk!==st) return false;
+    if(st!=='ALL' && x.lk!==st) return false;
     const hay = [x.asin||'',x.sku||'',x.brand||''].join(' ').toLowerCase();
     if(q && !hay.includes(q)) return false;
     return true;
