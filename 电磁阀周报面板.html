@@ -127,6 +127,15 @@ tr:nth-child(even) td{background:#f7f9fc;}
   <div id="dd-table" style="margin-top:6px"></div>
 </div>
 
+<div class="table-card" style="border-left:5px solid var(--blue);">
+  <h3 style="color:var(--blue);font-size:15px;margin-bottom:6px;border-left:4px solid var(--blue);padding-left:8px;">📈 新品DD达成率趋势 & 广告依赖度（5周 · 动销新品集合）</h3>
+  <div style="display:flex;gap:14px;flex-wrap:wrap">
+    <div style="flex:1;min-width:330px"><div style="font-size:12.5px;color:#555;margin-bottom:2px">DD达成率趋势（实际日销÷预估DD；红线=S级）</div><div id="nm-chart1" style="height:220px"></div></div>
+    <div style="flex:1;min-width:330px"><div style="font-size:12.5px;color:#555;margin-bottom:2px">广告依赖度（广告单÷总单）</div><div id="nm-chart2" style="height:220px"></div></div>
+  </div>
+  <div style="color:#888;font-size:11.5px;margin-top:4px">达成率=当周动销新品实际日销(周销量÷7)÷预估DD；断货风险联动表在📦库存监控tab</div>
+</div>
+
 <div class="table-card" style="border-left:5px solid var(--red);">
   <h3 style="color:var(--blue);font-size:15px;margin-bottom:6px;border-left:4px solid var(--red);padding-left:8px;">⭐ 重点链接监控（US19/US22 · 高销量高毛利稳定增长）</h3>
   <div style="display:flex;gap:10px;align-items:center;margin-bottom:8px;flex-wrap:wrap"><span style="font-size:12px;color:#888" id="key-note"></span>
@@ -198,12 +207,7 @@ tr:nth-child(even) td{background:#f7f9fc;}
   <div id="warn-table"></div>
 
   <div style="background:var(--card);border-radius:10px;padding:14px 16px;box-shadow:0 2px 6px rgba(0,0,0,.06);margin-bottom:16px;">
-    <h3 style="color:var(--blue);font-size:15px;margin-bottom:8px;border-left:4px solid var(--blue2);padding-left:8px;">🆕 新品健康监控（DD达成率趋势 · 广告依赖度 · 断货风险联动 · US19 KAX）</h3>
-    <div style="display:flex;gap:14px;flex-wrap:wrap">
-      <div style="flex:1;min-width:330px"><div style="font-size:12.5px;color:#555;margin-bottom:2px">📈 DD达成率趋势（动销新品实际日销÷预估DD）</div><div id="nm-chart1" style="height:200px"></div></div>
-      <div style="flex:1;min-width:330px"><div style="font-size:12.5px;color:#555;margin-bottom:2px">📊 广告依赖度（广告单÷总单）</div><div id="nm-chart2" style="height:200px"></div></div>
-    </div>
-    <div style="font-size:12.5px;color:#555;margin:8px 0 2px">🚨 断货风险联动（可售÷实际DD=可用天数；<span style="color:#C00000">🔴&lt;30天</span> <span style="color:#E36C09">🟠30-60天</span> <span style="color:#BF8F00">🟡60-90天</span> <span style="color:#00B050">🟢&gt;90天</span>）</div>
+    <h3 style="color:var(--blue);font-size:15px;margin-bottom:8px;border-left:4px solid var(--blue2);padding-left:8px;">🚨 新品断货风险联动（可售÷实际DD=可用天数；<span style="color:#C00000">🔴&lt;30天</span> <span style="color:#E36C09">🟠30-60天</span> <span style="color:#BF8F00">🟡60-90天</span> <span style="color:#00B050">🟢&gt;90天</span>）</h3>
     <div id="nm-table"></div>
   </div>
 
@@ -499,16 +503,16 @@ function renderC7Inv(){
 // ===== 即将断货预警表 =====
 
 let nmDone = false;
-function renderNewMon(){
-  nmDone = true;
+function renderTrendCharts(){
   const T = P.dd_trend || {weeks:[],rate_all:[],rate_s:[],ad_dep:[]};
+  const e1 = document.getElementById('nm-chart1'); if(!e1) return;
   const baseOpt2 = {
     tooltip:{trigger:'axis'},legend:{top:0,textStyle:{fontSize:11}},
     grid:{left:42,right:42,top:32,bottom:24},
     xAxis:{type:'category',data:T.weeks,axisLabel:{fontSize:10}},
     yAxis:{type:'value',axisLabel:{fontSize:10}},
   };
-  const ch1 = echarts.init(document.getElementById('nm-chart1'));
+  const ch1 = echarts.init(e1);
   ch1.setOption(Object.assign({}, baseOpt2, {yAxis:{type:'value',axisLabel:{fontSize:10,formatter:'{value}%'}},
     series:[
       {name:'全部新品达成率%',type:'line',data:T.rate_all,itemStyle:{color:'#2E75B6'},lineStyle:{width:2},label:{show:true,fontSize:10,color:'#2E75B6',formatter:p=>p.value+'%'}},
@@ -520,6 +524,9 @@ function renderNewMon(){
     series:[
       {name:'广告依赖度%',type:'line',data:T.ad_dep,itemStyle:{color:'#BF8F00'},lineStyle:{width:2},areaStyle:{color:'rgba(191,143,0,.08)'},label:{show:true,fontSize:10,color:'#BF8F00',formatter:p=>p.value+'%'}},
     ]}));
+}
+function renderNewMon(){
+  nmDone = true;
   // 断货风险联动表(所有新品按可用天数排序)
   const rows = (P.dd||[]).filter(r=> r.dd_act>0).map(r=>({...r, days: r.sell!==null && r.sell!==undefined && r.dd_act>0 ? Math.round(r.sell/r.dd_act) : null}))
     .sort((a,b)=> (a.days===null?9999:a.days)-(b.days===null?9999:b.days));
@@ -536,8 +543,9 @@ function renderNewMon(){
       <td style="${dayCol(r.days)}">${r.days===null?'-':r.days+'天'}</td><td>${risk}</td></tr>`;
   }
   h+='</table>';
-  document.getElementById('nm-table').innerHTML = h + '<div style="padding:6px 2px;font-size:11.5px;color:#999">实际DD=近30天销量÷30；可用天数=可售÷实际DD（断货风险联动：可达标新品若库存天数过低=补货优先级最高）。DD达成率趋势/广告依赖度按每周动销新品集合计算。</div>';
+  document.getElementById('nm-table').innerHTML = h + '<div style="padding:6px 2px;font-size:11.5px;color:#999">实际DD=近30天销量÷30；可用天数=可售÷实际DD：可达标新品(达成率≥100%)但可用天数低 = 补货优先级最高。风险联动口径=可售÷实际DD（非预估DD）。</div>';
 }
+renderTrendCharts();
 
 window.showCh = function(t){
   document.querySelectorAll('.page-overview').forEach(d=>d.style.display = (t==='overview')?'':'none');
