@@ -105,6 +105,7 @@ tr:nth-child(even) td{background:#f7f9fc;}
   <div class="card"><h3>品牌销量对比 Torchbeam / KAC（3周）</h3><div class="cmp" id="cmp4"></div><div class="chart" id="c4"></div></div>
   <div class="card"><h3>渠道销量 FBA/DF/PO（损益口径3周）</h3><div class="cmp" id="cmp5"></div><div class="chart" id="c5"></div></div>
   <div class="card"><h3>ACOS% & 转化率%（5周）</h3><div class="cmp" id="cmp6"></div><div class="chart" id="c6"></div></div>
+  <div class="card"><h3>⚠ 退款数量 & 退款率（5周 · 质量监控）</h3><div class="chart" id="c8"></div></div>
 </div>
 
 
@@ -122,24 +123,28 @@ tr:nth-child(even) td{background:#f7f9fc;}
 </div>
 
 <div class="notes">
-  <h3>📋 本周 vs 上周（202636 vs 202635）</h3>
-  <b>销量：</b>189→142（-24.9%），自然单162→112（-30.9%），广告单27→30（+11.1%）——自然盘崩跌是主因，广告逆势增<br>
-  <b>销售额：</b>$169,616→$132,007（-22.2%），客单价$898→$930<br>
-  <b>流量/转化：</b>流量4,591→3,665（-20.2%），CVR 4.12%→3.87%（-6.1%）——流量与转化双降<br>
-  <b>广告：</b>花费$2,482→$2,492（+0.4%），ACOS 10.34%→8.2%（-20.7%改善），广告单27→30——广告效率健康<br>
-  <b>利润/促销：</b>毛利率22.8%→23.72%（+0.9pct），促销占比1.95%→1.12%（回落），推广占比3.47%→3.02%<br>
-  <b>退款：</b>9单→4单（-55.6%）<br>
-  <b>渠道（损益,纯翻新剔PHILTOP）：</b>FBA 42→29（-31.0%），DF 114→124（+8.8%✓与BI一致），PO 36→32（-11.1%）<br>
-  <b>店铺：</b>US37 31→19（-38.7%🔴FBA断货44 SKU）；VC1 156→123（-21.2%）；品牌：Torchbeam 103→69（-33%）、KAC 83→72（-13%）<br>
+  <h3>📊 本周闭环总结（202636 vs 202635）· 定位问题 → 深挖归因 → 解决措施</h3>
+
+  <b style="color:var(--red)">【问题1｜销量下滑：142单(-24.9%)——不是需求消失，是"结构性缺货+季节性回落"叠加】</b><br>
+  大盘拆解：自然单162→112（-30.9%🔥）是唯一崩跌项，广告单27→30(+11.1%)逆势增长；店铺层面US37 31→19(-38.7%) vs VC1 156→123(-21.2%)。<br>
+  <b style="color:#1F4E79">▸ 深挖一：US37为何-38.7%（跌幅≈FBA断货幅度）？</b>——FBA库存快照（BI库存明细报表 9/8）实证：可售仅<b>183件</b>、<b>断货60个SKU（US37站内60个）</b>，离岸库销比仅<b>1.38个月</b>（告急线1.5个月以下）——<b>US37站内大部分链接无货可卖，自然订单随断货流失，广告预算也花不出去</b>（US37广告花费有限正是断货的连锁反应）。<br>
+  <b style="color:#1F4E79">▸ 深挖二：VC1为何-21.2%（有货但也在跌）？</b>——排除缺货（DF海外仓可售2,875件/7.25个月充裕、PO 820件）：5周销量通道195→201→198→189→142自202634起连续下行，与8月底空调需求季节性回落吻合（9月后空压需求进入淡季通道）——<b>这是需求端回落，不是运营失误</b>。<br>
   <br>
-  <h3>✅ 改进措施（202636）</h3>
-  1. <b>🔴 补FBA货是第一位</b>：FBA断货47 SKU（US37站内44）直接导致US37销量腰斩——立即确认头程/补货ETA，优先补有近30天销量的断货SKU（翻新商品属性清单内核对）；<br>
-  2. <b>DF转FBA补位</b>：DF海外仓可用2,985件(6.82个月)充裕——评估可售高但有FBA断货的SKU调拨/发FBA，承接US37站内需求；<br>
-  3. <b>广告维持</b>：ACOS 8.2%+广告单+11%健康——维持现有投放结构，用广告守住断货期间的自然排名；<br>
-  4. <b>盯9月季节性</b>：8月底后空调需求回落（VC1 -21%同步印证），销量预期下修，避免DF/PO过度压货（PO库销比6.83个月偏高，放缓PO采购）；<br>
-  5. <b>退款/质量</b>：退款改善，继续监控；<br>
-  6. <b>数据待办</b>：202632 US37销售额BI脏值；DF直拉需确认higress进销存报表MCP服务器（本期用文件(78)）；PO下期仍走桌面PO库存更新文件。
-</div>
+  <b style="color:var(--red)">【问题2｜利润与质量：毛利率22.8%→23.72%(+0.9pct)反而在改善——利润结构健康，无需恐慌】</b><br>
+  毛利率提升（BI口径）、退款9→4(-55.6%)大幅改善、促销占比1.95%→1.12%回落、ACOS 10.3%→8.2%(-20.7%)——<b>成本/效率/质量三线全部向好</b>；毛利额下滑(-19%)纯粹是被销量(-24.9%)拖累，单位盈利在涨。<br>
+  <b>→ 所以本周真正的经营问题是"量"不是"利"：把FBA断货补上，量利双收。</b><br>
+  <br>
+  <b style="color:var(--red)">【问题3｜库存结构错配：钱压在海外仓，货却断在FBA】</b><br>
+  DF海外仓2,875件(7.25个月)含<b>131个近30天未动销SKU</b>（滞销），PO库销比7.21个月(<b>319个库销比&gt;5的积压SKU</b>)——资金与库容被低效库存占用，而FBA 60个断货SKU无货可卖。同一盘货，一头淤积一头断供。<br>
+  <b>→ 措施：</b>①DF滞销清单(131个)筛选可售对应车型仍在出单的SKU→调拨发FBA补US37断货（优先近30天有销量的60个断货ASIN对应的翻新SKU）；②FBA断货但DF同SKU有货的立即转仓/多渠道配送；③PO停止追加采购（积压319个+需求进入淡季）。<br>
+  <br>
+  <b style="color:#BF8F00">【风险与下周动作清单（按优先级）】</b><br>
+  1️⃣ <b>补FBA货（最高优先级）</b>：确认60个断货SKU补货ETA，近30天有单的断货SKU最先补（参考库存监控FBA断货清单）；<br>
+  2️⃣ <b>DF→FBA调拨</b>：滞销131个中匹配断货ASIN的优先调拨，用海外仓的货救FBA的场；<br>
+  3️⃣ <b>广告守位</b>：ACOS 8.2%健康——断货期间维持广告保自然排名，到货后自然单能快速恢复；<br>
+  4️⃣ <b>PO放缓采购</b>：库销比7.21个月+淡季来临，冻结新增PO；<br>
+  5️⃣ <b>盯季节性下修预期</b>：VC1与全店下行通道确认，9月销量预算下修15-20%，防过度备货；<br>
+  6️⃣ 质量/退款维持监控（本周已大幅改善）。
 </div><!-- /page-overview -->
 
 <div id="page-inv" style="display:none">
@@ -438,7 +443,8 @@ const cmpTxt = (name,arr,unit='',ii=i,jj=j)=>{
   return `${name}：本周 ${num(arr[ii])}${unit} ${s}`;
 };
 document.getElementById('cmp1').innerHTML = cmpTxt('销量',o.sales_qty,'单')+' ｜ '+cmpTxt('销售额',o.sales_amount,'$');
-document.getElementById('cmp2').innerHTML = cmpTxt('自然单',o.natural_qty,'单')+' ｜ '+cmpTxt('广告单',o.ad_qty,'单');
+const adQ = o.ad_qty.map(v=>Math.round(v));
+document.getElementById('cmp2').innerHTML = cmpTxt('自然单',o.natural_qty,'单')+' ｜ '+cmpTxt('广告单',adQ,'单');
 document.getElementById('cmp3').innerHTML = cmpTxt('US37',P.shops.US37.sales_qty,'单',2,1)+' ｜ '+cmpTxt('VC1',P.shops.VC1.sales_qty,'单',2,1);
 document.getElementById('cmp4').innerHTML = cmpTxt('Torchbeam',P.brands.Torchbeam.sales_qty,'单',2,1)+' ｜ '+cmpTxt('KAC',P.brands.KAC.sales_qty,'单',2,1);
 document.getElementById('cmp5').innerHTML = cmpTxt('FBA',P.channels.FBA.sales_qty,'单',2,1)+' ｜ '+cmpTxt('DF',P.channels.DF.sales_qty,'单',2,1)+' ｜ '+cmpTxt('PO',P.channels.PO.sales_qty,'单',2,1);
@@ -451,7 +457,7 @@ echarts.init(document.getElementById('c1')).setOption(baseOpt([
 ],null,true));
 echarts.init(document.getElementById('c2')).setOption(baseOpt([
   {name:'自然单',type:'bar',stack:'t',data:o.natural_qty,itemStyle:{color:'#2E75B6'},label:LABEL_IN},
-  {name:'广告单',type:'bar',stack:'t',data:o.ad_qty,itemStyle:{color:'#FFC000'},label:LABEL_IN},
+  {name:'广告单',type:'bar',stack:'t',data:adQ,itemStyle:{color:'#FFC000'},label:LABEL_IN},
 ]));
 (function(){
   const s=P.shops; const ch=echarts.init(document.getElementById('c3'));
@@ -489,6 +495,22 @@ echarts.init(document.getElementById('c2')).setOption(baseOpt([
       itemStyle:{color:{FBA:'#2E75B6',DF:'#70AD47',PO:'#BF8F00'}[k]}}))
   });
 })();
+// c8 退款图
+(function(){
+  const rr = o.refund_qty.map((q,i)=> o.sales_qty[i]? +(q/o.sales_qty[i]*100).toFixed(1): null);
+  echarts.init(document.getElementById('c8')).setOption({
+    tooltip:{trigger:'axis'},legend:{top:0,textStyle:{fontSize:11}},
+    grid:{left:44,right:46,top:34,bottom:24},
+    xAxis:{type:'category',data:W,axisLabel:{fontSize:10}},
+    yAxis:[{type:'value',name:'单',axisLabel:{fontSize:10}},{type:'value',name:'退款率%',axisLabel:{fontSize:10,formatter:'{value}%'}}],
+    series:[
+      {name:'退款数量',type:'bar',data:o.refund_qty.map(Math.round),itemStyle:{color:'#C00000'},barWidth:20,
+       label:{show:true,fontSize:10,color:'#C00000'}},
+      {name:'退款率%',type:'line',yAxisIndex:1,data:rr,itemStyle:{color:'#E36C09'},lineStyle:{width:2,type:'dashed'},
+       label:{show:true,fontSize:10,color:'#E36C09',formatter:p=>p.value===null?'-':p.value+'%'}},
+    ]
+  });
+})();
 echarts.init(document.getElementById('c6')).setOption(baseOpt([
   {name:'ACOS%',type:'line',data:o.acos,itemStyle:{color:'#C00000'},lineStyle:{width:3},label:{show:true,fontSize:10,color:'#C00000',formatter:p=>p.value+'%'}},
   {name:'CVR%',type:'line',data:o.cvr,itemStyle:{color:'#00B050'},lineStyle:{width:2},label:{show:true,fontSize:10,color:'#00B050',formatter:p=>p.value+'%'}},
@@ -502,11 +524,26 @@ function renderInvOverview(){
   let h = '';
   for(const k of ['FBA','DF','PO']){
     const [name,color] = cn[k]; const d = iv[k];
+    const rows = (P.inv_monitor && P.inv_monitor.channels) ? P.inv_monitor.channels[k] : [];
+    let focus = '';
+    if(k==='FBA'){
+      const list = rows.filter(r=> r.level==='断货').slice(0,8).map(r=> `${r.asin||r.sku}<b>0</b>`).join(' ');
+      focus = `<div class="irow" style="margin-top:6px;border-top:1px dashed #eee;padding-top:6px"><b style="color:var(--red)">🎯 聚焦断货(${rows.filter(r=>r.level==='断货').length}个)：</b><span style="font-size:11.5px;color:#C00000">${list || '无'}</span></div>`;
+    } else if(k==='PO'){
+      const list = rows.filter(r=> (r.cov||0) > 5).sort((a,b)=>b.inv-a.inv).slice(0,8)
+        .map(r=> `${r.sku}(${r.inv}件/库销比${r.cov})`).join(' ');
+      focus = `<div class="irow" style="margin-top:6px;border-top:1px dashed #eee;padding-top:6px"><b style="color:#BF8F00">🎯 聚焦库销比&gt;5积压(${rows.filter(r=>(r.cov||0)>5).length}个)：</b><span style="font-size:11.5px;color:#8a6d1a">${list||'无'}</span></div>`;
+    } else if(k==='DF'){
+      const list = rows.filter(r=> r.level==='滞销').sort((a,b)=>b.inv-a.inv).slice(0,8)
+        .map(r=> `${r.sku}(${r.inv}件)`).join(' ');
+      focus = `<div class="irow" style="margin-top:6px;border-top:1px dashed #eee;padding-top:6px"><b style="color:#7F7F7F">🎯 聚焦近30天未动销(${rows.filter(r=>r.level==='滞销').length}个)：</b><span style="font-size:11.5px;color:#666">${list||'无'}</span></div>`;
+    }
     h += `<div class="inv-card" style="border-top-color:${color}">
       <div class="iname">${name}</div>
       <div class="irow">可售库存：<b>${d.sellable.toLocaleString()}</b>${k==='DF'?` ｜ 在途：<b>${d.onway.toLocaleString()}</b>`:''}</div>
       <div class="irow">离岸库销比((可售+在途)÷近30天${d.sales_30d})：<b>${d.coverage}个月</b></div>
       <div class="irow">SKU数：${d.skus} ｜ <span class="oos">断货SKU(可售=0)：${d.oos}</span>${k==='FBA'?`<br><span style="font-size:11.5px;color:#888">其中US37站内断货 ${d.oos_us37} 个</span>`:''}</div>
+      ${focus}
     </div>`;
   }
   document.getElementById('inv-cards').innerHTML = h;
@@ -535,24 +572,40 @@ function renderInvOverview(){
   });
 }
 window.renderInvOverview = renderInvOverview;
-// ===== 明细表 =====
+// ===== 明细表 (电磁阀同款: 行=周+周环比, 列=指标) =====
 (function(){
-  const rows=[
-    ['流量',o.traffic,'#,##0'],['销量',o.sales_qty,'#,##0'],['销售额',o.sales_amount,'$'],
-    ['转化率',o.cvr,'%'],['利润率',o.profit_rate,'%'],['广告花费',o.ad_spend,'$'],['ACOS',o.acos,'%'],
-    ['广告sku销量',o.ad_qty,'#,##0'],['自然订单数',o.natural_qty,'#,##0'],['退款数量',o.refund_qty,'#,##0'],
-    ['促销折扣',o.promotion,'$'],['促销占比',o.promo_ratio,'%'],['推广占比',o.spread_ratio,'%'],
-    ['coupon使用费',o.coupon,'$'],['展示量',o.impressions,'#,##0'],['点击数',o.clicks,'#,##0'],['页面浏览量',o.page_views,'#,##0']];
-  let h='<table><tr><th>指标</th>'+W.map(w=>`<th>${w}</th>`).join('')+'<th>本周vs上周</th></tr>';
-  for(const [name,data,fmt] of rows){
-    const v=data.map(x=> x===null||x===undefined?'-':(fmt==='$'?money(x):(fmt==='%'?x+'%':num(x)))).join('</td><td>');
-    const cur=data[i],prev=data[j];
-    const cc = (cur!==null&&cur!==undefined&&prev>0)?(((cur-prev)/prev*100).toFixed(1)+'%'):'-';
-    h+=`<tr><td>${name}</td><td>${v}</td><td>${cc}</td></tr>`;
+  const money = v=>'$'+Number(v).toLocaleString();
+  const n2 = v=> Number(v).toFixed(2);
+  const cpcArr = o.clicks.map((c,k)=> c? +(o.ad_spend[k]/c).toFixed(2): null);
+  const adsalArr = o.acos.map((a,k)=> (a&&a>0&&o.ad_spend[k])? o.ad_spend[k]/(a/100): null);   // 广告销售额=花费/ACOS
+  const grossArr = o.sales_amount.map((v,k)=> (v&&o.profit_rate[k]!==null)? o.profit_rate[k]/100*v: null); // 毛利额=毛利率×销售额
+  const refRate = o.refund_qty.map((q,i)=> o.sales_qty[i]? +(q/o.sales_qty[i]*100).toFixed(1): null);
+  const cols = [
+    ['流量',o.traffic,'n'],['销量',o.sales_qty,'n'],['销售额',o.sales_amount,'$'],['转化率',o.cvr,'%'],
+    ['展示量',o.impressions,'n'],['点击数',o.clicks,'n'],['广告花费',o.ad_spend,'$'],['CPC',cpcArr,'cpc'],
+    ['ACOS',o.acos,'%'],['广告sku销售额',adsalArr,'$'],['广告sku销量',adQ,'n'],
+    ['毛利润',grossArr,'$'],['毛利率',o.profit_rate,'%'],['页面浏览量',o.page_views,'n'],
+    ['退款数量',o.refund_qty,'n'],['退款率',refRate,'%'],['促销折扣',o.promotion,'$'],
+    ['促销占比',o.promo_ratio,'%'],['推广占比',o.spread_ratio,'%'],['coupon使用费',o.coupon,'$'],
+  ];
+  const fmtC = (v,ty)=> v===null||v===undefined?'-':(ty==='$'?money(v):(ty==='%'?Number(v).toFixed(1)+'%':(ty==='cpc'?'$'+Number(v).toFixed(2):Number(v).toLocaleString())));
+  const rel = (c,p)=> (p>0&&c!==null&&c!==undefined)?(((c-p)/p*100)):null;
+  const isUpGood = m => !(m==='ACOS'||m==='CPC'||m==='退款数量'||m==='退款率');
+  let h = '<div style="overflow-x:auto"><table><tr><th style="min-width:56px">周</th>'+cols.map(c=>'<th>'+c[0]+'</th>').join('')+'</tr>';
+  for(let k=0;k<W.length;k++){
+    h += `<tr><td style="font-weight:600">${W[k]}</td>` + cols.map(c=>`<td>${fmtC(c[1][k],c[2])}</td>`).join('') + '</tr>';
   }
-  h+='</table>';
-  document.getElementById('detail').innerHTML=h;
+  h += '<tr style="background:#FFF3D6"><td style="font-weight:700;color:#8a6d1a">周环比</td>';
+  for(const c of cols){
+    const v = rel(c[1][W.length-1], c[1][W.length-2]);
+    if(v===null){ h+='<td>-</td>'; continue; }
+    const col = v>0?(isUpGood(c[0])?'#00B050':'#C00000'):(isUpGood(c[0])?'#C00000':'#00B050');
+    h += `<td style="color:${col};font-weight:700">${v>0?'+':''}${v.toFixed(1)}%</td>`;
+  }
+  h += '</tr></table></div>';
+  document.getElementById('detail').innerHTML = h + '<div style="padding:6px 2px;font-size:11.5px;color:#999">布局仿BI运营分析/电磁阀面板；广告sku销售额=广告花费÷ACOS估算(BI未直接给出)；毛利润=BI毛利率×销售额；202632销售额/占比为BI脏值周期显示"-"</div>';
 })();
+
 renderAdZone();
 } catch(e) {
   document.body.insertAdjacentHTML('afterbegin','<div style="background:#C00000;color:#fff;padding:12px;font-size:13px">面板脚本错误: '+e.message+'</div>');
