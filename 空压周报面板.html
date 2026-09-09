@@ -49,8 +49,8 @@ tr:nth-child(even) td{background:#f7f9fc;}
 <body>
 <style>
 .tabs{display:flex;gap:8px;margin-bottom:14px;background:var(--card);border-radius:10px;padding:8px;box-shadow:0 2px 6px rgba(0,0,0,.06);max-width:560px;}
-.tabbtn{flex:1;padding:9px 12px;border-radius:8px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;background:var(--blue2);color:#fff;text-align:center;transition:.2s;user-select:none;display:block;text-decoration:none;}
-.tabbtn:hover{opacity:.9;}
+.navtab{flex:1;padding:9px 12px;border:none;border-radius:8px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;background:#e8eef5;color:#555;transition:.2s;}
+.navtab.active{background:var(--blue2);color:#fff;}
 .tabs button{flex:1;padding:9px 12px;border:none;border-radius:8px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;background:#e8eef5;color:#555;transition:.2s;}
 .tabs button.active{background:var(--blue2);color:#fff;}
 .inv-tabs{display:flex;gap:6px;margin:10px 0;flex-wrap:wrap;}
@@ -62,11 +62,11 @@ tr:nth-child(even) td{background:#f7f9fc;}
 .b-oos{background:#C00000;}.b-oos0{background:#C55A11;}.b-low_inv{background:#E36C09;}.b-spd{background:#BF8F00;}.b-slow{background:#7F7F7F;}.b-ok{background:#00B050;}
 </style>
 <div class="tabs" style="position:sticky;top:0;z-index:99;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.12);">
-  <a class="tabbtn" href="#ov-anchor">📊 周报总览</a>
-  <a class="tabbtn" href="#inv-anchor" style="background:var(--blue);">📦 库存监控（三渠道）</a>
+  <button class="navtab active" data-pg="overview" onclick="showTab('overview')">📊 周报总览</button>
+  <button class="navtab" data-pg="inv" onclick="showTab('inv')">📦 库存监控（三渠道）</button>
 </div>
 <div id="ov-anchor" style="scroll-margin-top:70px"></div>
-<div id="page-overview">
+<div id="page-overview" class="page page-overview">
 <div class="header">
   <div>
     <h1>📊 空压 · 翻新AC Compressor 周报面板</h1>
@@ -153,7 +153,7 @@ tr:nth-child(even) td{background:#f7f9fc;}
 </div><!-- /page-overview -->
 
 <div id="inv-anchor" style="scroll-margin-top:70px"></div>
-<div id="page-inv">
+<div id="page-inv" class="page page-inv" style="display:none">
   <div class="header" style="margin-bottom:14px;">
     <h1>📦 库存监控 · 三渠道（FBA / DF / PO）</h1>
     <div class="sub" id="inv-mon-note"></div>
@@ -218,10 +218,9 @@ const chg = (cur,prev) => prev>0 ? (cur-prev)/prev*100 : null;
 let curCh = 'FBA';
 window.showTab = showTab; window.showCh = showCh; window.renderInv = renderInv; window.renderInvSummary = renderInvSummary; window.poRedraw = poRedraw; // 导出供onclick
 function showTab(pg){
-  var r1 = document.getElementById('pg1'), r2 = document.getElementById('pg2');
-  if(r1 && r2){ r1.checked = (pg==='overview'); r2.checked = (pg==='inv'); }
-  document.getElementById('tab-overview').className = pg==='overview'?'tabbtn active':'tabbtn';
-  document.getElementById('tab-inv').className = pg==='inv'?'tabbtn active':'tabbtn';
+  document.querySelectorAll('.page-overview').forEach(function(d){ d.style.display = pg==='overview'?'':'none'; });
+  document.querySelectorAll('.page-inv').forEach(function(d){ d.style.display = pg==='inv'?'':'none'; });
+  document.querySelectorAll('.navtab').forEach(function(b){ b.classList.toggle('active', b.getAttribute('data-pg')===pg); });
   if(pg==='inv'){
     ['renderInvOverview','renderInvSummary','renderPoTier','renderInv'].forEach(function(fn){
       try{ window[fn](); }
@@ -660,10 +659,6 @@ window.renderInvOverview = renderInvOverview;
 })();
 
 renderAdZone();
-// ===== 单页全显: load即渲染库存区(2026-09-09 终极方案) =====
-try{
-  renderInvOverview(); renderInvSummary(); renderPoTier(); renderInv();
-}catch(e2){ console.error('[inv-render]', e2); }
 } catch(e) {
   document.body.insertAdjacentHTML('afterbegin','<div style="background:#C00000;color:#fff;padding:12px;font-size:13px">面板脚本错误: '+e.message+'</div>');
   console.error(e);
