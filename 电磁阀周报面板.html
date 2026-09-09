@@ -170,10 +170,14 @@ tr:nth-child(even) td{background:#f7f9fc;}
 
 <div style="background:var(--card);border-radius:10px;padding:16px 18px;box-shadow:0 2px 6px rgba(0,0,0,.06);margin-bottom:16px;">
   <h3 style="color:var(--blue);font-size:15px;margin-bottom:8px;border-left:4px solid var(--yellow);padding-left:8px;">⚠️ 即将断货预警（ASIN维度，US19/US22）</h3>
-  <div class="warn-filter">店铺筛选：
-    <select id="warn-shop" onchange="renderWarn()"><option value="ALL">全部</option><option value="US19">US19 (KAX)</option><option value="US22">US22 (PT)</option></select>
-    <span style="color:#888;font-size:12px;margin-left:10px">库存状态：<span class="badge b-oos">断货(30天内有单)</span> <span class="badge b-low_inv">可能缺货(&lt;3个月)</span> <span class="badge b-spd">加速动销(4-5个月)</span> <span class="badge b-slow">滞销(&gt;5个月)</span> <span class="badge b-ok">正常(3-4个月)</span></span>
-    <label style="margin-left:12px;font-size:12.5px;color:#555"><input type="checkbox" id="warn-only" onchange="renderWarn()" checked> 只看需关注</label>
+  <div class="warn-filter" style="display:flex;gap:14px;align-items:center;flex-wrap:wrap">店铺：
+    <select id="warn-shop" onchange="renderWarn()" style="padding:4px 6px;border-radius:5px;border:1px solid #ccc"><option value="ALL">全部</option><option value="US19">US19 (KAX)</option><option value="US22">US22 (PT)</option></select>
+    <span>新老品：
+    <select id="warn-type" onchange="renderWarn()" style="padding:4px 6px;border-radius:5px;border:1px solid #ccc"><option value="ALL">全部</option><option value="新品">新品</option><option value="老品">老品</option></select></span>
+    <span>库存状态：
+    <select id="warn-lk" onchange="renderWarn()" style="padding:4px 6px;border-radius:5px;border:1px solid #ccc"><option value="ALL">全部状态</option><option value="oos">🔴断货(30天内有单)</option><option value="low_inv">🟠可能缺货(&lt;3个月)</option><option value="spd">🟡加速动销(4-5个月)</option><option value="slow">⚪滞销(&gt;5个月)</option><option value="ok">🟢正常(3-4个月)</option></select></span>
+    <button onclick="exportWarn()" style="margin-left:auto;padding:5px 14px;border:none;background:var(--blue);color:#fff;border-radius:6px;cursor:pointer;font-size:12.5px">📥 导出当前筛选(Excel/CSV)</button>
+    <span id="warn-count" style="color:#666;font-size:12px"></span>
   </div>
   <div id="warn-table"></div>
 
@@ -454,12 +458,19 @@ window.showCh = function(t){
   document.querySelectorAll('.navtab').forEach(b=>b.classList.toggle('active', b.dataset.pg===t));
   if(t==='inv' && !c7Done && typeof renderC7Inv==='function') renderC7Inv();
 };
-function renderWarn(){
+function warnRows(){
   const W = P.oos_warning;
   const shop = document.getElementById('warn-shop').value;
-  const only = document.getElementById('warn-only').checked;
-  let rows = W.rows.filter(r=> (shop==='ALL' || r.shop===shop) && (!only || r.lk!=='ok'));
-  if(!rows.length){ document.getElementById('warn-table').innerHTML='<div style="padding:14px;color:#888;font-size:13px">✅ 该店铺无预警ASIN</div>'; return; }
+  const typ = document.getElementById('warn-type').value;
+  const lk = document.getElementById('warn-lk').value;
+  return W.rows.filter(r=> (shop==='ALL' || r.shop===shop) && (typ==='ALL' || r.type===typ) && (lk==='ALL' || r.lk===lk));
+}
+function renderWarn(){
+  const W = P.oos_warning;
+  const rows = warnRows();
+  const cnt = document.getElementById('warn-count');
+  if(cnt) cnt.innerText = '共 ' + rows.length + ' 条' + (rows.length ? '（可导出）' : '');
+  if(!rows.length){ document.getElementById('warn-table').innerHTML='<div style="padding:14px;color:#888;font-size:13px">✅ 该筛选条件下无ASIN</div>'; return; }
   const cls = {oos:'b-oos',low_inv:'b-low_inv',spd:'b-spd',slow:'b-slow',ok:'b-ok'};
   const tcol = r=> r.type==='新品' ? '<span style="color:#2E75B6;font-weight:600">新品</span>' : '<span style="color:#888">老品</span>';
   let h = '<table><tr><th>ASIN</th><th>SKU(商品编码)</th><th>新老品</th><th>店铺</th><th>可售</th><th>头程在途</th><th>近30天销量</th><th>在售/离岸库销比</th><th>预警</th></tr>';
@@ -470,6 +481,20 @@ function renderWarn(){
   }
   document.getElementById('warn-table').innerHTML = h + '<div style="padding:6px 2px;font-size:11.5px;color:#999">' + W.note + '</div>';
 }
+window.exportWarn = function(){
+  const rows = warnRows();
+  if(!rows.length){ alert('当前筛选无数据可导出'); return; }
+  const head = ['ASIN','SKU(商品编码)','新老品','店铺','可售','头程在途','近30天销量','在售库销比(月)','离岸库销比(月)','状态'];
+  const lines = rows.map(r=> [r.asin, r.sku, r.type, r.shop, r.sell, r.onway, r.s30,
+    (r.coverage_sale===null||r.coverage_sale===undefined?'':r.coverage_sale), (r.coverage===null?'':r.coverage), r.level]
+    .map(v=> { const s = String(v===undefined?'':v); return /[",\n]/.test(s) ? '"'+s.replace(/"/g,'""')+'"' : s; }).join(','));
+  const csv = '﻿' + head.join(',') + '\n' + join('\n');
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = '电磁阀断货预警_' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click();
+};
 window.renderWarn = renderWarn;  // 供下拉onchange调用
 renderWarn();
 // ===== 库存区(FBA, 分店铺) =====
