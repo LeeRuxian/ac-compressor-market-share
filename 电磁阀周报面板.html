@@ -161,8 +161,6 @@ tr:nth-child(even) td{background:#f7f9fc;}
   </div>
 </div>
 
-</div>
-
 <div class="notes">
   <h3>📊 本周总结（202636 vs 202635）· 整体 → 店铺 → ASIN → 库存 → 广告诊断</h3>
   <b>【整体】352单(-5.1%)/$52,001(-2.6%)，两周增长后回落：</b>自然260(-3.3%)+广告92(-9.8%)。<b style="color:var(--red)">⚠️ 核心矛盾：广告花费+14.3%($1,613→$1,844)、点击+18.7%(529→628)、CTR 1.25%→1.54%↑、CPC还降了($3.05→$2.94)——流量变便宜、进店更多，但广告CVR 19.3%→14.6%崩了</b>，ACOS 9.89%→13.07%连升5周。转化端出问题（不是流量问题），多花的$231基本打水漂。</b><br>
@@ -191,6 +189,8 @@ tr:nth-child(even) td{background:#f7f9fc;}
 </div>
 
 </div>
+</div>
+
 
 <!-- ===== 库存监控 tab ===== -->
 <div class="page page-inv" style="display:none">
@@ -216,6 +216,9 @@ tr:nth-child(even) td{background:#f7f9fc;}
 
   <div style="background:var(--card);border-radius:10px;padding:14px 16px;box-shadow:0 2px 6px rgba(0,0,0,.06);margin-bottom:16px;">
     <h3 style="color:var(--blue);font-size:15px;margin-bottom:8px;border-left:4px solid var(--blue2);padding-left:8px;">🚨 新品断货风险联动（可售÷实际DD=可用天数；<span style="color:#C00000">🔴&lt;30天</span> <span style="color:#E36C09">🟠30-60天</span> <span style="color:#BF8F00">🟡60-90天</span> <span style="color:#00B050">🟢&gt;90天</span>）</h3>
+    <div style="margin:6px 0 4px;font-size:12.5px">风险筛选：
+      <select id="nm-risk" onchange="renderNewMon()" style="padding:4px 8px;border-radius:5px;border:1px solid #ccc"><option value="ALL">全部</option><option value="h">🔴 高风险(&lt;30天)</option><option value="m">🟠 偏低(30-60天)</option><option value="l">🟡 一般(60-90天)</option><option value="ok">🟢 充足(&gt;90天)</option><option value="no">未动销(无实际DD)</option></select>
+      <span id="nm-count" style="color:#666;margin-left:6px"></span></div>
     <div id="nm-table"></div>
   </div>
 
@@ -541,9 +544,12 @@ function renderTrendCharts(){
 }
 function renderNewMon(){
   nmDone = true;
+  const frisk = (document.getElementById('nm-risk')||{}).value || 'ALL';
   // 断货风险联动表(所有新品按可用天数排序)
-  const rows = (P.dd||[]).filter(r=> r.dd_act>0).map(r=>({...r, days: r.sell!==null && r.sell!==undefined && r.dd_act>0 ? Math.round(r.sell/r.dd_act) : null}))
+  let rows = (P.dd||[]).map(r=>({...r, days: r.sell!==null && r.sell!==undefined && r.dd_act>0 ? Math.round(r.sell/r.dd_act) : null}))
     .sort((a,b)=> (a.days===null?9999:a.days)-(b.days===null?9999:b.days));
+  rows = rows.filter(r=> frisk==='ALL' || (frisk==='no' ? r.days===null : (r.days!==null && (frisk==='h'?r.days<30 : frisk==='m'?r.days<60 : frisk==='l'?r.days<90 : r.days>=90))));
+  const cnt = document.getElementById('nm-count'); if(cnt) cnt.innerText = '共'+rows.length+'个新品';
   const dayCol = d=> d===null?'-':(d<30?'color:#C00000;font-weight:700':(d<60?'color:#E36C09;font-weight:600':(d<90?'color:#BF8F00':'color:#00B050')));
   const gcol = {'S':'#C00000','A':'#E36C09','B':'#BF8F00','C':'#2E75B6','D':'#888'};
   let h='<table><tr><th>SKU</th><th>ASIN</th><th>等级</th><th>预估DD</th><th>实际DD</th><th>达成率</th><th>可售/在途</th><th>可用天数<br>(可售÷实际DD)</th><th>风险</th></tr>';
