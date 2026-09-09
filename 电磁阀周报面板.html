@@ -565,6 +565,7 @@ function renderNewMon(){
   h+='</table>';
   document.getElementById('nm-table').innerHTML = h + '<div style="padding:6px 2px;font-size:11.5px;color:#999">实际DD=近30天销量÷30；可用天数=可售÷实际DD：可达标新品(达成率≥100%)但可用天数低 = 补货优先级最高。风险联动口径=可售÷实际DD（非预估DD）。</div>';
 }
+window.renderNewMon = renderNewMon;  // 供nm-risk筛选下拉onchange调用
 renderTrendCharts();
 
 window.showCh = function(t){
