@@ -129,7 +129,7 @@ tr:nth-child(even) td{background:#f7f9fc;}
       <span style="color:#888">等级：
       <select id="dd-grade" onchange="renderDdTable()" style="padding:4px 8px;border-radius:5px;border:1px solid #ccc"><option value="ALL">全部</option><option value="S">S</option><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option></select></span>
       <span id="dd-count" style="color:#666"></span>
-      <span style="color:#999;font-size:11.5px">｜ 改进措施输入后自动保存云端(与广告措施同机制，本周输入下周可对照)</span></div>
+      <span style="color:#999;font-size:11.5px">｜ 改进措施=资深运营按达成率/库存/等级自动生成</span></div>
   <div id="dd-table" style="margin-top:6px"></div>
 </div>
 
@@ -662,9 +662,7 @@ renderKeyLinks();
 // ===== 新品动销 vs 预估DD =====
 (function(){
   const rows0 = P.dd || [];
-  const DDLS = 'dd_measures_sol_v1';
-  let ddStore = {};
-  try { const raw = JSON.parse(localStorage.getItem(DDLS) || '{}'); for(const k of Object.keys(raw)){ ddStore[k] = typeof raw[k]==='string'?{v:raw[k],t:null}:raw[k]; } } catch(e) {}
+
   if(!rows0.length){ const el=document.getElementById('dd-table'); if(el) el.innerText='(无新品DD数据)'; return; }
   const L = rows0.length;
   const x = rows0.map(r=> r.sku.replace(/^.*IAC/,'IAC').replace(/00$/,''));
@@ -681,39 +679,46 @@ renderKeyLinks();
       {name:'达成率%',type:'line',yAxisIndex:1,data:rows0.map(r=>r.rate),itemStyle:{color:'#70AD47'},lineStyle:{width:1,type:'dotted'},label:{show:true,fontSize:8.5,color:'#70AD47',formatter:p=>p.value===undefined?'':p.value+'%'}},
     ]
   });
+  // 🔧 资深运营改进措施(按等级/达成率/库存分型生成)
+  function ddAdvice(r){
+    const rate = r.rate, days = r.sell!==null&&r.sell!==undefined&&r.dd_act>0 ? Math.round(r.sell/r.dd_act) : null;
+    const g = r.grade||'';
+    const highPot = (g==='S'||g==='A');
+    const onwayTxt = (r.onway||0)>0 ? ('(在途'+r.onway+'，到货续投)'):('(无在途!立即安排补货)');
+    let a = '';
+    if((r.sell===null||r.sell===0) && (r.onway||0)>0) a = '🔴断货中，在途'+r.onway+'件——到货立即补投广告+抢回排名，恢复期可加预算10-20%';
+    else if((r.sell===null||r.sell===0)) a = '🔴断货且无在途——排名流失风险，马上锁货/生产，预估DD'+r.pred+'需'+(r.pred*60).toFixed(0)+'件覆盖60天';
+    else if(rate===null || rate<60){
+      if(!r.s30 || r.s30<=2) a = '基本无动销：先查购物车/是否断货未恢复/广告是否在投；页面正常则'+(highPot?'高潜S/A品——':'')+'检查竞品价格与评论(评论<10条转化天然弱)，建议加大自动紧密+大词测款2周，无效则重估选品/降价清货';
+      else a = '低于预期'+(rate===null?'':'('+rate+'%)')+'：'+(highPot?'高潜品重视——':'')+'对比竞品主图/价格/评分修复转化要素；广告加码精准大词+顶部加成，盯2周达成率，<60%则收紧投入保本';
+    }
+    else if(rate<100){
+      a = '爬坡中('+rate+'%)：趋势向上可加码——大词/精准词bid+10-15%、开品牌词防守；'+(days!==null&&days<45?'⚠库存仅够'+days+'天，同步补货防断崖':'库存健康')+'；评论/星级同步补强助排名';
+    }
+    else {
+      a = '✅达标超预期('+rate+'%)'+(highPot?'(高潜S/A品跑出)':'')+'：'+(days!==null&&days<30?'🔥爆了!可售仅够'+days+'天——补货最高优先级，按实际DD×60天下单，加码广告抢断货前的窗口':'稳定放量：广告预算可+20%，扩词+SB品牌广告，冲BSR；盯库存');
+    }
+    if(days!==null && days<90 && rate>=100 && a) {} // 已并入
+    return a;
+  }
   window.renderDdTable = function(){
     const st = (document.getElementById('dd-status')||{}).value || 'ALL';
     const gd = (document.getElementById('dd-grade')||{}).value || 'ALL';
     let rows = rows0.filter(r=> (gd==='ALL'||r.grade===gd) && (st==='ALL' || (st==='达标'?r.rate>=100 : st==='爬坡'?(r.rate>=60&&r.rate<100):(r.rate!==null&&r.rate<60))));
     const cnt = document.getElementById('dd-count'); if(cnt) cnt.innerText = '共'+rows.length+'个';
     const gradeC = {'S':'#C00000','A':'#E36C09','B':'#BF8F00','C':'#2E75B6','D':'#888888'};
-    let h='<div style="overflow-x:auto"><table><tr><th>SKU</th><th>ASIN</th><th>等级</th><th>预估DD</th><th>实际DD</th><th>达成率</th><th>近30天销量</th><th>可售/在途</th><th>状态</th><th style="min-width:170px">改进措施(记录)</th></tr>';
+    let h='<div style="overflow-x:auto"><table><tr><th>SKU</th><th>ASIN</th><th>等级</th><th>预估DD</th><th>实际DD</th><th>达成率</th><th>近30天销量</th><th>可售/在途</th><th>状态</th><th style="min-width:260px">🔧 改进措施(运营建议)</th></tr>';
     for(const r of rows){
-      const saved = ddStore[r.sku] ? ddStore[r.sku].v : '';
-      const esc = saved.replace(/"/g,'&quot;').replace(/</g,'&lt;');
       h+=`<tr><td style="text-align:left">${r.sku}</td><td style="text-align:left">${r.asin}</td>
         <td style="color:${gradeC[r.grade]||'#333'};font-weight:700">${r.grade||'-'}</td>
         <td>${r.pred}</td><td>${r.dd_act}</td>
         <td style="${r.rate>=100?'color:#00B050;font-weight:700':(r.rate>=60?'color:#BF8F00':'color:#C00000')}">${r.rate===null?'-':r.rate+'%'}</td>
         <td>${r.s30}</td><td>${r.sell===null?'-':r.sell}/${r.onway===null?'-':r.onway}</td>
         <td style="${r.status.includes('达标')?'color:#00B050;font-weight:700':(r.status.includes('爬坡')?'color:#BF8F00':'color:#C00000;font-weight:700')}">${r.status}</td>
-        <td><input data-dds="${encodeURIComponent(r.sku)}" type="text" value="${esc}" placeholder="如: 加大词竞价/查评论/降级促销..." style="width:100%;padding:4px 6px;border:1px solid #ccc;border-radius:5px;font-size:11.5px;box-sizing:border-box"></td></tr>`;
+        <td style="text-align:left;font-size:11.5px;color:#555">${ddAdvice(r)}</td></tr>`;
     }
-    h+='</table></div><div id="dd-save-tip" style="color:#2E75B6;font-size:11.5px;margin-top:4px"></div>';
+    h+='</table></div>';
     document.getElementById('dd-table').innerHTML = h;
-    document.querySelectorAll('#dd-table input[data-dds]').forEach(inp=>{
-      inp.addEventListener('change', function(){
-        const sk = decodeURIComponent(this.dataset.dds);
-        const text = this.value.trim();
-        const p = JSON.parse(localStorage.getItem(DDLS)||'{}');
-        if(text) p[sk] = {v:text, t:new Date().toISOString()}; else delete p[sk];
-        localStorage.setItem(DDLS, JSON.stringify(p));
-        fetch('http://127.0.0.1:8787/save', {method:'POST',headers:{'Content-Type':'application/json'},
-          body: JSON.stringify({panel:'dd', name: sk, text: text, ts: new Date().toISOString()})})
-          .then(r=>r.json()).then(d=>{ if(d&&d.ok){ const tip=document.getElementById('dd-save-tip'); if(tip) tip.textContent='✓ 已同步云端: '+sk+' '+new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'}); } else throw 0; })
-          .catch(()=>{ const tip=document.getElementById('dd-save-tip'); if(tip) tip.textContent='✓ 已存本机(未同步: 启动sync_server)'; });
-      });
-    });
   };
   renderDdTable();
 })();
