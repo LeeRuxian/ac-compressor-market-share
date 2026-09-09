@@ -200,7 +200,16 @@ function showTab(pg){
   document.getElementById('page-inv').style.display = pg==='inv'?'':'none';
   document.getElementById('tab-overview').className = pg==='overview'?'active':'';
   document.getElementById('tab-inv').className = pg==='inv'?'active':'';
-  if(pg==='inv'){ renderInvOverview(); renderInvSummary(); renderPoTier(); renderInv(); }
+  if(pg==='inv'){
+    ['renderInvOverview','renderInvSummary','renderPoTier','renderInv'].forEach(function(fn){
+      try{ window[fn](); }
+      catch(e){
+        console.error('['+fn+']', e);
+        var tb = document.getElementById('inv-cards');
+        (tb||document.body).insertAdjacentHTML('beforebegin','<div style="background:#C00000;color:#fff;padding:8px 12px;font-size:12.5px;margin:6px 0">🔴 库存渲染['+fn+']出错: '+e.message+'</div>');
+      }
+    });
+  }
 }
 function showCh(ch){
   curCh = ch;
