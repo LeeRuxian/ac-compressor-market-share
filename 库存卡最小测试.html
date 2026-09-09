@@ -1,5 +1,4 @@
-<!DOCTYPE html><html><head><meta charset="UTF-8">
-<title>空压库存卡最小测试页</title>
+<!DOCTYPE html><html><head><meta charset="UTF-8"><title>空压库存卡最小测试页v2</title>
 <style>
 :root{--blue:#1F4E79;--blue2:#2E75B6;--bg:#f0f3f7;--card:#ffffff;--red:#C00000;--yellow:#BF8F00;--green:#00B050;}
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -40,8 +39,8 @@ tr:nth-child(even) td{background:#f7f9fc;}
 .notes b{color:#333;}
 @media(max-width:1100px){.kpis{grid-template-columns:repeat(2,1fr);}.grid{grid-template-columns:1fr;}}
 </style></head><body>
-<h2>最小测试: 库存卡静态HTML(无JS)</h2>
-<div id="page-inv" class="page page-inv">
+<h2>最小测试v2: 完整库存区静态HTML(无JS, 无切换)</h2>
+<div id="page-inv" class="page page-inv" >
   <div class="header" style="margin-bottom:14px;">
     <h1>📦 库存监控 · 三渠道（FBA / DF / PO）</h1>
     <div class="sub" id="inv-mon-note"></div>
@@ -72,5 +71,25 @@ tr:nth-child(even) td{background:#f7f9fc;}
 </div>
     <div class="kpis" id="inv-summary"></div>
   <div style="background:var(--card);border-radius:10px;padding:14px 16px;box-shadow:0 2px 6px rgba(0,0,0,.06);margin-bottom:14px;">
-    <h3 style="color:var(--
+    <h3 style="color:var(--blue);font-size:15px;margin-bottom:8px;border-left:4px solid var(--blue2);padding-left:8px;">📊 PO库销比分档环比（202635 → 202636）</h3>
+    <div style="font-size:12.5px;margin-bottom:6px">指标：<input type="radio" name="po-metric" value="n" checked onchange="poRedraw()"> ASIN数量
+      <input type="radio" name="po-metric" value="inv" onchange="poRedraw()" style="margin-left:10px"> PO在库总量</div>
+    <div id="po-tier-chart" style="height:240px"></div>
+    <div id="po-tier" style="font-size:12.5px;margin-top:8px"></div>
+    <div style="color:#888;font-size:11.5px;margin-top:6px" id="po-tier-note"></div>
+  </div>
+  <div style="background:var(--card);border-radius:10px;padding:14px 16px;box-shadow:0 2px 6px rgba(0,0,0,.06);">
+    <div class="inv-tabs" id="inv-chtabs">
+      <button class="active" onclick="showChannel('FBA')">FBA</button>
+      <button onclick="showChannel('DF')">DF（海外仓）</button>
+      <button onclick="showChannel('PO')">PO（VC供货·每周更新）</button>
+    </div>
+    <div class="inv-filters">
+      状态筛选：<select id="inv-status" onchange="renderInv()"><option value="ALL">全部</option><option value="oos">断货</option><option value="oos0">缺货</option><option value="low_inv">可能缺货</option><option value="spd">加速动销</option><option value="slow">滞销</option><option value="ok">正常</option></select>
+      <input id="inv-search" placeholder="搜索ASIN/SKU/品牌..." oninput="renderInv()" style="width:220px">
+      <span id="inv-count" style="color:#888;font-size:12px"></span>
+    </div>
+    <div id="inv-table"></div>
+  </div>
+</div>
 </body></html>
