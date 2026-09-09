@@ -194,9 +194,9 @@ tr:nth-child(even) td{background:#f7f9fc;}
   </div>
   <div style="background:var(--card);border-radius:10px;padding:14px 16px;box-shadow:0 2px 6px rgba(0,0,0,.06);">
     <div class="inv-tabs" id="inv-chtabs">
-      <button class="active" onclick="showCh('FBA')">FBA</button>
-      <button onclick="showCh('DF')">DF（海外仓）</button>
-      <button onclick="showCh('PO')">PO（VC供货·每周更新）</button>
+      <button class="active" onclick="showChannel('FBA')">FBA</button>
+      <button onclick="showChannel('DF')">DF（海外仓）</button>
+      <button onclick="showChannel('PO')">PO（VC供货·每周更新）</button>
     </div>
     <div class="inv-filters">
       状态筛选：<select id="inv-status" onchange="renderInv()"><option value="ALL">全部</option><option value="oos">断货</option><option value="oos0">缺货</option><option value="low_inv">可能缺货</option><option value="spd">加速动销</option><option value="slow">滞销</option><option value="ok">正常</option></select>
@@ -230,7 +230,7 @@ function showCh(t){
     try{ if(!document.getElementById('po-tier').innerHTML) renderPoTier(); }catch(e5){}
   }
 }
-function showCh(ch){
+function showChannel(ch){
   curCh = ch;
   [...document.querySelectorAll('#inv-chtabs button')].forEach(b=>b.className = b.innerText.includes(ch)?'active':'');
   renderInv();
