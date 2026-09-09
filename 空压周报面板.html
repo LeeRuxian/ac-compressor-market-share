@@ -571,41 +571,10 @@ echarts.init(document.getElementById('c6')).setOption(baseOpt([
 let invOvDone = false;
 function renderInvOverview(){
   if(invOvDone) return; invOvDone = true;
+  // 三渠道卡=构建时静态HTML(python生成), JS不再触碰inv-cards(2026-09-09 防覆盖)
   const iv = P.inventory;
   const cn = {FBA:['FBA(亚马逊仓)','#2E75B6'],DF:['海外仓(谷仓/万邑通等)','#70AD47'],PO:['PO(FLUX国内仓)','#BF8F00']};
-  let h = '';
-  for(const k of ['FBA','DF','PO']){
-    const [name,color] = cn[k]; const d = iv[k];
-    const rows = (P.inv_monitor && P.inv_monitor.channels) ? P.inv_monitor.channels[k] : [];
-    let focus = '';
-    if(k==='FBA'){
-      const list = rows.filter(r=> r.level==='断货').slice(0,8).map(r=> `${r.asin||r.sku}<b>0</b>`).join(' ');
-      focus = `<div class="irow" style="margin-top:6px;border-top:1px dashed #eee;padding-top:6px"><b style="color:var(--red)">🎯 聚焦断货(${rows.filter(r=>r.level==='断货').length}个)：</b><span style="font-size:11.5px;color:#C00000">${list || '无'}</span></div>`;
-    } else if(k==='PO'){
-      const list = rows.filter(r=> (r.cov||0) > 5).sort((a,b)=>b.inv-a.inv).slice(0,8)
-        .map(r=> `${r.sku}(${r.inv}件/库销比${r.cov})`).join(' ');
-      focus = `<div class="irow" style="margin-top:6px;border-top:1px dashed #eee;padding-top:6px"><b style="color:#BF8F00">🎯 聚焦库销比&gt;5积压(${rows.filter(r=>(r.cov||0)>5).length}个)：</b><span style="font-size:11.5px;color:#8a6d1a">${list||'无'}</span></div>`;
-    } else if(k==='DF'){
-      const list = rows.filter(r=> r.level==='滞销').sort((a,b)=>b.inv-a.inv).slice(0,8)
-        .map(r=> `${r.sku}(${r.inv}件)`).join(' ');
-      focus = `<div class="irow" style="margin-top:6px;border-top:1px dashed #eee;padding-top:6px"><b style="color:#7F7F7F">🎯 聚焦近30天未动销(${rows.filter(r=>r.level==='滞销').length}个)：</b><span style="font-size:11.5px;color:#666">${list||'无'}</span></div>`;
-    }
-    h += `<div class="inv-card" style="border-top-color:${color}">
-      <div class="iname">${name}</div>
-      <div class="irow">可售库存：<b>${d.sellable.toLocaleString()}</b>${k==='DF'?` ｜ 在途：<b>${d.onway.toLocaleString()}</b>`:''}</div>
-      <div class="irow">离岸库销比((可售+在途)÷近30天${d.sales_30d})：<b>${d.coverage}个月</b></div>
-      <div class="irow">SKU数：${d.skus} ｜ <span class="oos">断货SKU(可售=0)：${d.oos}</span>${k==='FBA'?`<br><span style="font-size:11.5px;color:#888">其中US37站内断货 ${d.oos_us37} 个</span>`:''}</div>
-      ${focus}
-    </div>`;
-  }
-  document.getElementById('inv-cards').innerHTML = h;
-  const tot = iv.FBA.oos + iv.DF.oos + iv.PO.oos;
-  document.getElementById('stock-note').innerHTML =
-    `<b>⚠ 本周断货SKU（可售=0，翻新口径）：</b>FBA <b>${iv.FBA.oos}</b> 个（US37站内 ${iv.FBA.oos_us37} 个）｜ 海外仓 <b>${iv.DF.oos}</b> 个 ｜ PO <b>${iv.PO.oos}</b> 个 —— 合计 <b>${tot}</b> 个SKU可售为0；<br>
-     <b>库销比口径：</b>各渠道可售 ÷ 近30天前台销量(8/10-9/8：FBA 133=US37 / DF 438、PO 120=VC1按出库比拆分)。<b style="color:var(--red)">FBA ${iv.FBA.coverage}个月（<1.5个月高风险，告急！US37断货44 SKU）</b>，DF ${iv.DF.coverage}个月充裕，PO ${iv.PO.coverage}个月偏高（放缓采购）；<br>
-     <b>数据源：</b>FBA=ERP MCP翻新SKU清单(9/8)；DF=进销存报表(78)海外仓可用(9/3)；PO=202636 PO更新.xlsx(桌面空压/PO库存更新)PO在库(9/8)。
-     <b>周维度对比：</b>图表展示三渠道可售库存 vs 各渠道近30天销量（虚线），库存水位与销量节奏对比一目了然。`;
-  // 图表: 三渠道库存 + 周均销量参考线
+// 图表: 三渠道库存 + 周均销量参考线
   const ch = echarts.init(document.getElementById('c7'));
   ch.setOption({
     tooltip:{trigger:'axis'},legend:{top:0,textStyle:{fontSize:11}},
