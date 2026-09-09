@@ -41,6 +41,15 @@ tr:nth-child(even) td{background:#f7f9fc;}
 .navtab.active{background:var(--blue);border-color:var(--blue);color:#fff;}
 .page{display:block;}
 
+
+/* ===== ASIN/编码列等宽规范化(2026-09-09) ===== */
+table{border-collapse:collapse;}
+table th, table td{padding:5px 8px;border:1px solid #e2e8f0;}
+table th{background:var(--blue);color:#fff;white-space:nowrap;font-size:12px;}
+#warn-table td:first-child, #nm-table td:nth-child(2), #key-table td:first-child, #mv-up td:first-child, #mv-down td:first-child, #dd-table td:nth-child(2){
+  font-family:Consolas,'Courier New',monospace;white-space:nowrap;min-width:104px;letter-spacing:0.3px;font-size:12px;}
+#nm-table td:first-child, #dd-table td:first-child{font-family:Consolas,'Courier New',monospace;white-space:nowrap;font-size:11.5px;}
+
 .inv-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:14px;}
 .inv-card{background:var(--card);border-radius:10px;padding:16px 18px;box-shadow:0 2px 6px rgba(0,0,0,.06);border-top:4px solid var(--blue2);}
 .inv-card .iname{font-size:13.5px;font-weight:700;color:var(--blue);margin-bottom:8px;}
