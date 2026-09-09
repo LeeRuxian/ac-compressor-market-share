@@ -236,13 +236,27 @@ function renderAdZone(){
   });
   // 问题扫描表
   if(Z.issues && Z.issues.length){
-    let ih = '<b style="color:#C00000">⚠ 问题活动（快速定位 · 按花费排序）</b><div style="overflow-x:auto"><table style="margin-top:6px">'+
-      '<tr><th>广告活动</th><th>CPC</th><th>ACOS</th><th>广告花费</th><th>广告CVR</th><th>广告单</th><th>问题</th><th>措施</th></tr>';
+    const LS = 'ad_measures_acc_v1';
+    let store = {};
+    try { store = JSON.parse(localStorage.getItem(LS) || '{}'); } catch(e) {}
+    let ih = '<b style="color:#C00000">⚠ 问题活动（快速定位 · 按花费排序）<span style="color:#888;font-weight:400">｜ 措施列输入后自动保存(本机)，下周回填可对照效果</span></b><div style="overflow-x:auto"><table style="margin-top:6px;text-align:center">'+
+      '<tr><th>广告活动</th><th>CPC</th><th>ACOS</th><th>广告花费</th><th>广告CVR</th><th>广告单</th><th>问题</th><th>建议优化</th><th>措施(记录)</th></tr>';
     for(const it of Z.issues.slice(0,12)){
-      ih += `<tr><td style="text-align:left;max-width:250px">${it.name}</td><td>${it.cpc===null?'-':'$'+it.cpc}</td><td>${it.acos===null?'-':it.acos+'%'}</td><td>$${it.spend}</td><td>${it.cvr===null?'-':it.cvr+'%'}</td><td>${it.orders}</td><td style="text-align:left;white-space:nowrap">${it.flags.join('<br>')}</td><td style="text-align:left;max-width:330px;color:#7a5c00">${it.advice||'-'}</td></tr>`;
+      const saved = store[it.name] || '';
+      ih += `<tr><td style="text-align:left;max-width:240px">${it.name}</td><td>${it.cpc===null?'-':'$'+it.cpc}</td><td>${it.acos===null?'-':it.acos+'%'}</td><td>$${it.spend}</td><td>${it.cvr===null?'-':it.cvr+'%'}</td><td>${it.orders}</td><td style="text-align:left;white-space:nowrap">${it.flags.join('<br>')}</td><td style="text-align:left;max-width:280px;color:#7a5c00">${it.advice||'-'}</td><td style="min-width:200px"><input data-adname="${encodeURIComponent(it.name)}" type="text" value="${saved.replace(/"/g,'&quot;')}" placeholder="输入本周实际调整..." style="width:100%;padding:5px 8px;border:1px solid #ccc;border-radius:5px;font-size:12px;box-sizing:border-box"></td></tr>`;
     }
-    ih += '</table></div>';
+    ih += '</table></div><div id="ad-save-tip" style="color:#2E75B6;font-size:11.5px;margin-top:4px"></div>';
     document.getElementById('ad-issues').innerHTML = ih;
+    document.querySelectorAll('#ad-issues input[data-adname]').forEach(inp=>{
+      inp.addEventListener('change', function(){
+        const nm = decodeURIComponent(this.dataset.adname);
+        let st = {}; try { st = JSON.parse(localStorage.getItem(LS) || '{}'); } catch(e) {}
+        if(this.value.trim()) st[nm] = this.value.trim(); else delete st[nm];
+        localStorage.setItem(LS, JSON.stringify(st));
+        const tip = document.getElementById('ad-save-tip');
+        tip.textContent = '✓ 已保存: ' + nm.slice(0,40) + '（' + new Date().toLocaleString('zh-CN',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}) + '）';
+      });
+    });
   }
   const iss = Z.issues || [];
   let adv = '<b>🔧 资深运营诊断与优化建议（翻新空压 · 领星口径）</b><br>';
