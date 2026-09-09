@@ -37,6 +37,10 @@ tr:nth-child(even) td{background:#f7f9fc;}
 .notes h3{color:var(--blue);margin-bottom:8px;font-size:14.5px;border-left:4px solid var(--blue2);padding-left:8px;}
 .notes b{color:#333;}
 .newold{border-left:5px solid var(--yellow);}
+.navtab{background:var(--card);border:1px solid #d8d8d8;border-radius:8px 8px 0 0;padding:9px 22px;font-size:13.5px;cursor:pointer;color:#555;font-weight:600;margin-right:4px;}
+.navtab.active{background:var(--blue);border-color:var(--blue);color:#fff;}
+.page{display:block;}
+
 .inv-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:14px;}
 .inv-card{background:var(--card);border-radius:10px;padding:16px 18px;box-shadow:0 2px 6px rgba(0,0,0,.06);border-top:4px solid var(--blue2);}
 .inv-card .iname{font-size:13.5px;font-weight:700;color:var(--blue);margin-bottom:8px;}
@@ -63,6 +67,12 @@ tr:nth-child(even) td{background:#f7f9fc;}
   </div>
 </div>
 
+<div style="display:flex;gap:6px;margin:12px 0 0;flex-wrap:wrap">
+  <button class="navtab active" data-pg="overview" onclick="showCh('overview')">📊 周报总览</button>
+  <button class="navtab" data-pg="inv" onclick="showCh('inv')">📦 库存监控</button>
+</div>
+
+<div class="page page-overview">
 <div class="kpis">
   <div class="kpi" id="k1"></div>
   <div class="kpi" id="k2"></div>
@@ -92,7 +102,6 @@ tr:nth-child(even) td{background:#f7f9fc;}
   <div class="card"><h3>店铺对比 US19(KAX)/US22(PT)/US8(ZC)（3周 · 店铺=品牌）</h3><div class="cmp" id="cmp3"></div><div class="chart" id="c3"></div></div>
   <div class="card"><h3>🆕 新老品销量对比 & 新品占比（5周 · US19 KAX店铺内）</h3><div class="cmp" id="cmp5"></div><div class="chart" id="c5"></div></div>
   <div class="card"><h3>ACOS% & 转化率%（5周）</h3><div class="cmp" id="cmp6"></div><div class="chart" id="c6"></div></div>
-  <div class="card"><h3>📦 FBA库存 & 库销比（KAX/PT/ZC 最新快照）</h3><div class="cmp" id="cmp7"></div><div class="chart" id="c7"></div></div>
 </div>
 
 <div style="background:var(--card);border-radius:10px;padding:14px 16px;box-shadow:0 2px 6px rgba(0,0,0,.06);margin-bottom:16px;">
@@ -103,20 +112,6 @@ tr:nth-child(even) td{background:#f7f9fc;}
   <div style="color:#888;font-size:11.5px;margin-top:6px" id="ad-note"></div>
 </div>
 
-<div style="background:var(--card);border-radius:10px;padding:16px 18px;box-shadow:0 2px 6px rgba(0,0,0,.06);margin-bottom:16px;">
-  <h3 style="color:var(--blue);font-size:15px;margin-bottom:12px;border-left:4px solid var(--blue2);padding-left:8px;">📦 库存概览（电磁阀仅FBA，分店铺/品牌）</h3>
-  <div class="inv-cards" id="inv-cards"></div>
-  <div class="stock-note" id="stock-note"></div>
-</div>
-
-<div style="background:var(--card);border-radius:10px;padding:16px 18px;box-shadow:0 2px 6px rgba(0,0,0,.06);margin-bottom:16px;">
-  <h3 style="color:var(--blue);font-size:15px;margin-bottom:8px;border-left:4px solid var(--yellow);padding-left:8px;">⚠️ 即将断货预警（ASIN维度，US19/US22）</h3>
-  <div class="warn-filter">店铺筛选：
-    <select id="warn-shop" onchange="renderWarn()"><option value="ALL">全部</option><option value="US19">US19 (KAX)</option><option value="US22">US22 (PT)</option></select>
-    <span style="color:#888;font-size:12px;margin-left:10px">库存状态：<span class="badge b-oos">断货(30天内有单)</span> <span class="badge b-low_inv">可能缺货(&lt;3个月)</span> <span class="badge b-spd">加速动销(4-5个月)</span> <span class="badge b-slow">滞销(&gt;5个月)</span> <span class="badge b-ok">正常(3-4个月)</span></span>
-    <label style="margin-left:12px;font-size:12.5px;color:#555"><input type="checkbox" id="warn-only" onchange="renderWarn()" checked> 只看需关注</label>
-  </div>
-  <div id="warn-table"></div>
 </div>
 
 <div class="table-card newold">
@@ -160,6 +155,28 @@ tr:nth-child(even) td{background:#f7f9fc;}
   5. <b>断供止损</b>：US22在途1,371件ETA跟踪，B0C9ZZ1BQG到货即入仓；B0CB13BH9H(涨到22单/月)库销比<2月需加补货计划；<br>
   6. <b>退款治理</b>：35单5周连涨[21,25,28,32,35]——定位退款ASIN集中款，查质量/描述问题；B0GHRYPB9S(退款36%)已跌暂停广告；<br>
   7. <b>数据基座</b>：下期请提供最新库存明细报表（本期用9/3快照）；BI质量模型已通(页面价格/星级/差评/购物车已入面板)。
+</div>
+
+</div>
+
+<!-- ===== 库存监控 tab ===== -->
+<div class="page page-inv" style="display:none">
+<div class="card" style="background:var(--card);border-radius:10px;padding:14px 16px;box-shadow:0 2px 6px rgba(0,0,0,.06);margin-bottom:16px;"><h3 style="color:var(--blue);font-size:15px;margin-bottom:8px;border-left:4px solid var(--blue2);padding-left:8px;">📦 FBA库存 & 库销比（KAX/PT/ZC 最新快照）</h3><div class="cmp" id="cmp7"></div><div class="chart" id="c7" style="height:300px"></div></div>
+<div style="background:var(--card);border-radius:10px;padding:16px 18px;box-shadow:0 2px 6px rgba(0,0,0,.06);margin-bottom:16px;">
+  <h3 style="color:var(--blue);font-size:15px;margin-bottom:12px;border-left:4px solid var(--blue2);padding-left:8px;">📦 库存概览（电磁阀仅FBA，分店铺/品牌）</h3>
+  <div class="inv-cards" id="inv-cards"></div>
+  <div class="stock-note" id="stock-note"></div>
+</div>
+
+<div style="background:var(--card);border-radius:10px;padding:16px 18px;box-shadow:0 2px 6px rgba(0,0,0,.06);margin-bottom:16px;">
+  <h3 style="color:var(--blue);font-size:15px;margin-bottom:8px;border-left:4px solid var(--yellow);padding-left:8px;">⚠️ 即将断货预警（ASIN维度，US19/US22）</h3>
+  <div class="warn-filter">店铺筛选：
+    <select id="warn-shop" onchange="renderWarn()"><option value="ALL">全部</option><option value="US19">US19 (KAX)</option><option value="US22">US22 (PT)</option></select>
+    <span style="color:#888;font-size:12px;margin-left:10px">库存状态：<span class="badge b-oos">断货(30天内有单)</span> <span class="badge b-low_inv">可能缺货(&lt;3个月)</span> <span class="badge b-spd">加速动销(4-5个月)</span> <span class="badge b-slow">滞销(&gt;5个月)</span> <span class="badge b-ok">正常(3-4个月)</span></span>
+    <label style="margin-left:12px;font-size:12.5px;color:#555"><input type="checkbox" id="warn-only" onchange="renderWarn()" checked> 只看需关注</label>
+  </div>
+  <div id="warn-table"></div>
+
 </div>
 
 <script>
@@ -395,8 +412,10 @@ echarts.init(document.getElementById('c6')).setOption(baseOpt([
   h+='</table>';
   document.getElementById('newold').innerHTML=h;
 })();
-// c7: FBA库存&库销比 (可售+头程在途 / 近30天销量)
-(function(){
+// c7: FBA库存&库销比 (可售+头程在途 / 近30天销量) —— 惰性(进库存tab才渲染)
+let c7Done = false;
+function renderC7Inv(){
+  c7Done = true;
   const iv = P.inventory;
   const colors = {US19:'#2E75B6',US22:'#C00000',US8:'#70AD47'};
   const names = {US19:'KAX(US19)',US22:'PT(US22)',US8:'ZC(US8)'};
@@ -426,8 +445,15 @@ echarts.init(document.getElementById('c6')).setOption(baseOpt([
     `KAX: 可售${s3[0].sellable.toLocaleString()}+在途${s3[0].onway}｜${cv(s3[0])} &nbsp; `+
     `PT: 可售${s3[1].sellable.toLocaleString()}+在途${s3[1].onway}｜${cv(s3[1])} (断货${s3[1].oos}/缺补${s3[1].oos_back}) &nbsp; `+
     `ZC: 可售${s3[2].sellable.toLocaleString()}｜${cv(s3[2])}`;
-})();
+}
 // ===== 即将断货预警表 =====
+
+window.showCh = function(t){
+  document.querySelectorAll('.page-overview').forEach(d=>d.style.display = (t==='overview')?'':'none');
+  document.querySelectorAll('.page-inv').forEach(d=>d.style.display = (t==='inv')?'':'none');
+  document.querySelectorAll('.navtab').forEach(b=>b.classList.toggle('active', b.dataset.pg===t));
+  if(t==='inv' && !c7Done && typeof renderC7Inv==='function') renderC7Inv();
+};
 function renderWarn(){
   const W = P.oos_warning;
   const shop = document.getElementById('warn-shop').value;
