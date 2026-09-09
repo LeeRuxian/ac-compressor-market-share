@@ -453,10 +453,30 @@ document.getElementById('cmp5').innerHTML = cmpTxt('FBA',P.channels.FBA.sales_qt
 document.getElementById('cmp6').innerHTML = cmpTxt('ACOS',o.acos,'%')+' ｜ '+cmpTxt('CVR',o.cvr,'%');
 // ===== 图表 =====
 try {
-echarts.init(document.getElementById('c1')).setOption(baseOpt([
-  {name:'销量',type:'bar',data:o.sales_qty,itemStyle:{color:'#2E75B6'},barWidth:26,label:LABEL_TOP},
-  {name:'销售额',type:'line',yAxisIndex:1,data:o.sales_amount.map(v=>F(v)),itemStyle:{color:'#C00000'},lineStyle:{width:3},label:{show:true,fontSize:10,color:'#C00000',formatter:p=> p.value? '$'+(p.value/1000).toFixed(1)+'k':'-'}},
-],null,true));
+// c1: 销量&销售额+毛利润+毛利率 (三轴: 销量/金额$/毛利率%)
+(function(){
+  const grossArr = o.sales_amount.map((v,k)=> (v&&o.profit_rate[k]!==null&&o.profit_rate[k]!==undefined)? +(o.profit_rate[k]/100*v).toFixed(0): null);
+  echarts.init(document.getElementById('c1')).setOption({
+    tooltip:{trigger:'axis'},legend:{top:0,textStyle:{fontSize:11}},
+    grid:{left:48,right:72,top:34,bottom:24},
+    xAxis:{type:'category',data:W,axisLabel:{fontSize:10}},
+    yAxis:[
+      {type:'value',name:'销量(单)',axisLabel:{fontSize:10}},
+      {type:'value',name:'金额$',axisLabel:{fontSize:10,formatter: v=> v>=1000? (v/1000)+'k': v}},
+      {type:'value',name:'毛利率%',min:0,max:50,axisLabel:{fontSize:10,formatter:'{value}%'}},
+    ],
+    series:[
+      {name:'销量',type:'bar',data:o.sales_qty,itemStyle:{color:'#2E75B6'},barWidth:26,
+       label:{show:true,fontSize:10,color:'#2E75B6',position:'top'}},
+      {name:'销售额',type:'line',yAxisIndex:1,data:o.sales_amount.map(v=>F(v)),itemStyle:{color:'#C00000'},lineStyle:{width:3},
+       label:{show:true,fontSize:10,color:'#C00000',formatter:p=> p.value? '$'+(p.value/1000).toFixed(1)+'k':'-'}},
+      {name:'毛利润',type:'line',yAxisIndex:1,data:grossArr,itemStyle:{color:'#70AD47'},lineStyle:{width:2,type:'dashed'},
+       label:{show:true,fontSize:9.5,color:'#70AD47',formatter:p=> p.value? '$'+(p.value/1000).toFixed(1)+'k':'-'}},
+      {name:'毛利率%',type:'line',yAxisIndex:2,data:o.profit_rate,itemStyle:{color:'#BF8F00'},lineStyle:{width:2,type:'dotted'},
+       label:{show:true,fontSize:9.5,color:'#BF8F00',formatter:p=> p.value===null||p.value===undefined? '-': p.value+'%'}},
+    ]
+  });
+})();
 echarts.init(document.getElementById('c2')).setOption(baseOpt([
   {name:'自然单',type:'bar',stack:'t',data:o.natural_qty,itemStyle:{color:'#2E75B6'},label:LABEL_IN},
   {name:'广告单',type:'bar',stack:'t',data:adQ,itemStyle:{color:'#FFC000'},label:LABEL_IN},
