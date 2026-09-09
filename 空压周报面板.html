@@ -49,8 +49,9 @@ tr:nth-child(even) td{background:#f7f9fc;}
 <body>
 <style>
 .tabs{display:flex;gap:8px;margin-bottom:14px;background:var(--card);border-radius:10px;padding:8px;box-shadow:0 2px 6px rgba(0,0,0,.06);max-width:560px;}
-.tabbtn{flex:1;padding:9px 12px;border-radius:8px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;background:#e8eef5;color:#555;text-align:center;transition:.2s;display:block;text-decoration:none;}
-.tabbtn:hover{opacity:.9;}
+.navtab{flex:1;padding:9px 12px;border:none;border-radius:8px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;background:#e8eef5;color:#555;transition:.2s;}
+.navtab.active{background:var(--blue2);color:#fff;}
+.page{display:block;}
 .tabs button{flex:1;padding:9px 12px;border:none;border-radius:8px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;background:#e8eef5;color:#555;transition:.2s;}
 .tabs button.active{background:var(--blue2);color:#fff;}
 .inv-tabs{display:flex;gap:6px;margin:10px 0;flex-wrap:wrap;}
@@ -62,15 +63,15 @@ tr:nth-child(even) td{background:#f7f9fc;}
 .b-oos{background:#C00000;}.b-oos0{background:#C55A11;}.b-low_inv{background:#E36C09;}.b-spd{background:#BF8F00;}.b-slow{background:#7F7F7F;}.b-ok{background:#00B050;}
 </style>
 <div class="tabs" style="position:sticky;top:0;z-index:99;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.12);">
-  <a class="tabbtn active" href="#ov-anchor">📊 周报总览</a>
-  <a class="tabbtn" href="#inv-anchor" style="background:var(--blue2);">📦 库存监控（三渠道）</a>
+  <button class="navtab active" data-pg="overview" onclick="showCh('overview')">📊 周报总览</button>
+  <button class="navtab" data-pg="inv" onclick="showCh('inv')">📦 库存监控（三渠道）</button>
 </div>
 <div id="ov-anchor" style="scroll-margin-top:70px"></div>
-<div id="page-overview">
+<div id="page-overview" class="page page-overview">
 <div class="header">
   <div>
     <h1>📊 空压 · 翻新AC Compressor 周报面板</h1>
-    <div class="sub">202636周（2026-08-30~09-05，周日-周六）｜ 数据源：SmartBI MCP 直连拉取（2026-09-01，周结束后）｜ 口径：翻新空调压缩机品类（空压），与电磁阀严格分离 ｜ <b style="color:#C00000">版本 20260909-V11</b></div>
+    <div class="sub">202636周（2026-08-30~09-05，周日-周六）｜ 数据源：SmartBI MCP 直连拉取（2026-09-01，周结束后）｜ 口径：翻新空调压缩机品类（空压），与电磁阀严格分离 ｜ <b style="color:#C00000">版本 20260909-V12</b></div>
   </div>
   <div style="text-align:right">
     <div class="tag">运营分析口径 · 前台销量</div>
@@ -153,7 +154,7 @@ tr:nth-child(even) td{background:#f7f9fc;}
 </div><!-- /page-overview -->
 
 <div id="inv-anchor" style="scroll-margin-top:70px"></div>
-<div id="page-inv">
+<div id="page-inv" class="page page-inv" style="display:none">
   <div class="header" style="margin-bottom:14px;">
     <h1>📦 库存监控 · 三渠道（FBA / DF / PO）</h1>
     <div class="sub" id="inv-mon-note"></div>
@@ -216,20 +217,17 @@ const num = v => Number(v).toLocaleString();
 const chg = (cur,prev) => prev>0 ? (cur-prev)/prev*100 : null;
 // ===== 库存监控页(tab) =====
 let curCh = 'FBA';
-window.showTab = showTab; window.showCh = showCh; window.renderInv = renderInv; window.renderInvSummary = renderInvSummary; window.poRedraw = poRedraw; // 导出供onclick
-function showTab(pg){
-  document.querySelectorAll('.page-overview').forEach(function(d){ d.style.display = pg==='overview'?'':'none'; });
-  document.querySelectorAll('.page-inv').forEach(function(d){ d.style.display = pg==='inv'?'':'none'; });
-  document.querySelectorAll('.navtab').forEach(function(b){ b.classList.toggle('active', b.getAttribute('data-pg')===pg); });
-  if(pg==='inv'){
-    ['renderInvOverview','renderInvSummary','renderPoTier','renderInv'].forEach(function(fn){
-      try{ window[fn](); }
-      catch(e){
-        console.error('['+fn+']', e);
-        var tb = document.getElementById('inv-cards');
-        (tb||document.body).insertAdjacentHTML('beforebegin','<div style="background:#C00000;color:#fff;padding:8px 12px;font-size:12.5px;margin:6px 0">🔴 库存渲染['+fn+']出错: '+e.message+'</div>');
-      }
-    });
+window.showCh = showCh; window.renderInv = renderInv; window.renderInvSummary = renderInvSummary; window.poRedraw = poRedraw; // 导出供onclick
+let c7DoneA = false;
+function showCh(t){
+  document.querySelectorAll('.page-overview').forEach(function(d){ d.style.display = (t==='overview')?'':'none'; });
+  document.querySelectorAll('.page-inv').forEach(function(d){ d.style.display = (t==='inv')?'':'none'; });
+  document.querySelectorAll('.navtab').forEach(function(b){ b.classList.toggle('active', b.getAttribute('data-pg')===t); });
+  if(t==='inv' && !c7DoneA){ c7DoneA = true; setTimeout(function(){ try{ renderC7Stock(); }catch(e3){ console.error('[c7]', e3); } }, 300); }
+  if(t==='inv'){
+    // 渲染已移至load(电磁阀同构), 此处仅冗余刷新(防旧逻辑)
+    try{ if(!document.getElementById('stock-note').innerHTML) renderInvOverview(); }catch(e4){}
+    try{ if(!document.getElementById('po-tier').innerHTML) renderPoTier(); }catch(e5){}
   }
 }
 function showCh(ch){
@@ -574,7 +572,10 @@ function renderInvOverview(){
   // 三渠道卡=构建时静态HTML(python生成), JS不再触碰inv-cards(2026-09-09 防覆盖)
   const iv = P.inventory;
   const cn = {FBA:['FBA(亚马逊仓)','#2E75B6'],DF:['海外仓(谷仓/万邑通等)','#70AD47'],PO:['PO(FLUX国内仓)','#BF8F00']};
+}
+function renderC7Stock(){
 // 图表: 三渠道库存 + 周均销量参考线
+  const iv = P.inventory;
   const ch = echarts.init(document.getElementById('c7'));
   ch.setOption({
     tooltip:{trigger:'axis'},legend:{top:0,textStyle:{fontSize:11}},
@@ -592,6 +593,7 @@ function renderInvOverview(){
     ]
   });
 }
+window.renderC7Stock = renderC7Stock;
 window.renderInvOverview = renderInvOverview;
 // ===== 明细表 (电磁阀同款: 行=周+周环比, 列=指标) =====
 (function(){
@@ -628,10 +630,10 @@ window.renderInvOverview = renderInvOverview;
 })();
 
 renderAdZone();
-// ===== 单页常显: load即渲染库存区(用户环境对display:none切换渲染异常, 内容必须同页) =====
+// ===== 库存区预渲染(电磁阀同构: load填充隐藏容器, 切换只做display) =====
 try{
-  renderInvOverview(); renderInvSummary(); renderPoTier(); renderInv();
-}catch(e2){ console.error('[inv-render]', e2); }
+  renderInvSummary(); renderPoTier(); renderInv();   // 汇总+PO环比+明细表(预填充)
+}catch(e2){ console.error('[inv-pre]', e2); }
 } catch(e) {
   document.body.insertAdjacentHTML('afterbegin','<div style="background:#C00000;color:#fff;padding:12px;font-size:13px">面板脚本错误: '+e.message+'</div>');
   console.error(e);
