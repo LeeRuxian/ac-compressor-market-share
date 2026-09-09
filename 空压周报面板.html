@@ -49,17 +49,8 @@ tr:nth-child(even) td{background:#f7f9fc;}
 <body>
 <style>
 .tabs{display:flex;gap:8px;margin-bottom:14px;background:var(--card);border-radius:10px;padding:8px;box-shadow:0 2px 6px rgba(0,0,0,.06);max-width:560px;}
-.pgrad{display:none;}
-.tabbtn{flex:1;padding:9px 12px;border-radius:8px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;background:#e8eef5;color:#555;text-align:center;transition:.2s;user-select:none;}
-.tabbtn.active{background:var(--blue2);color:#fff;}
-#pg1:checked ~ #page-overview{display:block !important;}
-#pg1:checked ~ #page-inv{display:none !important;}
-#pg2:checked ~ #page-overview{display:none !important;}
-#pg2:checked ~ #page-inv{display:block !important;}
-#pg1:checked ~ .tabs #tab-overview{background:var(--blue2);color:#fff;}
-#pg2:checked ~ .tabs #tab-inv{background:var(--blue2);color:#fff;}
-#pg1:checked ~ .tabs #tab-inv{background:#e8eef5;color:#555;}
-#pg2:checked ~ .tabs #tab-overview{background:#e8eef5;color:#555;}
+.tabbtn{flex:1;padding:9px 12px;border-radius:8px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;background:var(--blue2);color:#fff;text-align:center;transition:.2s;user-select:none;display:block;text-decoration:none;}
+.tabbtn:hover{opacity:.9;}
 .tabs button{flex:1;padding:9px 12px;border:none;border-radius:8px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;background:#e8eef5;color:#555;transition:.2s;}
 .tabs button.active{background:var(--blue2);color:#fff;}
 .inv-tabs{display:flex;gap:6px;margin:10px 0;flex-wrap:wrap;}
@@ -70,12 +61,11 @@ tr:nth-child(even) td{background:#f7f9fc;}
 .badge{display:inline-block;padding:2px 10px;border-radius:12px;font-size:11.5px;color:#fff;font-weight:600;}
 .b-oos{background:#C00000;}.b-oos0{background:#C55A11;}.b-low_inv{background:#E36C09;}.b-spd{background:#BF8F00;}.b-slow{background:#7F7F7F;}.b-ok{background:#00B050;}
 </style>
-<input type="radio" name="pg" id="pg1" class="pgrad" checked>
-<input type="radio" name="pg" id="pg2" class="pgrad">
-<div class="tabs">
-  <label for="pg1" class="tabbtn active" id="tab-overview" onclick="try{showTab('overview')}catch(e){}">📊 周报总览</label>
-  <label for="pg2" class="tabbtn" id="tab-inv" onclick="try{showTab('inv')}catch(e){}">📦 库存监控（三渠道）</label>
+<div class="tabs" style="position:sticky;top:0;z-index:99;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.12);">
+  <a class="tabbtn" href="#ov-anchor">📊 周报总览</a>
+  <a class="tabbtn" href="#inv-anchor" style="background:var(--blue);">📦 库存监控（三渠道）</a>
 </div>
+<div id="ov-anchor" style="scroll-margin-top:70px"></div>
 <div id="page-overview">
 <div class="header">
   <div>
@@ -162,6 +152,7 @@ tr:nth-child(even) td{background:#f7f9fc;}
   6️⃣ 质量/退款维持监控（本周已大幅改善）。
 </div><!-- /page-overview -->
 
+<div id="inv-anchor" style="scroll-margin-top:70px"></div>
 <div id="page-inv">
   <div class="header" style="margin-bottom:14px;">
     <h1>📦 库存监控 · 三渠道（FBA / DF / PO）</h1>
@@ -669,6 +660,10 @@ window.renderInvOverview = renderInvOverview;
 })();
 
 renderAdZone();
+// ===== 单页全显: load即渲染库存区(2026-09-09 终极方案) =====
+try{
+  renderInvOverview(); renderInvSummary(); renderPoTier(); renderInv();
+}catch(e2){ console.error('[inv-render]', e2); }
 } catch(e) {
   document.body.insertAdjacentHTML('afterbegin','<div style="background:#C00000;color:#fff;padding:12px;font-size:13px">面板脚本错误: '+e.message+'</div>');
   console.error(e);
