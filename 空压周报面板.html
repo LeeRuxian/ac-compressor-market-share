@@ -63,15 +63,16 @@ tr:nth-child(even) td{background:#f7f9fc;}
 .b-oos{background:#C00000;}.b-oos0{background:#C55A11;}.b-low_inv{background:#E36C09;}.b-spd{background:#BF8F00;}.b-slow{background:#7F7F7F;}.b-ok{background:#00B050;}
 </style>
 <div class="tabs" style="position:sticky;top:0;z-index:99;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.12);">
-  <button class="navtab active" data-pg="overview" onclick="showCh('overview')">📊 周报总览</button>
-  <button class="navtab" data-pg="inv" onclick="showCh('inv')">📦 库存监控（三渠道）</button>
+  <a class="tabbtn" style="background:var(--blue2);color:#fff;text-align:center;text-decoration:none;flex:1;padding:9px 12px;border-radius:8px;font-weight:600" href="#ov-anchor">📊 周报总览</a>
+  <a class="tabbtn" style="background:var(--blue);color:#fff;text-align:center;text-decoration:none;flex:1;padding:9px 12px;border-radius:8px;font-weight:600" href="#inv-anchor">📦 库存监控（三渠道）</a>
 </div>
 <div id="ov-anchor" style="scroll-margin-top:70px"></div>
-<div id="page-overview" class="page page-overview">
+<div id="ov-anchor" style="scroll-margin-top:64px"></div>
+<div id="page-overview">
 <div class="header">
   <div>
     <h1>📊 空压 · 翻新AC Compressor 周报面板</h1>
-    <div class="sub">202636周（2026-08-30~09-05，周日-周六）｜ 数据源：SmartBI MCP 直连拉取（2026-09-01，周结束后）｜ 口径：翻新空调压缩机品类（空压），与电磁阀严格分离 ｜ <b style="color:#C00000">版本 20260909-V14</b></div>
+    <div class="sub">202636周（2026-08-30~09-05，周日-周六）｜ 数据源：SmartBI MCP 直连拉取（2026-09-01，周结束后）｜ 口径：翻新空调压缩机品类（空压），与电磁阀严格分离 ｜ <b style="color:#C00000">版本 20260909-V15</b></div>
   </div>
   <div style="text-align:right">
     <div class="tag">运营分析口径 · 前台销量</div>
@@ -154,7 +155,8 @@ tr:nth-child(even) td{background:#f7f9fc;}
 </div><!-- /page-overview -->
 
 <div id="inv-anchor" style="scroll-margin-top:70px"></div>
-<div id="page-inv" class="page page-inv" style="display:none">
+<div id="inv-anchor" style="scroll-margin-top:64px"></div>
+<div id="page-inv">
   <div class="header" style="margin-bottom:14px;">
     <h1>📦 库存监控 · 三渠道（FBA / DF / PO）</h1>
     <div class="sub" id="inv-mon-note"></div>
@@ -627,6 +629,11 @@ window.renderInvOverview = renderInvOverview;
 })();
 
 renderAdZone();
+// ===== 单页常显V15: load渲染库存区全部(含c7, 容器可见) =====
+try{
+  renderInvOverview(); renderInvSummary(); renderPoTier(); renderInv();
+  try{ renderC7Stock(); }catch(e7){ console.error('[c7]', e7); }
+}catch(e2){ console.error('[inv-pre]', e2); }
 } catch(e) {
   document.body.insertAdjacentHTML('afterbegin','<div style="background:#C00000;color:#fff;padding:12px;font-size:13px">面板脚本错误: '+e.message+'</div>');
   console.error(e);
