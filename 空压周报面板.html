@@ -111,11 +111,7 @@ tr:nth-child(even) td{background:#f7f9fc;}
   <div class="card"><h3>渠道销量 FBA/DF/PO（损益口径3周）</h3><div class="cmp" id="cmp5"></div><div class="chart" id="c5"></div></div>
   <div class="card"><h3>ACOS% & 转化率%（5周）</h3><div class="cmp" id="cmp6"></div><div class="chart" id="c6"></div></div>
   <div class="card"><h3>⚠ 退款数量 & 退款率（5周 · 质量监控）</h3><div class="chart" id="c8"></div></div>
-</div>
-<div style="background:var(--card);border-radius:10px;padding:14px 16px;box-shadow:0 2px 6px rgba(0,0,0,.06);margin-bottom:16px;">
-  <h3 style="color:var(--blue);font-size:15px;margin-bottom:6px">📈 该类目市场搜索趋势（周 · 搜索量 & ABA排名，数据源：用户ABA导出）</h3>
-  <div id="search-trend-note" style="font-size:12px;color:#666;margin-bottom:4px"></div>
-  <div class="chart" id="c9" style="height:300px"></div>
+  <div class="card"><h3>📈 该类目市场搜索趋势（周 · 搜索量&ABA排名）</h3><div id="search-trend-note" style="font-size:12px;color:#666;margin-bottom:2px"></div><div class="chart" id="c9"></div></div>
 </div>
 
 
@@ -687,7 +683,7 @@ try{
       tooltip:{trigger:'axis'},
       legend:{top:0,textStyle:{fontSize:11}},
       grid:{left:60,right:66,top:30,bottom:30},
-      xAxis:{type:'category',data:st.weeks,axisLabel:{fontSize:10,rotate:60}},
+      xAxis:{type:'category',data:st.weeks,axisLabel:{fontSize:10,rotate:45,interval:3,hideOverlap:true}},
       yAxis:[{type:'value',name:'搜索量',nameTextStyle:{fontSize:10}},
              {type:'value',name:'ABA排名(越小越好)',nameTextStyle:{fontSize:10},inverse:true}],
       series:[
