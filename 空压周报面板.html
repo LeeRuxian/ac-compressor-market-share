@@ -223,6 +223,7 @@ tr:nth-child(even) td{background:#f7f9fc;}
     <div class="inv-filters">
       状态筛选：<select id="inv-status" onchange="renderInv()"><option value="ALL">全部</option><option value="oos">断货</option><option value="oos0">缺货</option><option value="low_inv">可能缺货</option><option value="spd">加速动销</option><option value="slow">滞销</option><option value="ok">正常</option></select>
       <input id="inv-search" placeholder="搜索ASIN/SKU/品牌..." oninput="renderInv()" style="width:220px">
+      <button onclick="exportInv()" style="padding:5px 12px;border:1px solid var(--blue2);border-radius:5px;background:var(--blue2);color:#fff;font-family:inherit;font-size:13px;cursor:pointer;font-weight:600">📥 导出当前渠道+筛选结果(CSV)</button>
       <span id="inv-count" style="color:#888;font-size:12px"></span>
     </div>
     <div id="inv-table"></div>
@@ -426,6 +427,28 @@ function renderPoTier(){
   document.getElementById('po-tier').innerHTML = h;
   document.getElementById('po-tier-note').innerText = T.note;
 }
+window._invRows = [];
+window.exportInv = function(){
+  const NL = String.fromCharCode(10), BOM = String.fromCharCode(65279);
+  const rows = window._invRows || [];
+  if(!rows.length){ alert('当前无数据'); return; }
+  const chn = curCh;
+  const heads = {'FBA':['ASIN','SKU','店铺','FBA可售','头程在途','库销比','状态'],
+                 'DF':['SKU','海外仓可售','在途','库销比','近30天(VC)','状态'],
+                 'PO':['ASIN','SKU','品牌','PO在库','库销比','近30天销量','状态']};
+  const keys = {'FBA':['asin','sku','shop','inv','onway','cov','level'],
+                'DF':['sku','inv','onway','cov','vc30','level'],
+                'PO':['asin','sku','brand','inv','cov','s30','level']};
+  const hd = heads[chn] || heads['FBA'], ks = keys[chn] || keys['FBA'];
+  const q = function(v){ const str = String(v===undefined||v===null?'':v); return /[",]/.test(str) ? '"'+str.replace(/"/g,'""')+'"' : str; };
+  let csv = BOM + hd.join(',') + NL;
+  for(const r of rows){ csv += ks.map(function(k){ return q(r[k]); }).join(',') + NL; }
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = '空压库存明细_' + chn + '_' + new Date().toISOString().slice(0,10) + '.csv';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+};
 function renderInv(){
   const M = P.inv_monitor;
   const st = document.getElementById('inv-status').value;
@@ -436,6 +459,7 @@ function renderInv(){
     if(q && !hay.includes(q)) return false;
     return true;
   });
+  window._invRows = rows;
   document.getElementById('inv-count').innerText = `显示${rows.length}/${M.channels[curCh].length}条`;
   const cls = {oos:'b-oos',oos0:'b-oos0',low_inv:'b-low_inv',spd:'b-spd',slow:'b-slow',ok:'b-ok'};
   const badge = r => `<span class="badge ${cls[r.lk]}">${r.level}</span>`;
