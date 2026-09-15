@@ -87,7 +87,7 @@ footer{text-align:center;color:#8492a6;font-size:12.5px;margin-top:34px;padding-
 <div class="wrap">
 <details class="ck"><summary>口径与数据说明 —— 正文不再逐块重复</summary><div class="cbody">
 <table style="margin-top:8px"><tr><th style="width:150px">项目</th><th>口径 / 说明</th></tr>
-<tr><td><b>业务范围</b></td><td>业务分类 = <span class="metric">空调压缩机</span>。US37+VC1 下空压占销售额 99.98%（另仅 怠速电磁阀 $135.93，可忽略）· <b>BI 中不存在"翻新空调压缩机"分类</b>；"翻新"体现在 SKU 后缀 <span class="metric">-R</span></td></tr>
+<tr><td><b>业务范围</b></td><td><b>口径 = BI 产品分类（<span class="metric">product_category_code</span>）= 翻新空调压缩机</b>。该分类在 US37+VC1 下占销售额 <b>99.94%</b>（其余：点火线圈 $3,719 / 气门室盖 $544 / 怠速电磁阀 $544）<br>本报告另用 <span class="metric">业务分类=空调压缩机</span> 查询，二者<b>在本店铺组合下等价</b>——该业务分类下 翻新 $8,087,669（全部）+ 全新 $0</td></tr>
 <tr><td><b>店铺</b></td><td><span class="metric">US37</span>（FBA）+ <span class="metric">VC1</span>（DF/PO）。US22 有微量空压（7月 $2,636/促销$141，占0.08%），按确认<b>不纳入</b></td></tr>
 <tr><td><b>销量口径</b></td><td><b>出库销量</b> <span class="metric">sales_qty_m</span>（非前台销量 <span class="metric">sales_qty2_m</span>）</td></tr>
 <tr><td><b>库销比（分渠道）</b></td><td>DF = 海外仓在库(<span class="metric">stock_overseas_qty6_m</span>) ÷ DF当月出库销量<br>FBA = 可售库存(<span class="metric">stock_on_sales_qty2_m</span>) ÷ FBA当月出库销量<br>PO = PO在库(<span class="metric">sellable_on_hand_units4_m</span>) ÷ PO当月出库销量<br>取当月最后一天快照 · <b>BI 无现成"PO库销比"字段，均为自算</b> · <b>禁用全链路口径做促销决策</b></td></tr>
@@ -510,7 +510,7 @@ footer{text-align:center;color:#8492a6;font-size:12.5px;margin-top:34px;padding-
 </table>
 </div>
 
-<footer>口径：业务分类 = 空调压缩机（US37+VC1）· 店铺 US37(FBA) + VC1(DF/PO) · 库销比 = 当月最后一天渠道库存 ÷ 当月该渠道出库销量<br>
+<footer>口径：产品分类 = <b>翻新空调压缩机</b>（等价于 业务分类=空调压缩机，US37+VC1 下全新 $0）· 店铺 US37(FBA) + VC1(DF/PO) · 库销比 = 当月最后一天渠道库存 ÷ 当月该渠道出库销量<br>
 销量口径 = 出库销量 sales_qty_m（非前台销量）· 毛利率用 BI 字段「毛利率」<br>
 数据源：SmartBI 综合数据模型（月度损益/费用类型/渠道库存/损益科目）· 市场预测销量分析模型（爬虫采集含竞品）· 领星 MCP 关键词排名 · 陈列图在售率报表.xlsx（三渠道1–8月在售率/有货率）· 促销对比.xlsx（7月403个ASIN）<br>
 说明：BI 少数单元格返回日期字符串（序列化异常），已用同月总量差额反推并交叉验证；7月 FBA/PO 毛利率为按残差分摊的估算值 · 生成于 2026-09-14</footer>
