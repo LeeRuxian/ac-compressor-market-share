@@ -315,7 +315,9 @@ function renderAdZoneSol(){
       document.getElementById('ad-issues').appendChild(dh.firstChild);
     }
     // ---- 输入事件 ----
-    document.querySelectorAll('#ad-issues input[data-adname]').forEach(inp=>{
+    function bindMeasureInputs(){
+      document.querySelectorAll('input[data-adname]').forEach(inp=>{
+        if(inp.dataset.bound) return; inp.dataset.bound='1';
       inp.addEventListener('change', function(){
         const nm = decodeURIComponent(this.dataset.adname);
         const text = this.value.trim();
@@ -326,14 +328,15 @@ function renderAdZoneSol(){
           body: JSON.stringify({panel: PANEL, name: nm, text: text, ts: new Date().toISOString()})})
           .then(r => r.json()).then(d => {
             if(d && d.ok){ CLOUD[nm] = {v: text, t: new Date().toISOString()};
-              document.getElementById('ad-save-tip').innerHTML = '✓ <b>已同步云端</b>(组长/其他浏览器可见): ' + nm.slice(0,30) + ' — ' + new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'});
+              const tip = document.getElementById('ad-save-tip') || document.getElementById('mv-save-tip'); if(tip) tip.innerHTML = '✓ <b>已同步云端</b>(组长/其他浏览器可见): ' + nm.slice(0,32) + ' — ' + new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'});
               document.getElementById('ad-sync-warn').style.display = 'none'; }
             else throw 0; }).catch(()=>{
-            document.getElementById('ad-save-tip').innerHTML = '✓ 已存本机（未同步云端）';
-            document.getElementById('ad-sync-warn').style.display = 'block';
+            const tip2 = document.getElementById('ad-save-tip') || document.getElementById('mv-save-tip'); if(tip2) tip2.innerHTML = '✓ 已存本机（未同步云端）';
+            const sw = document.getElementById('ad-sync-warn'); if(sw) sw.style.display = 'block';
           });
       });
-    });
+      });
+    }
   }
   // ---- 初始化: fetch云端合并后渲染 ----
   renderIssueTable();
@@ -823,24 +826,48 @@ renderKeyLinks();
   const down10 = mv.filter(r=>(r.qty6||0)<(r.qty5||0)).sort((a,b)=>((a.qty6||0)-(a.qty5||0))-((b.qty6||0)-(b.qty5||0))).slice(0,10);
   function tbl(rows,up){
     if(!rows.length) return '<div style="color:#888;font-size:12px;padding:8px">无数据</div>';
-    let h='<table><tr><th>ASIN</th><th>新老</th><th>店铺</th><th>销量<br>635→636</th><th>广告花费<br>635→636</th><th>促销占比<br>635→636</th><th>推广占比<br>635→636</th><th>库存<br>(可售/在途)</th></tr>';
+    let h='<table><tr><th>ASIN</th><th>新老</th><th>店铺</th><th>销量<br>38→42周</th><th>广告花费<br>41→42周</th><th>促销占比<br>41→42周</th><th>推广占比<br>41→42周</th><th>库存<br>(可售/在途)</th>'+(up?'<th>措施(记录)</th>':'<th>措施(记录)<br><small>下周回看是否改善</small></th>')+'</tr>';
     for(const r of rows){
       const sd = (r.spend6||0)-(r.spend5||0);
       const pdd = pct(r.promo6,r.promo5), spdd = pct(r.spread6,r.spread5);
       const qd = (r.qty6||0)-(r.qty5||0);
       const qcol = up ? (qd>=3?'color:var(--red);font-weight:700':(qd>0?'color:#BF8F00':'color:#333')) : (qd<=-3?'color:var(--green);font-weight:700':(qd<0?'color:#BF8F00':'color:#333'));
-      h+=`<tr><td style="text-align:left">${r.asin}<br><span style="color:#999;font-size:11px">${r.sku}</span></td><td>${tcol(r)}</td><td>${r.shop}</td>
-        <td style="${qcol}">${r.qty5}→${r.qty6} (${delta(r)})</td>
-        <td>${money(r.spend5)}→${money(r.spend6)}<br><span style="color:${sd>0?'#C00000':'#00B050'};font-size:11px">${sd>0?'▲+':sd<0?'▼':''}${Math.abs(sd)} (${pct(r.spend6,r.spend5)})</span></td>
-        <td>${r.promo5===null||r.promo5===undefined?'-':r.promo5+'%'}→${r.promo6===null||r.promo6===undefined?'-':r.promo6+'%'}<br><span style="color:#666;font-size:11px">${pdd}</span></td>
-        <td>${r.spread5===null||r.spread5===undefined?'-':r.spread5+'%'}→${r.spread6===null||r.spread6===undefined?'-':r.spread6+'%'}<br><span style="color:#666;font-size:11px">${spdd}</span></td>
-        <td>${r.sell}/${r.onway}</td></tr>`;
+      const mcell = up ? '<td style="color:#bbb;font-size:11px">—</td>'
+        : (function(){ var pk='mv_'+r.asin; var pv=(typeof effVal==='function'?effVal(pk):'').replace(/"/g,'&quot;');
+            return '<td style="min-width:190px"><input data-adname="'+encodeURIComponent(pk)+'" type="text" value="'+pv+'" placeholder="填写本周措施(如:加bid/恢复预算/改Coupon)" style="width:100%;padding:5px 8px;border:1px solid #ccc;border-radius:5px;font-size:12px;box-sizing:border-box"></td>'; })();
+      h += '<tr><td style="text-align:left">'+r.asin+'<br><span style="color:#999;font-size:11px">'+r.sku+'</span></td><td>'+tcol(r)+'</td><td>'+r.shop+'</td>'
+        + '<td style="'+qcol+'">'+r.qty5+'→'+r.qty6+' ('+delta(r)+')</td>'
+        + '<td>'+money(r.spend5)+'→'+money(r.spend6)+'<br><span style="color:'+(sd>0?'#C00000':'#00B050')+';font-size:11px">'+(sd>0?'▲+':sd<0?'▼':'')+Math.abs(sd)+' ('+pct(r.spend6,r.spend5)+')</span></td>'
+        + '<td>'+(r.promo5===null||r.promo5===undefined?'-':r.promo5+'%')+'→'+(r.promo6===null||r.promo6===undefined?'-':r.promo6+'%')+'<br><span style="color:#666;font-size:11px">'+pdd+'</span></td>'
+        + '<td>'+(r.spread5===null||r.spread5===undefined?'-':r.spread5+'%')+'→'+(r.spread6===null||r.spread6===undefined?'-':r.spread6+'%')+'<br><span style="color:#666;font-size:11px">'+spdd+'</span></td>'
+        + '<td>'+r.sell+'/'+r.onway+'</td>' + mcell + '</tr>';
     }
     h+='</table>';
     return h;
   }
   document.getElementById('mv-up').innerHTML = '<b style="color:var(--red)">📈 涨幅明显 TOP10</b>' + tbl(up10,true);
-  document.getElementById('mv-down').innerHTML = '<b style="color:var(--green)">📉 下滑严重 TOP10</b>' + tbl(down10,false);
+  document.getElementById('mv-down').innerHTML = '<b style="color:var(--green)">📉 下滑严重 TOP10</b>' + tbl(down10,false) + '<div id="mv-save-tip" style="font-size:11.5px;color:#888;margin-top:6px">措施填写后自动保存（本机+云端同步，下周换周后仍可回看）</div>';
+  // 内联绑定措施输入(复用全局保存方法, 无则只存本地)
+  document.querySelectorAll('#mv-down input[data-adname]').forEach(function(inp){
+    inp.addEventListener('change', function(){
+      var nm = decodeURIComponent(this.dataset.adname), text = this.value.trim();
+      try {
+        var LS='sol_measures_v1';
+        var o = JSON.parse(localStorage.getItem(LS)||'{}');
+        if(text) o[nm]={v:text,t:new Date().toISOString()}; else delete o[nm];
+        localStorage.setItem(LS, JSON.stringify(o));
+      } catch(e){}
+      var tip = document.getElementById('mv-save-tip');
+      try {
+        fetch((window.SYNC_API||'http://127.0.0.1:8787')+'/save', {method:'POST', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({panel:'电磁阀', name:nm, text:text, ts:new Date().toISOString()})})
+          .then(function(r){return r.json()}).then(function(d){
+            if(d&&d.ok){ if(tip) tip.innerHTML='✓ <b>已同步云端</b>（组长/其他浏览器可见）— '+new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'}); }
+            else throw 0;
+          }).catch(function(){ if(tip) tip.innerHTML='✓ 已存本机（云端未连接，启动"启动措施同步服务.bat"即可同步）'; });
+      } catch(e){ if(tip) tip.innerHTML='✓ 已存本机'; }
+    });
+  });
 })();
 
 // 明细表 (仿BI运营分析导出: 行=周+周环比, 列=指标)
