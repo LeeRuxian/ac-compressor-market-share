@@ -100,8 +100,8 @@ tr:hover td{background:#f8fafd}
 <div class="note" id="ad-note"></div></div>
 
 <div class="grid2">
-  <div class="card"><h3>📈 本周销量增长 TOP5（202644 vs 202643）</h3><div id="tbl-up"></div></div>
-  <div class="card"><h3>🐌 近30天未动销 · 海外仓库存 TOP5</h3><div id="tbl-dud"></div></div>
+  <div class="card"><h3>📈 本周销量增长 TOP10（202644 vs 202643）</h3><div id="tbl-up"></div></div>
+  <div class="card"><h3>🐌 近30天未动销 · 海外仓库存 TOP10</h3><div id="tbl-dud"></div></div>
 </div>
 <div class="note" style="margin:-8px 0 12px">未动销判定：近14天销量=0 且 海外仓有货｜共 121 个ASIN（76商编）</div>
 </div>
@@ -282,7 +282,7 @@ line('c3', W2, [
 // ASIN明细 -> 增长TOP5 + 未动销库存TOP5
 (function(){
   const i = WE.length-1, i0 = i-1;
-  const ups = P.detail.map(r=>({asin:r.asin,sku:r.sku,cat:r.cat,shop:r.shop,a:r.q[i0],b:r.q[i],d:r.q[i]-r.q[i0]})).filter(r=>r.d>0).sort((x,y)=>y.d-x.d).slice(0,5);
+  const ups = P.detail.map(r=>({asin:r.asin,sku:r.sku,cat:r.cat,shop:r.shop,a:r.q[i0],b:r.q[i],d:r.q[i]-r.q[i0]})).filter(r=>r.d>0).sort((x,y)=>y.d-x.d).slice(0,10);
   let h1 = '<table><tr><th>ASIN</th><th>SKU</th><th>品类</th><th>上周</th><th>本周</th><th>增量</th><th>增幅</th></tr>';
   for(const r of ups){
     const pc = r.a>0 ? ((r.d/r.a)*100).toFixed(0)+'%' : '首单';
@@ -292,7 +292,7 @@ line('c3', W2, [
   h1 += '</table>';
   document.getElementById('tbl-up').innerHTML = h1;
 
-  const duds = P.inventory.filter(r=>((r.s14||0)===0) && ((r.ov||0)>0)).sort((a,b)=>b.ov-a.ov).slice(0,5);
+  const duds = P.inventory.filter(r=>((r.s14||0)===0) && ((r.ov||0)>0)).sort((a,b)=>b.ov-a.ov).slice(0,10);
   // sku -> asin 映射
   const sku2asin = {};
   P.detail.forEach(d=>{ if(d.sku && d.asin && !sku2asin[d.sku]) sku2asin[d.sku] = d.asin; });
