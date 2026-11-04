@@ -106,6 +106,17 @@ tr:hover td{background:#f8fafd}
 <div class="note" style="margin:-8px 0 12px">未动销判定：近14天销量=0 且 海外仓有货｜共 121 个ASIN（76商编）</div>
 </div>
 <div class="card"><h3>📦 库存总表（76个商编 · 海外仓库存倒序）</h3>
+<div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap">
+  <input id="inv-search" type="text" placeholder="🔍 输入商品编码筛选（如 KC9LAH / 03FA）" style="flex:1;min-width:220px;max-width:380px;padding:8px 12px;border:1px solid #d5dbe3;border-radius:7px;font-size:13px">
+  <select id="inv-status" style="padding:8px 10px;border:1px solid #d5dbe3;border-radius:7px;font-size:13px">
+    <option value="">全部状态</option>
+    <option value="深度滞销">深度滞销</option>
+    <option value="普通滞销">普通滞销</option>
+    <option value="可动销">可动销</option>
+    <option value="无销量">无销量</option>
+  </select>
+  <span id="inv-count" style="font-size:12.5px;color:#666"></span>
+</div>
 <div style="max-height:520px;overflow:auto" id="tbl-inv-all"></div>
 <div class="note">口径：海外仓可用/在途、FBA可用、本地仓、总库存来自《车灯总成.xlsx》进销存报表｜库销比=总库存/月均销量｜状态：≥10月深度滞销 / 5-10月普通滞销 / <5月可动销 / 无销量</div></div>
 <script>
@@ -381,5 +392,30 @@ line('c3', W2, [
   h += '</table>';
   const box = document.getElementById('tbl-inv-all');
   if(box) box.innerHTML = h;
+
+  // ===== 筛选逻辑 =====
+  function applyInvFilter(){
+    const kw = (document.getElementById('inv-search').value || '').trim().toUpperCase();
+    const st = document.getElementById('inv-status').value;
+    const trs = document.querySelectorAll('#tbl-inv-all tbody tr, #tbl-inv-all tr');
+    let shown = 0, total = 0;
+    trs.forEach(function(tr){
+      if(tr.querySelector('th')) return;   // 跳过表头
+      total++;
+      const t = tr.innerText.toUpperCase();
+      const okKw = !kw || t.indexOf(kw) >= 0;
+      const okSt = !st || t.indexOf(st) >= 0;
+      const show = okKw && okSt;
+      tr.style.display = show ? '' : 'none';
+      if(show) shown++;
+    });
+    const c = document.getElementById('inv-count');
+    if(c) c.innerText = '显示 ' + shown + ' / ' + total + ' 个商编';
+  }
+  const si = document.getElementById('inv-search');
+  const ss = document.getElementById('inv-status');
+  if(si){ si.addEventListener('input', applyInvFilter); si.addEventListener('keyup', applyInvFilter); }
+  if(ss){ ss.addEventListener('change', applyInvFilter); }
+  applyInvFilter();
 })();
 </script></body></html>
