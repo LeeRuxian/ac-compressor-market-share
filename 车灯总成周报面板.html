@@ -62,6 +62,8 @@ tr:hover td{background:#f8fafd}
 <div style="margin-top:14px"><b style="font-size:13px">76个商编滞销明细（按总库存降序）</b><div style="max-height:420px;overflow:auto;margin-top:6px" id="tbl-dis"></div></div>
 </div>
 
+
+
 </div>
 <div class="tab" id="tab-disposal">
 <!-- 滞销清理专区 -->
@@ -264,10 +266,14 @@ line('c3', W2, [
   }
   h += '</table>';
   document.getElementById('tbl-ad').innerHTML = h;
-  let h3 = '<table><tr><th>活动名</th><th>花费</th><th>单</th><th>ACOS</th></tr>';
-  for(const a of A.issues){
-    h3 += '<tr style="color:#c0392b"><td style="text-align:left;max-width:420px;font-size:11.5px">'+a.name.slice(0,80)+'</td><td>$'+a.spend+'</td><td>'+a.orders+'</td><td>'+(a.acos===null?'0单':a.acos+'%')+'</td></tr>';
+  // 问题活动：花费>0 且 (0单 或 ACOS>30%)，按花费降序
+  const myIssues = (A.acts||[]).filter(a=>a.spend>0 && (a.orders===0 || (a.acos!==null && a.acos>30))).sort((x,y)=>y.spend-x.spend);
+  let h3 = '<table><tr><th>活动名</th><th>花费</th><th>单</th><th>销售</th><th>ACOS</th><th>曝光</th><th>点击</th><th>状态</th><th>问题</th></tr>';
+  for(const a of myIssues){
+    const prob = a.orders===0 ? '0单' : ('ACOS '+(a.acos||0).toFixed(0)+'%');
+    h3 += '<tr style="color:#c0392b"><td style="text-align:left;max-width:380px;font-size:11.5px">'+a.name.slice(0,75)+'</td><td>$'+a.spend+'</td><td>'+a.orders+'</td><td>$'+a.sales+'</td><td>'+(a.acos===null?'-':a.acos+'%')+'</td><td>'+a.impressions+'</td><td>'+a.clicks+'</td><td>'+a.state+'</td><td><b>'+prob+'</b></td></tr>';
   }
+  if(!myIssues.length) h3 += '<tr><td colspan="9" style="color:#27ae60">本周无问题活动（所有投放活动均有出单且ACOS健康）</td></tr>';
   h3 += '</table>';
   document.getElementById('tbl-issue').innerHTML = h3;
   document.getElementById('ad-note').innerText = '口径：领星MCP · VC店铺 · 活动名含"车灯总成"+"李汝娴" · 每周取花费TOP500活动后筛选｜共' + A.total_acts + '个活动（李汝娴）';
@@ -287,14 +293,36 @@ line('c3', W2, [
   document.getElementById('tbl-up').innerHTML = h1;
 
   const duds = P.inventory.filter(r=>((r.s14||0)===0) && ((r.ov||0)>0)).sort((a,b)=>b.ov-a.ov).slice(0,5);
-  let h2 = '<table><tr><th>商品编码</th><th>海外仓可用</th><th>在途</th><th>总库存</th><th>14天销量</th><th>库销比</th><th>状态</th></tr>';
+  // sku -> asin 映射
+  const sku2asin = {};
+  P.detail.forEach(d=>{ if(d.sku && d.asin && !sku2asin[d.sku]) sku2asin[d.sku] = d.asin; });
+  // 读数
+  let LS = {};
+  try { LS = JSON.parse(localStorage.getItem('light_measures') || '{}'); } catch(e){}
+  let h2 = '<table><tr><th>ASIN</th><th>商品编码</th><th>海外仓可用</th><th>在途</th><th>总库存</th><th>14天销量</th><th>库销比</th><th style="min-width:200px">措施(记录)</th></tr>';
   for(const r of duds){
     const cov = r.cov>=999 ? '无销量' : r.cov.toFixed(1)+'月';
-    h2 += '<tr><td class="asin">'+r.sku+'</td><td><b style="color:#c0392b">'+r.ov+'</b></td><td>'+r.ov_wip+'</td><td>'+r.total+'</td><td style="color:#c0392b">0</td><td style="color:#c0392b">'+cov+'</td><td style="color:#c0392b">未动销</td></tr>';
+    const asin = sku2asin[r.sku] || '—';
+    const mv = LS[r.sku] || '';
+    h2 += '<tr><td class="asin">'+asin+'</td><td class="asin" style="font-size:11px">'+r.sku+'</td><td><b style="color:#c0392b">'+r.ov+'</b></td><td>'+r.ov_wip+'</td><td>'+r.total+'</td><td style="color:#c0392b">0</td><td style="color:#c0392b">'+cov+'</td>'
+       + '<td style="min-width:200px"><input class="dud-mv" data-sku="'+r.sku+'" type="text" value="'+mv.replace(/"/g,'&quot;')+'" placeholder="填写清理措施(如:降价/加广告/建链接)" style="width:100%;padding:5px 8px;border:1px solid #ccc;border-radius:5px;font-size:12px;box-sizing:border-box"></td></tr>';
   }
-  if(!duds.length) h2 += '<tr><td colspan="7" style="color:#999">无</td></tr>';
-  h2 += '</table>';
+  if(!duds.length) h2 += '<tr><td colspan="8" style="color:#999">无</td></tr>';
+  h2 += '</table><div style="font-size:11.5px;color:#888;margin-top:6px" id="dud-tip">措施填写后自动保存到本机（刷新不丢），下周可回看</div>';
   document.getElementById('tbl-dud').innerHTML = h2;
+  // 绑定保存
+  document.querySelectorAll('.dud-mv').forEach(function(inp){
+    if(inp.dataset.bound) return; inp.dataset.bound='1';
+    inp.addEventListener('change', function(){
+      const sku = this.dataset.sku, txt = this.value.trim();
+      let o = {};
+      try { o = JSON.parse(localStorage.getItem('light_measures') || '{}'); } catch(e){}
+      if(txt) o[sku] = txt; else delete o[sku];
+      localStorage.setItem('light_measures', JSON.stringify(o));
+      const tip = document.getElementById('dud-tip');
+      if(tip) tip.innerHTML = '✓ 已保存（'+sku+'）— '+new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'});
+    });
+  });
 })();
 
 // ===== 修复tab结构：确保滞销卡片在tab-disposal里，且只出现一次 =====
@@ -315,6 +343,17 @@ line('c3', W2, [
       if(!hasDis){ dis.insertBefore(dup, dis.firstChild); }
       else { dup.parentNode.removeChild(dup); }
     }
+    // 把"库存总表"卡片移到 tab-main 最末尾（用户要求库存放最下面）
+    var invCard = null;
+    var allCards = main.querySelectorAll('.card');
+    for(var k=0;k<allCards.length;k++){
+      if(allCards[k].innerText.indexOf('库存总表')>=0){ invCard = allCards[k]; break; }
+    }
+    if(invCard){
+      main.style.display = 'flex';
+      main.style.flexDirection = 'column';
+      invCard.style.order = '99';
+    }
     // 确保tab-main默认显示
     document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('on');});
     document.querySelectorAll('.tabbtn').forEach(function(b){b.classList.remove('on');});
@@ -325,4 +364,22 @@ line('c3', W2, [
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', fixTabs);
   else fixTabs();
 })();
-</script></body></html>
+
+// 库存总表（76商编，海外仓倒序）放最下面
+(function(){
+  const rows = (P.inventory||[]).slice().sort((a,b)=>b.ov-a.ov);
+  let h = '<table><tr><th>商品编码</th><th>海外仓可用</th><th>海外仓在途</th><th>FBA可用</th><th>本地仓</th><th>总库存</th><th>7天销量</th><th>14天销量</th><th>库销比(月)</th><th>状态</th></tr>';
+  for(const r of rows){
+    const covTxt = r.cov>=999 ? '—' : r.cov.toFixed(1);
+    const covCol = r.cov>=999 ? 'color:#999' : (r.cov>=10 ? 'color:#c0392b;font-weight:700' : (r.cov>=5?'color:#e67e22;font-weight:600':'color:#27ae60'));
+    const st = r.cov>=999 ? '无销量' : (r.cov>=10 ? '深度滞销' : (r.cov>=5 ? '普通滞销' : '可动销'));
+    h += '<tr><td class="asin">'+r.sku+'</td><td><b>'+r.ov+'</b></td><td>'+r.ov_wip+'</td><td>'+r.fba+'</td><td>'+r.loc+'</td><td>'+r.total+'</td><td>'+(r.s7||'-')+'</td><td>'+(r.s14||'-')+'</td><td style="'+covCol+'">'+covTxt+'</td><td>'+st+'</td></tr>';
+  }
+  h += '</table>';
+  const box = document.getElementById('tbl-inv-all');
+  if(box) box.innerHTML = h;
+})();
+</script><div class="card"><h3>📦 库存总表（76个商编 · 海外仓库存倒序）</h3>
+<div style="max-height:520px;overflow:auto" id="tbl-inv-all"></div>
+<div class="note">口径：海外仓可用/在途、FBA可用、本地仓、总库存来自《车灯总成.xlsx》进销存报表｜库销比=总库存/月均销量｜状态：≥10月深度滞销 / 5-10月普通滞销 / <5月可动销 / 无销量</div></div>
+</body></html>
