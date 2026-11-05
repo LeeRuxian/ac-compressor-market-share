@@ -1,404 +1,444 @@
 <!DOCTYPE html>
-<html lang="zh-CN"><head><meta charset="utf-8"><title>车灯总成周报面板 202644</title>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>车灯总成周报面板 202644</title>
 <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
 <style>
-*{box-sizing:border-box}body{margin:0;font-family:-apple-system,"Microsoft YaHei",sans-serif;background:#f5f6f8;color:#222}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,"Microsoft YaHei",sans-serif;background:#f5f6f8;color:#222}
 .wrap{max-width:1560px;margin:0 auto;padding:18px}
 h1{font-size:21px;margin:0 0 6px;color:#1a3b6d}
-.sub{color:#666;font-size:12.5px;margin-bottom:16px}
-.kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:11px;margin-bottom:16px}
+.sub{color:#666;font-size:12.5px;margin-bottom:16px;line-height:1.7}
+.kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:11px;margin-bottom:15px}
 .kpi{background:#fff;border-radius:9px;padding:13px 14px;border-left:4px solid #1a3b6d;box-shadow:0 1px 3px rgba(0,0,0,.06)}
-.kl{font-size:12px;color:#777}.kv{font-size:20px;font-weight:700;margin:3px 0;color:#1a3b6d}
-.ks{font-size:11px;color:#888}
+.kl{font-size:12px;color:#777}.kv{font-size:20px;font-weight:700;margin:3px 0;color:#1a3b6d}.ks{font-size:11px;color:#888}
 .card{background:#fff;border-radius:10px;padding:15px 17px;margin-bottom:15px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
-.card h3{font-size:14.5px;margin:0 0 11px;color:#1a3b6d;border-left:4px solid #2b6cb0;padding-left:9px}
-.chart{height:270px}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:15px}
-@media(max-width:1200px){.grid2{grid-template-columns:1fr}}
+.card>h3{font-size:14.5px;margin:0 0 11px;color:#1a3b6d;border-left:4px solid #2b6cb0;padding-left:9px}
+.chart{width:100%;height:270px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-bottom:15px}
+.grid2>.card{margin-bottom:0}
+@media(max-width:1180px){.grid2{grid-template-columns:1fr}}
 table{width:100%;border-collapse:collapse;font-size:12.5px}
 th{background:#1a3b6d;color:#fff;padding:8px 5px;font-weight:600;font-size:12px;white-space:nowrap}
 td{padding:6px 5px;border-bottom:1px solid #eef0f3;text-align:center;white-space:nowrap}
-tr:hover td{background:#f8fafd}
+tbody tr:hover td{background:#f8fafd}
 .asin{font-family:Consolas,monospace;font-size:11.5px}
-.note{font-size:11.5px;color:#888;margin-top:7px}
+.note{font-size:11.5px;color:#888;margin-top:8px;line-height:1.6}
 .up{color:#C00000;font-weight:600}.dn{color:#00A050;font-weight:600}
-.concl{background:linear-gradient(135deg,#f0f7ff,#e8f2ff);border-left:4px solid #2b6cb0;border-radius:9px;padding:14px 17px;font-size:13.5px;line-height:1.9}
+.concl{background:linear-gradient(135deg,#f0f7ff,#e8f2ff);border-left:4px solid #2b6cb0;border-radius:9px;padding:14px 17px;font-size:13px;line-height:1.95}
+.concl>div{margin-bottom:10px}.concl>div:last-child{margin-bottom:0}
 .dkpi{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}
 .dk{background:#fff8f0;border:1px solid #ffd9b3;border-radius:8px;padding:11px 13px}
-.dkl{font-size:11.5px;color:#a05a00}.dkv{font-size:19px;font-weight:700;color:#c05621;margin:2px 0}
-.dks{font-size:11px;color:#999}
+.dkl{font-size:11.5px;color:#a05a00}.dkv{font-size:19px;font-weight:700;color:#c05621;margin:2px 0}.dks{font-size:11px;color:#999}
 .bar{height:26px;background:#ffe8d0;border-radius:13px;overflow:hidden;position:relative;margin:8px 0}
-.bar-in{height:100%;background:linear-gradient(90deg,#ff9f43,#ee5a24);border-radius:13px;transition:width .4s}
+.bar-in{height:100%;background:linear-gradient(90deg,#ff9f43,#ee5a24);border-radius:13px}
 .bar-tx{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:#7a3300}
-.act{background:#f8fbff;border-left:3px solid #2b6cb0;padding:9px 12px;border-radius:6px;font-size:12.5px;line-height:1.8;margin-top:9px}
-.tabbar{display:flex;gap:9px;margin-bottom:15px}
-.tabbtn{background:#fff;border:1px solid #d5dbe3;border-radius:8px;padding:10px 22px;font-size:13.5px;cursor:pointer;font-weight:600;color:#4a5568}
-.tabbtn.on{background:#1a3b6d;color:#fff;border-color:#1a3b6d}
-.tab{display:none}.tab.on{display:block}
-.warn{background:#fff5f5;border-left:3px solid #e53e3e;padding:9px 12px;border-radius:6px;font-size:12.5px;color:#8b0000;margin-top:9px}
-</style></head><body><div class="wrap">
-<h1>🚗 车灯总成（KAX · VC店铺）周报面板 202644</h1>
-<div class="sub">2026-10-25~10-31（周日-周六）｜76个商编 · 大灯70/尾灯4/雾灯4｜数据源：SmartBI MCP + 车灯总成.xlsx进销存｜广告：领星MCP(VC · 车灯总成 · 李汝娴)</div>
-<div class="kpis"><div class="kpi"><div class="kl">本周销量</div><div class="kv">10 单</div><div class="ks"><span style="color:#C00000">▲ 25.0%</span> 自然5 + 广告5</div></div><div class="kpi"><div class="kl">本周销售额</div><div class="kv">$6,755.27</div><div class="ks"><span style="color:#C00000">▲ 53.3%</span> 均价$676</div></div><div class="kpi"><div class="kl">流量(Sessions)</div><div class="kv">676.0</div><div class="ks"><span style="color:#C00000">▲ 100.6%</span> 展示16,587.29</div></div><div class="kpi"><div class="kl">转化率</div><div class="kv">1.48%</div><div class="ks"> 上周 2.37%</div></div><div class="kpi"><div class="kl">广告ACOS</div><div class="kv">14.42%</div><div class="ks"> 花费$573</div></div><div class="kpi"><div class="kl">广告花费</div><div class="kv">$573</div><div class="ks"><span style="color:#C00000">▲ 690.5%</span> 广告单5</div>
-</div>
-<div class="card"><h3>📌 本周结论（202644 vs 202643）</h3><div class="concl" id="concl"></div></div>
+.act{background:#f8fbff;border-left:3px solid #2b6cb0;padding:10px 13px;border-radius:6px;font-size:12.5px;line-height:1.9;margin-top:10px}
+.warn{background:#fff5f5;border-left:3px solid #e53e3e;padding:10px 13px;border-radius:6px;font-size:12.5px;color:#8b0000;margin-top:10px;line-height:1.8}
+.filter{display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap}
+.filter input{flex:1;min-width:220px;max-width:380px;padding:8px 12px;border:1px solid #d5dbe3;border-radius:7px;font-size:13px}
+.filter select{padding:8px 10px;border:1px solid #d5dbe3;border-radius:7px;font-size:13px}
+.filter span{font-size:12.5px;color:#666}
+.scroll{max-height:520px;overflow:auto}
+input.mv{width:100%;padding:5px 8px;border:1px solid #ccc;border-radius:5px;font-size:12px}
+</style>
+</head>
+<body>
+<div class="wrap">
 
+  <h1>🚗 车灯总成（KAX · VC店铺）周报面板 202644</h1>
+  <div class="sub">2026-10-25~10-31（周日-周六）｜76个商编 · 大灯70 / 尾灯4 / 雾灯4｜数据源：SmartBI MCP + 《车灯总成.xlsx》进销存｜广告：领星MCP（VC · 车灯总成 · 李汝娴）</div>
 
+  <div class="kpis"><div class="kpi"><div class="kl">本周销量</div><div class="kv">10 单</div><div class="ks"><span style="color:#C00000;font-weight:600">▲ 25.0%</span> 自然5 + 广告5</div></div><div class="kpi"><div class="kl">本周销售额</div><div class="kv">$6,755.27</div><div class="ks"><span style="color:#C00000;font-weight:600">▲ 53.3%</span> 均价$676</div></div><div class="kpi"><div class="kl">流量(Sessions)</div><div class="kv">676.0</div><div class="ks"><span style="color:#C00000;font-weight:600">▲ 100.6%</span> 展示16,587.29</div></div><div class="kpi"><div class="kl">转化率</div><div class="kv">1.48%</div><div class="ks"> 上周 2.37%</div></div><div class="kpi"><div class="kl">广告ACOS</div><div class="kv">14.42%</div><div class="ks"> 花费$573</div></div><div class="kpi"><div class="kl">广告花费</div><div class="kv">$573</div><div class="ks"><span style="color:#C00000;font-weight:600">▲ 690.5%</span> 广告单5</div></div></div>
 
-<!-- 滞销清理专区 -->
-<div class="card" style="border:2px solid #ff9f43"><h3 style="border-left-color:#ee5a24">🔥 车灯总成滞销清理专区</h3>
-<div class="dkpi" id="d-kpis"></div>
-<div style="font-size:12.5px;color:#666;margin:4px 0 2px">11月目标进度（目标 <b id="d-target"></b> 件）</div>
-<div class="bar"><div class="bar-in" id="d-bar" style="width:0%"></div><div class="bar-tx" id="d-bartx"></div></div>
-<div class="grid2" style="margin-top:12px">
-  <div><div class="chart" id="d-prog" style="height:240px"></div></div>
-  <div><div class="chart" id="d-cov" style="height:240px"></div>
-</div>
-<div id="d-actions"></div>
-<div class="note" id="d-note"></div>
-<div style="margin-top:14px"><b style="font-size:13px">76个商编滞销明细（按总库存降序）</b><div style="max-height:420px;overflow:auto;margin-top:6px" id="tbl-dis"></div>
-</div>
-<!-- 滞销清理专区 -->
-<div class="card" style="border:2px solid #ff9f43"><h3 style="border-left-color:#ee5a24">🔥 车灯总成滞销清理专区</h3>
-<div class="dkpi" id="d-kpis"></div>
-<div style="font-size:12.5px;color:#666;margin:4px 0 2px">11月目标进度（目标 <b id="d-target"></b> 件）</div>
-<div class="bar"><div class="bar-in" id="d-bar" style="width:0%"></div><div class="bar-tx" id="d-bartx"></div></div>
-<div class="grid2" style="margin-top:12px">
-  <div><div class="chart" id="d-prog" style="height:240px"></div></div>
-  <div><div class="chart" id="d-cov" style="height:240px"></div>
-</div>
-<div id="d-actions"></div>
-<div class="note" id="d-note"></div>
-<div style="margin-top:14px"><b style="font-size:13px">76个商编滞销明细（按总库存降序）</b><div style="max-height:420px;overflow:auto;margin-top:6px" id="tbl-dis"></div>
-</div>
-<div class="grid2">
-  <div class="card"><h3>销量 &amp; 销售额趋势（5周）</h3><div class="chart" id="c1"></div></div>
-  <div class="card"><h3>流量 &amp; 转化率 &amp; 广告转化率（5周）</h3><div class="chart" id="c2"></div>
-</div>
-<div class="grid2">
-  <div class="card"><h3>ACOS% &amp; 广告花费（5周）</h3><div class="chart" id="c3"></div></div>
-  <div class="card"><h3>品类对比：大灯 / 尾灯 / 雾灯（销量，5周）</h3><div class="chart" id="c4"></div>
-</div>
-<div class="card"><h3>整体明细（车灯总成，5周）</h3><div style="overflow-x:auto" id="tbl-ov"></div>
-<div class="note">口径：销量=前台销量(BI sales_qty2_m)｜流量=Sessions｜ACOS=广告花费/广告销售额</div></div>
+  <div class="card">
+    <h3>📌 本周结论（202644 vs 202643）</h3>
+    <div class="concl" id="concl"></div>
+  </div>
 
-<div class="card"><h3>📊 广告分析 · 车灯总成（VC店铺 · 领星MCP · 活动名含车灯总成+李汝娴）</h3>
-<div class="chart" id="c6" style="height:260px"></div>
-<div style="overflow-x:auto;margin-top:10px" id="tbl-ad"></div>
-<div style="margin-top:12px"><b style="font-size:13px">⚠ 问题活动（花费≥$10 且 0单 或 ACOS>30%）</b><div style="overflow-x:auto;margin-top:6px" id="tbl-issue"></div></div>
-<div class="note" id="ad-note"></div></div>
+  <div class="grid2">
+    <div class="card"><h3>销量 &amp; 销售额趋势（5周）</h3><div class="chart" id="c1"></div></div>
+    <div class="card"><h3>流量 &amp; 转化率 &amp; 广告转化率（5周）</h3><div class="chart" id="c2"></div></div>
+  </div>
 
-<div class="grid2">
-  <div class="card"><h3>📈 本周销量增长 TOP10（202644 vs 202643）</h3><div id="tbl-up"></div></div>
-  <div class="card"><h3>🐌 近30天未动销 · 海外仓库存 TOP10</h3><div id="tbl-dud"></div>
+  <div class="grid2">
+    <div class="card"><h3>ACOS% &amp; 广告花费（5周）</h3><div class="chart" id="c3"></div></div>
+    <div class="card"><h3>品类对比：大灯 / 尾灯 / 雾灯（销量，5周）</h3><div class="chart" id="c4"></div></div>
+  </div>
+
+  <div class="card">
+    <h3>整体明细（车灯总成，5周）</h3>
+    <div style="overflow-x:auto" id="tbl-ov"></div>
+    <div class="note">口径：销量=前台销量(BI sales_qty2_m)｜流量=Sessions｜广告转化率=广告订单量/广告点击量｜ACOS=广告花费/广告销售额</div>
+  </div>
+
+  <div class="card">
+    <h3>📊 广告分析（VC店铺 · 领星MCP · 活动名含"车灯总成"+"李汝娴"）</h3>
+    <div class="chart" id="c6" style="height:260px"></div>
+    <div style="overflow-x:auto;margin-top:10px" id="tbl-ad"></div>
+    <div style="margin-top:14px"><b style="font-size:13px">⚠ 问题活动（花费&gt;0 且 0单 或 ACOS&gt;30%）</b></div>
+    <div style="overflow-x:auto;margin-top:6px" id="tbl-issue"></div>
+    <div class="note" id="ad-note"></div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <h3>📈 本周销量增长 TOP10（202644 vs 202643）</h3>
+      <div style="overflow-x:auto" id="tbl-up"></div>
+    </div>
+    <div class="card">
+      <h3>🐌 近30天未动销 · 海外仓库存 TOP10</h3>
+      <div style="overflow-x:auto" id="tbl-dud"></div>
+      <div class="note" id="dud-tip">未动销=近14天销量0且海外仓有货｜措施填完自动存本机，刷新不丢</div>
+    </div>
+  </div>
+
+  <div class="card" style="border:2px solid #ff9f43;background:#fffaf4">
+    <h3 style="border-left-color:#ee5a24">🔥 车灯总成滞销清理专区</h3>
+    <div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap">
+      <div style="font-size:13px;color:#666">76个商编全部滞销（海外仓 3,240 件），11月目标 50 件 —— 已另建独立页面跟踪清理进度</div>
+      <a href="车灯总成滞销清理专区.html" style="display:inline-block;background:#ee5a24;color:#fff;text-decoration:none;padding:9px 20px;border-radius:7px;font-size:13.5px;font-weight:600">进入滞销清理专区 →</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>📦 库存总表（76个商编 · 海外仓库存倒序）</h3>
+    <div class="filter">
+      <input id="inv-search" type="text" placeholder="🔍 输入商品编码筛选（如 KC9LAH / 03FA）">
+      <select id="inv-status">
+        <option value="">全部状态</option>
+        <option value="深度滞销">深度滞销</option>
+        <option value="普通滞销">普通滞销</option>
+        <option value="可动销">可动销</option>
+        <option value="无销量">无销量</option>
+      </select>
+      <span id="inv-count"></span>
+    </div>
+    <div class="scroll" id="tbl-inv-all"></div>
+    <div class="note">口径：海外仓可用/在途、FBA可用、本地仓、总库存来自《车灯总成.xlsx》进销存报表（业务分类=车灯总成）｜库销比=总库存/月均销量｜状态：≥10月深度滞销 / 5-10月普通滞销 / &lt;5月可动销 / 无销量</div>
+  </div>
+
 </div>
-<div class="note" style="margin:-8px 0 12px">未动销判定：近14天销量=0 且 海外仓有货｜共 121 个ASIN（76商编）</div>
-</div>
-<div class="card"><h3>📦 库存总表（76个商编 · 海外仓库存倒序）</h3>
-<div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap">
-  <input id="inv-search" type="text" placeholder="🔍 输入商品编码筛选（如 KC9LAH / 03FA）" style="flex:1;min-width:220px;max-width:380px;padding:8px 12px;border:1px solid #d5dbe3;border-radius:7px;font-size:13px">
-  <select id="inv-status" style="padding:8px 10px;border:1px solid #d5dbe3;border-radius:7px;font-size:13px">
-    <option value="">全部状态</option>
-    <option value="深度滞销">深度滞销</option>
-    <option value="普通滞销">普通滞销</option>
-    <option value="可动销">可动销</option>
-    <option value="无销量">无销量</option>
-  </select>
-  <span id="inv-count" style="font-size:12.5px;color:#666"></span>
-</div>
-<div style="max-height:520px;overflow:auto" id="tbl-inv-all"></div>
-<div class="note">口径：海外仓可用/在途、FBA可用、本地仓、总库存来自《车灯总成.xlsx》进销存报表｜库销比=总库存/月均销量｜状态：≥10月深度滞销 / 5-10月普通滞销 / <5月可动销 / 无销量</div></div>
+
 <script>
 const P = {"weeks": ["202640", "202641", "202642", "202643", "202644"], "overall": {"q": [1.0, 3.0, 0.0, 8.0, 10.0], "amt": [698.63, 2105.07, 0.0, 4406.79, 6755.27], "tr": [21.0, 31.0, 240.0, 337.0, 676.0], "adq": [0.0, 0.0, 0.0, 2.0, 5.0], "adamt": [0.28, 2.25, 0.37, 1451.29, 3974.55], "sp": [11.44, 17.08, 2.94, 72.5, 573.1], "im": [250.44, 293.38, 584.99, 1748.74, 16587.29], "cl": [5.0, 6.01, 1.01, 18.01, 124.0], "nat": [1.0, 3.0, 0.0, 6.0, 5.0], "cvr": [4.76, 9.68, 0.0, 2.37, 1.48], "acos": [4014.97, 759.29, 799.56, 5.0, 14.42], "ctr": [2.0, 2.05, 0.17, 1.03, 0.75], "cpc": [2.29, 2.84, 2.9, 4.03, 4.62], "ad_cvr": [0.0, 0.0, 0.0, 11.11, 4.03]}, "cats": {"大灯总成": {"q": [1.0, 3.0, 0.0, 8.0, 8.0], "amt": [698.63, 2105.07, 0.0, 4406.79, 5508.0], "tr": [20.0, 28.0, 221.0, 318.0, 660.0], "sp": [11.44, 13.73, 2.94, 72.5, 573.1], "adq": [0.0, 0.0, 0.0, 2.0, 5.0]}, "尾灯总成": {"q": [0.0, 0.0, 0.0, 0.0, 2.0], "amt": [0.0, 0.0, 0.0, 0.0, 1247.27], "tr": [0.0, 2.0, 12.0, 10.0, 3.0], "sp": [0.0, 3.35, 0.0, 0.0, 0.0], "adq": [0.0, 0.0, 0.0, 0.0, 0.0]}, "雾灯总成": {"q": [0.0, 0.0, 0.0, 0.0, 0.0], "amt": [0.0, 0.0, 0.0, 0.0, 0.0], "tr": [1.0, 1.0, 7.0, 9.0, 13.0], "sp": [0.0, 0.0, 0.0, 0.0, 0.0], "adq": [0.0, 0.0, 0.0, 0.0, 0.0]}}, "shops": {"US19": {"q": [0.0, 0, 0.0, 0.0, 0.0], "amt": [0.0, 0, 0.0, 0.0, 0.0], "tr": [2.0, 0, 63.0, 108.0, 245.0], "sp": [0.0, 0, 0.0, 0.0, 0.0]}, "US8": {"q": [0.0, 0.0, 0.0, 0.0, 0.0], "amt": [0.0, 0.0, 0.0, 0.0, 0.0], "tr": [1.0, 1.0, 3.0, 1.0, 1.0], "sp": [0.0, 0.0, 0.0, 0.0, 0.0]}, "VC1": {"q": [1.0, 3.0, 0.0, 8.0, 10.0], "amt": [698.63, 2105.07, 0.0, 4406.79, 6755.27], "tr": [18.0, 30.0, 174.0, 228.0, 430.0], "sp": [11.44, 17.08, 2.94, 72.5, 573.1]}}, "detail": [{"sku": "KC9LAH57500", "asin": "B0HMRYLC8W", "cat": "大灯总成", "shop": "VC1", "q": [0.0, 0.0, 0.0, 1.0, 3.0], "amt": [0.0, 0.0, 0.0, 741.0, 2223.0], "tr": [0.0, 0.0, 2.0, 10.0, 71.0], "sp": [0.0, 0.01, 2.82, 3.89, 35.04], "adq": [0.0, 0.0, 0.0, 0.0, 2.0]}, {"sku": "TB9LAH06700U1", "asin": "B0C5DWPHQ6", "cat": "大灯总成", "shop": "VC1", "q": [0.0, 1.0, 0.0, 2.0, 0.0], "amt": [0.0, 552.0, 0.0, 1105.0, 0.0], "tr": [1.0, 1.0, 10.0, 7.0, 19.0], "sp": [0.0, 2.41, 0.0, 2.95, 9.98], "adq": [0.0, 0.0, 0.0, 1.0, 0.0]}, {"sku": "KC9LAH57700", "asin": "B0HMRT8XRV", "cat": "大灯总成", "shop": "VC1", "q": [0.0, 0.0, 0.0, 1.0, 1.0], "amt": [0.0, 0.0, 0.0, 536.0, 536.0], "tr": [0.0, 0.0, 10.0, 12.0, 54.0], "sp": [0.0, 0.01, 0.01, 2.68, 24.59], "adq": [0.0, 0.0, 0.0, 0.0, 0.0]}, {"sku": "KC9LAT05400", "asin": "B0DBVR1G3F", "cat": "尾灯总成", "shop": "VC1", "q": [0, 0, 0.0, 0.0, 2.0], "amt": [0, 0, 0.0, 0.0, 1247.0], "tr": [0, 0, 4.0, 2.0, 1.0], "sp": [0, 0, 0.0, 0.0, 0.0], "adq": [0, 0, 0.0, 0.0, 0.0]}, {"sku": "03HATY0123TU1", "asin": "B0CB6BCCRC", "cat": "大灯总成", "shop": "VC1", "q": [0.0, 0.0, 0.0, 0.0, 1.0], "amt": [0.0, 0.0, 0.0, 0.0, 699.0], "tr": [3.0, 6.0, 13.0, 5.0, 6.0], "sp": [0.0, 2.95, 0.01, 0.0, 24.46], "adq": [0.0, 0.0, 0.0, 0.0, 1.0]}, {"sku": "KC9LAH31700", "asin": "B0HMRX8C94", "cat": "大灯总成", "shop": "VC1", "q": [0.0, 0.0, 0.0, 1.0, 0.0], "amt": [0.0, 0.0, 0.0, 382.0, 0.0], "tr": [0.0, 0.0, 0.0, 2.0, 36.0], "sp": [0.0, 0.01, 0.01, 0.01, 54.21], "adq": [0.0, 0.0, 0.0, 0.0, 0.0]}, {"sku": "KC9LAH32600", "asin": "B0C4PJVDTN", "cat": "大灯总成", "shop": "VC1", "q": [1.0, 0.0, 0, 0, 0.0], "amt": [699.0, 0.0, 0, 0, 0.0], "tr": [3.0, 2.0, 0, 0, 8.0], "sp": [0.0, 0.0, 0, 0, 0.0], "adq": [0.0, 0.0, 0, 0, 0.0]}, {"sku": "KC9LAH43200", "asin": "B0BXDPRB8H", "cat": "大灯总成", "shop": "VC1", "q": [0.0, 1.0, 0.0, 0.0, 0.0], "amt": [0.0, 558.0, 0.0, 0.0, 0.0], "tr": [0.0, 1.0, 5.0, 0.0, 13.0], "sp": [0.0, 0.0, 0.0, 0.0, 15.21], "adq": [0.0, 0.0, 0.0, 0.0, 0.0]}, {"sku": "KC9LAH53500", "asin": "B0HMS2GRJB", "cat": "大灯总成", "shop": "VC1", "q": [0.0, 0.0, 0.0, 0.0, 1.0], "amt": [0.0, 0.0, 0.0, 0.0, 502.0], "tr": [0.0, 0.0, 1.0, 0.0, 10.0], "sp": [0.0, 0.0, 0.0, 0.0, 4.09], "adq": [0.0, 0.0, 0.0, 0.0, 0.0]}, {"sku": "KC9LAH53600", "asin": "B0HMRKM28K", "cat": "大灯总成", "shop": "VC1", "q": [0.0, 0.0, 0.0, 1.0, 0.0], "amt": [0.0, 0.0, 0.0, 523.0, 0.0], "tr": [0.0, 0.0, 1.0, 4.0, 7.0], "sp": [0.0, 0.0, 0.0, 0.0, 3.48], "adq": [0.0, 0.0, 0.0, 0.0, 0.0]}, {"sku": "KC9LAH54000", "asin": "B0HMRZ78GL", "cat": "大灯总成", "shop": "VC1", "q": [0.0, 0.0, 0.0, 0.0, 1.0], "amt": [0.0, 0.0, 0.0, 0.0, 509.0], "tr": [0.0, 0.0, 2.0, 0.0, 6.0], "sp": [0.0, 0.0, 0.0, 0.0, 4.42], "adq": [0.0, 0.0, 0.0, 0.0, 1.0]}, {"sku": "KC9LAH54500", "asin": "B0CV47B9FZ", "cat": "大灯总成", "shop": "VC1", "q": [0.0, 0.0, 0.0, 0.0, 1.0], "amt": [0.0, 0.0, 0.0, 0.0, 1038.0], "tr": [0.0, 1.0, 6.0, 1.0, 21.0], "sp": [0.0, 0.01, 0.01, 0.01, 57.16], "adq": [0.0, 0.0, 0.0, 0.0, 1.0]}, {"sku": "KC9LAH59000", "asin": "B0DBVPMJLR", "cat": "大灯总成", "shop": "VC1", "q": [0.0, 1.0, 0.0, 0.0, 0.0], "amt": [0.0, 995.0, 0.0, 0.0, 0.0], "tr": [0.0, 6.0, 2.0, 1.0, 13.0], "sp": [0.0, 0.0, 0.0, 0.0, 5.49], "adq": [0.0, 0.0, 0.0, 0.0, 0.0]}, {"sku": "KC9LAH59900", "asin": "B0HMRYJ2F6", "cat": "大灯总成", "shop": "VC1", "q": [0.0, 0.0, 0.0, 1.0, 0.0], "amt": [0.0, 0.0, 0.0, 707.0, 0.0], "tr": [0.0, 0.0, 2.0, 20.0, 22.0], "sp": [0.0, 0.01, 0.01, 23.32, 20.64], "adq": [0.0, 0.0, 0.0, 1.0, 0.0]}, {"sku": "TB9LAH04500U1", "asin": "B0C3VQ29ZZ", "cat": "大灯总成", "shop": "VC1", "q": [0.0, 0.0, 0.0, 1.0, 0.0], "amt": [0.0, 0.0, 0.0, 413.0, 0.0], "tr": [0.0, 0.0, 1.0, 6.0, 6.0], "sp": [0.0, 0.0, 0.0, 7.24, 0.0], "adq": [0.0, 0.0, 0.0, 0.0, 0.0]}, {"sku": "03FAHD0011TU1", "asin": "B0BLSH4148", "cat": "雾灯总成", "shop": "VC1", "q": [0.0, 0, 0.0, 0.0, 0.0], "amt": [0.0, 0, 0.0, 0.0, 0.0], "tr": [1.0, 0, 4.0, 1.0, 6.0], "sp": [0.0, 0, 0.0, 0.0, 0.0], "adq": [0.0, 0, 0.0, 0.0, 0.0]}, {"sku": "03FAHD0011TU1", "asin": "B0HNHG1Z8F", "cat": "雾灯总成", "shop": "VC1", "q": [0, 0, 0, 0.0, 0], "amt": [0, 0, 0, 0.0, 0], "tr": [0, 0, 0, 2.0, 0], "sp": [0, 0, 0, 0.0, 0], "adq": [0, 0, 0, 0.0, 0]}, {"sku": "03FAHD0101TU1", "asin": "B0HNH55LHX", "cat": "雾灯总成", "shop": "VC1", "q": [0, 0, 0, 0.0, 0.0], "amt": [0, 0, 0, 0.0, 0.0], "tr": [0, 0, 0, 2.0, 1.0], "sp": [0, 0, 0, 0.0, 0.0], "adq": [0, 0, 0, 0.0, 0.0]}, {"sku": "03FAHD0121TU1", "asin": "B0BLSL5MNC", "cat": "雾灯总成", "shop": "VC1", "q": [0, 0.0, 0.0, 0.0, 0.0], "amt": [0, 0.0, 0.0, 0.0, 0.0], "tr": [0, 1.0, 3.0, 2.0, 2.0], "sp": [0, 0.0, 0.0, 0.0, 0.0], "adq": [0, 0.0, 0.0, 0.0, 0.0]}, {"sku": "03FAHD0121TU1", "asin": "B0HNHCWNP3", "cat": "雾灯总成", "shop": "VC1", "q": [0, 0, 0, 0.0, 0.0], "amt": [0, 0, 0, 0.0, 0.0], "tr": [0, 0, 0, 2.0, 3.0], "sp": [0, 0, 0, 0.0, 0.0], "adq": [0, 0, 0, 0.0, 0.0]}, {"sku": "03FATY0101TU1", "asin": "B0HNHDHG9F", "cat": "雾灯总成", "shop": "VC1", "q": [0, 0, 0, 0, 0.0], "amt": [0, 0, 0, 0, 0.0], "tr": [0, 0, 0, 0, 1.0], "sp": [0, 0, 0, 0, 0.0], "adq": [0, 0, 0, 0, 0.0]}, {"sku": "03HACV0001TU1", "asin": "B0HMRPGBMD", "cat": "大灯总成", "shop": "VC1", "q": [0, 0, 0.0, 0.0, 0.0], "amt": [0, 0, 0.0, 0.0, 0.0], "tr": [0, 0, 2.0, 4.0, 4.0], "sp": [0, 0, 0.0, 0.0, 0.0], "adq": [0, 0, 0.0, 0.0, 0.0]}, {"sku": "03HACV0024TU1", "asin": "B0HMRR7GS4", "cat": "大灯总成", "shop": "VC1", "q": [0, 0, 0.0, 0.0, 0.0], "amt": [0, 0, 0.0, 0.0, 0.0], "tr": [0, 0, 2.0, 2.0, 2.0], "sp": [0, 0, 0.0, 0.0, 0.0], "adq": [0, 0, 0.0, 0.0, 0.0]}, {"sku": "03HADG0001TU1", "asin": "B0HMRNNPWN", "cat": "大灯总成", "shop": "VC1", "q": [0, 0, 0.0, 0.0, 0.0], "amt": [0, 0, 0.0, 0.0, 0.0], "tr": [0, 0, 5.0, 8.0, 8.0], "sp": [0, 0, 0.0, 0.0, 0.0], "adq": [0, 0, 0.0, 0.0, 0.0]}, {"sku": "03HAHD0031TU1", "asin": "B0HMRRYMC4", "cat": "大灯总成", "shop": "VC1", "q": [0, 0, 0.0, 0.0, 0.0], "amt": [0, 0, 0.0, 0.0, 0.0], "tr": [0, 0, 13.0, 7.0, 2.0], "sp": [0, 0, 0.0, 0.0, 0.0], "adq": [0, 0, 0.0, 0.0, 0.0]}, {"sku": "03HATY0011TU1", "asin": "B0HMRT7KGR", "cat": "大灯总成", "shop": "VC1", "q": [0, 0, 0.0, 0.0, 0], "amt": [0, 0, 0.0, 0.0, 0], "tr": [0, 0, 2.0, 2.0, 0], "sp": [0, 0, 0.0, 0.0, 0], "adq": [0, 0, 0.0, 0.0, 0]}, {"sku": "03HATY0123TU1", "asin": "B0HMRWN2JF", "cat": "大灯总成", "shop": "VC1", "q": [0.0, 0.0, 0.0, 0.0, 0.0], "amt": [0.0, 0.0, 0.0, 0.0, 0.0], "tr": [0.0, 0.0, 0.0, 8.0, 6.0], "sp": [0.0, 0.0, 0.0, 0.0, 5.36], "adq": [0.0, 0.0, 0.0, 0.0, 0.0]}, {"sku": "03HATY0211TU1", "asin": "B0HMRRQN9Z", "cat": "大灯总成", "shop": "VC1", "q": [0, 0, 0.0, 0.0, 0.0], "amt": [0, 0, 0.0, 0.0, 0.0], "tr": [0, 0, 5.0, 4.0, 2.0], "sp": [0, 0, 0.0, 0.0, 0.0], "adq": [0, 0, 0.0, 0.0, 0.0]}, {"sku": "03HATY0221TU1", "asin": "B0HMRWZLW1", "cat": "大灯总成", "shop": "VC1", "q": [0, 0, 0.0, 0.0, 0], "amt": [0, 0, 0.0, 0.0, 0], "tr": [0, 0, 2.0, 5.0, 0], "sp": [0, 0, 0.0, 0.0, 0], "adq": [0, 0, 0.0, 0.0, 0]}, {"sku": "KC9LAH01100U1", "asin": "B0BLSBCD3X", "cat": "大灯总成", "shop": "VC1", "q": [0, 0, 0.0, 0.0, 0.0], "amt": [0, 0, 0.0, 0.0, 0.0], "tr": [0, 0, 2.0, 1.0, 9.0], "sp": [0, 0, 0.0, 0.0, 0.0], "adq": [0, 0, 0.0, 0.0, 0.0]}, {"sku": "KC9LAH01100U1", "asin": "B0BM43JS9V", "cat": "大灯总成", "shop": "VC1", "q": [0, 0, 0.0, 0.0, 0], "amt": [0, 0, 0.0, 0.0, 0], "tr": [0, 0, 1.0, 1.0, 0], "sp": [0, 0, 0.0, 0.0, 0], "adq": [0, 0, 0.0, 0.0, 0]}, {"sku": "KC9LAH01100U1", "asin": "B0HMRX4HHL", "cat": "大灯总成", "shop": "VC1", "q": [0, 0, 0, 0.0, 0.0], "amt": [0, 0, 0, 0.0, 0.0], "tr": [0, 0, 0, 2.0, 4.0], "sp": [0, 0, 0, 0.0, 0.0], "adq": [0, 0, 0, 0.0, 0.0]}, {"sku": "KC9LAH31400", "asin": "B0B9SBZ8G3", "cat": "大灯总成", "shop": "US19", "q": [0, 0, 0, 0, 0.0], "amt": [0, 0, 0, 0, 0.0], "tr": [0, 0, 0, 0, 6.0], "sp": [0, 0, 0, 0, 0.0], "adq": [0, 0, 0, 0, 0.0]}, {"sku": "KC9LAH31700", "asin": "B0B9SCSGYX", "cat": "大灯总成", "shop": "VC1", "q": [0.0, 0.0, 0.0, 0.0, 0], "amt": [0.0, 0.0, 0.0, 0.0, 0], "tr": [1.0, 1.0, 4.0, 3.0, 0], "sp": [0.0, 0.0, 0.0, 0.0, 0], "adq": [0.0, 0.0, 0.0, 0.0, 0]}, {"sku": "KC9LAH31700", "asin": "B0C89DRZWD", "cat": "大灯总成", "shop": "VC1", "q": [0, 0, 0.0, 0.0, 0.0], "amt": [0, 0, 0.0, 0.0, 0.0], "tr": [0, 0, 1.0, 1.0, 2.0], "sp": [0, 0, 0.0, 0.0, 0.0], "adq": [0, 0, 0.0, 0.0, 0.0]}, {"sku": "KC9LAH32400", "asin": "B0C89F536Z", "cat": "大灯总成", "shop": "US19", "q": [0, 0, 0, 0, 0.0], "amt": [0, 0, 0, 0, 0.0], "tr": [0, 0, 0, 0, 1.0], "sp": [0, 0, 0, 0, 0.0], "adq": [0, 0, 0, 0, 0.0]}, {"sku": "KC9LAH32600", "asin": "B0BN13PTCQ", "cat": "大灯总成", "shop": "VC1", "q": [0, 0.0, 0.0, 0, 0.0], "amt": [0, 0.0, 0.0, 0, 0.0], "tr": [0, 1.0, 1.0, 0, 5.0], "sp": [0, 0.0, 0.0, 0, 0.0], "adq": [0, 0.0, 0.0, 0, 0.0]}, {"sku": "KC9LAH32600", "asin": "B0C89F3QCZ", "cat": "大灯总成", "shop": "VC1", "q": [0.0, 0.0, 0.0, 0.0, 0.0], "amt": [0.0, 0.0, 0.0, 0.0, 0.0], "tr": [2.0, 0.0, 0.0, 0.0, 4.0], "sp": [0.0, 0.0, 0.0, 0.0, 5.83], "adq": [0.0, 0.0, 0.0, 0.0, 0.0]}, {"sku": "KC9LAH32600", "asin": "B0CV45BWGV", "cat": "大灯总成", "shop": "VC1", "q": [0, 0, 0, 0.0, 0], "amt": [0, 0, 0, 0.0, 0], "tr": [0, 0, 0, 1.0, 0], "sp": [0, 0, 0, 0.0, 0], "adq": [0, 0, 0, 0.0, 0]}, {"sku": "KC9LAH32600", "asin": "B0HMRRPRSR", "cat": "大灯总成", "shop": "VC1", "q": [0, 0, 0, 0.0, 0.0], "amt": [0, 0, 0, 0.0, 0.0], "tr": [0, 0, 0, 6.0, 2.0], "sp": [0, 0, 0, 0.0, 0.0], "adq": [0, 0, 0, 0.0, 0.0]}, {"sku": "KC9LAH33000", "asin": "B0BHL9HZRL", "cat": "大灯总成", "shop": "VC1", "q": [0, 0, 0, 0.0, 0.0], "amt": [0, 0, 0, 0.0, 0.0], "tr": [0, 0, 0, 1.0, 1.0], "sp": [0, 0, 0, 0.0, 0.0], "adq": [0, 0, 0, 0.0, 0.0]}, {"sku": "KC9LAH33000", "asin": "B0HMRL4GNG", "cat": "大灯总成", "shop": "VC1", "q": [0, 0, 0, 0.0, 0], "amt": [0, 0, 0, 0.0, 0], "tr": [0, 0, 0, 2.0, 0], "sp": [0, 0, 0, 0.0, 0], "adq": [0, 0, 0, 0.0, 0]}, {"sku": "KC9LAH34000", "asin": "B0CV45TXJG", "cat": "大灯总成", "shop": "VC1", "q": [0, 0, 0, 0.0, 0], "amt": [0, 0, 0, 0.0, 0], "tr": [0, 0, 0, 1.0, 0], "sp": [0, 0, 0, 0.0, 0], "adq": [0, 0, 0, 0.0, 0]}, {"sku": "KC9LAH34000", "asin": "B0HMS24FX4", "cat": "大灯总成", "shop": "VC1", "q": [0, 0, 0.0, 0.0, 0], "amt": [0, 0, 0.0, 0.0, 0], "tr": [0, 0, 2.0, 7.0, 0], "sp": [0, 0, 0.0, 0.0, 0], "adq": [0, 0, 0.0, 0.0, 0]}, {"sku": "KC9LAH34100", "asin": "B0HMRTWQV4", "cat": "大灯总成", "shop": "VC1", "q": [0, 0, 0.0, 0, 0], "amt": [0, 0, 0.0, 0, 0], "tr": [0, 0, 4.0, 0, 0], "sp": [0, 0, 0.0, 0, 0], "adq": [0, 0, 0.0, 0, 0]}, {"sku": "KC9LAH37700", "asin": "B0C3YRW9C8", "cat": "大灯总成", "shop": "VC1", "q": [0.0, 0, 0.0, 0, 0], "amt": [0.0, 0, 0.0, 0, 0], "tr": [1.0, 0, 1.0, 0, 0], "sp": [0.0, 0, 0.0, 0, 0], "adq": [0.0, 0, 0.0, 0, 0]}, {"sku": "KC9LAH37700", "asin": "B0CB65LLST", "cat": "大灯总成", "shop": "VC1", "q": [0, 0, 0.0, 0, 0], "amt": [0, 0, 0.0, 0, 0], "tr": [0, 0, 1.0, 0, 0], "sp": [0, 0, 0.0, 0, 0], "adq": [0, 0, 0.0, 0, 0]}, {"sku": "KC9LAH37700", "asin": "B0HMRHXCC7", "cat": "大灯总成", "shop": "VC1", "q": [0.0, 0.0, 0.0, 0.0, 0.0], "amt": [0.0, 0.0, 0.0, 0.0, 0.0], "tr": [0.0, 0.0, 1.0, 1.0, 6.0], "sp": [0.0, 0.0, 0.0, 0.0, 4.22], "adq": [0.0, 0.0, 0.0, 0.0, 0.0]}, {"sku": "KC9LAH38400", "asin": "B0HMRRYSY3", "cat": "大灯总成", "shop": "VC1", "q": [0, 0, 0.0, 0, 0], "amt": [0, 0, 0.0, 0, 0], "tr": [0, 0, 3.0, 0, 0], "sp": [0, 0, 0.0, 0, 0], "adq": [0, 0, 0.0, 0, 0]}, {"sku": "KC9LAH38600", "asin": "B0HMRZL7ND", "cat": "大灯总成", "shop": "VC1", "q": [0, 0, 0.0, 0.0, 0.0], "amt": [0, 0, 0.0, 0.0, 0.0], "tr": [0, 0, 2.0, 2.0, 2.0], "sp": [0, 0, 0.0, 0.0, 0.0], "adq": [0, 0, 0.0, 0.0, 0.0]}, {"sku": "KC9LAH39800", "asin": "B0HMRZ3KL4", "cat": "大灯总成", "shop": "VC1", "q": [0.0, 0.0, 0.0, 0.0, 0.0], "amt": [0.0, 0.0, 0.0, 0.0, 0.0], "tr": [0.0, 0.0, 0.0, 0.0, 19.0], "sp": [0.0, 0.0, 0.0, 0.0, 18.02], "adq": [0.0, 0.0, 0.0, 0.0, 0.0]}, {"sku": "KC9LAH41300", "asin": "B0BN15966J", "cat": "大灯总成", "shop": "VC1", "q": [0.0, 0.0, 0.0, 0.0, 0.0], "amt": [0.0, 0.0, 0.0, 0.0, 0.0], "tr": [1.0, 1.0, 2.0, 4.0, 1.0], "sp": [0.0, 0.0, 0.0, 0.0, 0.0], "adq": [0.0, 0.0, 0.0, 0.0, 0.0]}, {"sku": "KC9LAH41300", "asin": "B0HMRSHM4H", "cat": "大灯总成", "shop": "VC1", "q": [0, 0, 0, 0, 0.0], "amt": [0, 0, 0, 0, 0.0], "tr": [0, 0, 0, 0, 2.0], "sp": [0, 0, 0, 0, 0.0], "adq": [0, 0, 0, 0, 0.0]}, {"sku": "KC9LAH42000", "asin": "B0BXPDSDST", "cat": "大灯总成", "shop": "VC1", "q": [0.0, 0.0, 0.0, 0.0, 0.0], "amt": [0.0, 0.0, 0.0, 0.0, 0.0], "tr": [2.0, 1.0, 0.0, 3.0, 8.0], "sp": [0.0, 0.01, 0.01, 0.01, 51.93], "adq": [0.0, 0.0, 0.0, 0.0, 0.0]}, {"sku": "KC9LAH42000", "asin": "B0C5F45DN8", "cat": "大灯总成", "shop": "US19", "q": [0, 0, 0, 0.0, 0.0], "amt": [0, 0, 0, 0.0, 0.0], "tr": [0, 0, 0, 1.0, 2.0], "sp": [0, 0, 0, 0.0, 0.0], "adq": [0, 0, 0, 0.0, 0.0]}, {"sku": "KC9LAH42000", "asin": "B0HMRTVFRR", "cat": "大灯总成", "shop": "VC1", "q": [0.0, 0.0, 0.0, 0.0, 0.0], "amt": [0.0, 0.0, 0.0, 0.0, 0.0], "tr": [0.0, 0.0, 0.0, 2.0, 16.0], "sp": [0.0, 0.0, 0.0, 0.0, 13.87], "adq": [0.0, 0.0, 0.0, 0.0, 0.0]}, {"sku": "KC9LAH42200", "asin": "B0HMRZHJSN", "cat": "大灯总成", "shop": "VC1", "q": [0, 0, 0.0, 0, 0.0], "amt": [0, 0, 0.0, 0, 0.0], "tr": [0, 0, 2.0, 0, 2.0], "sp": [0, 0, 0.0, 0, 0.0], "adq": [0, 0, 0.0, 0, 0.0]}, {"sku": "KC9LAH42500", "asin": "B0HMRZN7K9", "cat": "大灯总成", "shop": "VC1", "q": [0, 0, 0.0, 0.0, 0], "amt": [0, 0, 0.0, 0.0, 0], "tr": [0, 0, 2.0, 2.0, 0], "sp": [0, 0, 0.0, 0.0, 0], "adq": [0, 0, 0.0, 0.0, 0]}, {"sku": "KC9LAH42700", "asin": "B0CCVJ2T4Q", "cat": "大灯总成", "shop": "VC1", "q": [0, 0, 0.0, 0, 0], "amt": [0, 0, 0.0, 0, 0], "tr": [0, 0, 5.0, 0, 0], "sp": [0, 0, 0.0, 0, 0], "adq": [0, 0, 0.0, 0, 0]}, {"sku": "KC9LAH42700", "asin": "B0HMRV1FFY", "cat": "大灯总成", "shop": "VC1", "q": [0, 0, 0.0, 0.0, 0.0], "amt": [0, 0, 0.0, 0.0, 0.0], "tr": [0, 0, 2.0, 6.0, 2.0], "sp": [0, 0, 0.0, 0.0, 0.0], "adq": [0, 0, 0.0, 0.0, 0.0]}, {"sku": "KC9LAH43000", "asin": "B0HMRL84NB", "cat": "大灯总成", "shop": "VC1", "q": [0.0, 0.0, 0.0, 0.0, 0.0], "amt": [0.0, 0.0, 0.0, 0.0, 0.0], "tr": [0.0, 0.0, 2.0, 2.0, 14.0], "sp": [0.0, 0.0, 0.0, 0.0, 19.03], "adq": [0.0, 0.0, 0.0, 0.0, 0.0]}, {"sku": "KC9LAH43200", "asin": "B0HMRQHP2F", "cat": "大灯总成", "shop": "VC1", "q": [0, 0, 0.0, 0.0, 0.0], "amt": [0, 0, 0.0, 0.0, 0.0], "tr": [0, 0, 2.0, 5.0, 8.0], "sp": [0, 0, 0.0, 0.0, 0.0], "adq": [0, 0, 0.0, 0.0, 0.0]}, {"sku": "KC9LAH44100", "asin": "B0HMRQP79T", "cat": "大灯总成", "shop": "VC1", "q": [0, 0, 0.0, 0.0, 0.0], "amt": [0, 0, 0.0, 0.0, 0.0], "tr": [0, 0, 2.0, 2.0, 6.0], "sp": [0, 0, 0.0, 0.0, 0.0], "adq": [0, 0, 0.0, 0.0, 0.0]}, {"sku": "KC9LAH44300", "asin": "B0HMW12DKF", "cat": "大灯总成", "shop": "VC1", "q": [0.0, 0.0, 0.0, 0.0, 0.0], "amt": [0.0, 0.0, 0.0, 0.0, 0.0], "tr": [0.0, 0.0, 4.0, 11.0, 49.0], "sp": [0.01, 0.02, 0.02, 8.05, 92.27], "adq": [0.0, 0.0, 0.0, 0.0, 0.0]}, {"sku": "KC9LAH48000", "asin": "B0HMRLCM5B", "cat": "大灯总成", "shop": "VC1", "q": [0.0, 0.0, 0.0, 0.0, 0.0], "amt": [0.0, 0.0, 0.0, 0.0, 0.0], "tr": [0.0, 0.0, 8.0, 5.0, 4.0], "sp": [0.0, 0.0, 0.0, 5.36, 5.63], "adq": [0.0, 0.0, 0.0, 0.0, 0.0]}, {"sku": "KC9LAH48500", "asin": "B0HMRSJ7LF", "cat": "大灯总成", "shop": "VC1", "q": [0, 0, 0.0, 0.0, 0], "amt": [0, 0, 0.0, 0.0, 0], "tr": [0, 0, 3.0, 8.0, 0], "sp": [0, 0, 0.0, 0.0, 0], "adq": [0, 0, 0.0, 0.0, 0]}, {"sku": "KC9LAH53400", "asin": "B0HMRZ8CNF", "cat": "大灯总成", "shop": "VC1", "q": [0.0, 0.0, 0.0, 0.0, 0.0], "amt": [0.0, 0.0, 0.0, 0.0, 0.0], "tr": [0.0, 0.0, 0.0, 2.0, 2.0], "sp": [0.0, 0.0, 0.0, 3.08, 0.0], "adq": [0.0, 0.0, 0.0, 0.0, 0.0]}, {"sku": "KC9LAH53600", "asin": "B0C89DC2BS", "cat": "大灯总成", "shop": "VC1", "q": [0.0, 0.0, 0.0, 0.0, 0.0], "amt": [0.0, 0.0, 0.0, 0.0, 0.0], "tr": [0.0, 0.0, 0.0, 0.0, 2.0], "sp": [0.0, 0.0, 0.0, 0.0, 3.02], "adq": [0.0, 0.0, 0.0, 0.0, 0.0]}, {"sku": "KC9LAH53700", "asin": "B0HMRZCMVC", "cat": "大灯总成", "shop": "VC1", "q": [0, 0, 0, 0, 0.0], "amt": [0, 0, 0, 0, 0.0], "tr": [0, 0, 0, 0, 3.0], "sp": [0, 0, 0, 0, 0.0], "adq": [0, 0, 0, 0, 0.0]}, {"sku": "KC9LAH54000", "asin": "B0C89FVTT1", "cat": "大灯总成", "shop": "VC1", "q": [0, 0, 0.0, 0.0, 0], "amt": [0, 0, 0.0, 0.0, 0], "tr": [0, 0, 1.0, 2.0, 0], "sp": [0, 0, 0.0, 0.0, 0], "adq": [0, 0, 0.0, 0.0, 0]}, {"sku": "KC9LAH54500", "asin": "B0HMRQC3Q1", "cat": "大灯总成", "shop": "VC1", "q": [0.0, 0.0, 0.0, 0.0, 0.0], "amt": [0.0, 0.0, 0.0, 0.0, 0.0], "tr": [0.0, 0.0, 0.0, 0.0, 6.0], "sp": [0.0, 0.0, 0.0, 0.0, 4.29], "adq": [0.0, 0.0, 0.0, 0.0, 0.0]}, {"sku": "KC9LAH55100", "asin": "B0HMRL5K3K", "cat": "大灯总成", "shop": "VC1", "q": [0, 0, 0, 0.0, 0], "amt": [0, 0, 0, 0.0, 0], "tr": [0, 0, 0, 6.0, 0], "sp": [0, 0, 0, 0.0, 0], "adq": [0, 0, 0, 0.0, 0]}, {"sku": "KC9LAH56100", "asin": "B0HMRZ45YS", "cat": "大灯总成", "shop": "VC1", "q": [0.0, 0.0, 0.0, 0.0, 0.0], "amt": [0.0, 0.0, 0.0, 0.0, 0.0], "tr": [0.0, 0.0, 0.0, 2.0, 12.0], "sp": [0.0, 0.0, 0.0, 0.0, 3.48], "adq": [0.0, 0.0, 0.0, 0.0, 0.0]}, {"sku": "KC9LAH56400", "asin": "B0HMS2KMHT", "cat": "大灯总成", "shop": "VC1", "q": [0.0, 0.0, 0.0, 0.0, 0.0], "amt": [0.0, 0.0, 0.0, 0.0, 0.0], "tr": [0.0, 0.0, 0.0, 4.0, 10.0], "sp": [0.0, 0.0, 0.0, 0.0, 4.09], "adq": [0.0, 0.0, 0.0, 0.0, 0.0]}, {"sku": "KC9LAH56500", "asin": "B0HMRZN27Q", "cat": "大灯总成", "shop": "VC1", "q": [0, 0, 0, 0.0, 0.0], "amt": [0, 0, 0, 0.0, 0.0], "tr": [0, 0, 0, 2.0, 2.0], "sp": [0, 0, 0, 0.0, 0.0], "adq": [0, 0, 0, 0.0, 0.0]}, {"sku": "KC9LAH56600", "asin": "B0HMRZB7SS", "cat": "大灯总成", "shop": "VC1", "q": [0.0, 0.0, 0.0, 0.0, 0.0], "amt": [0.0, 0.0, 0.0, 0.0, 0.0], "tr": [0.0, 0.0, 0.0, 8.0, 1.0], "sp": [0.0, 0.0, 0.0, 5.36, 0.0], "adq": [0.0, 0.0, 0.0, 0.0, 0.0]}, {"sku": "KC9LAH57300", "asin": "B0CT2CD2BW", "cat": "大灯总成", "shop": "VC1", "q": [0, 0, 0.0, 0.0, 0.0], "amt": [0, 0, 0.0, 0.0, 0.0], "tr": [0, 0, 8.0, 9.0, 9.0], "sp": [0, 0, 0.0, 0.0, 0.0], "adq": [0, 0, 0.0, 0.0, 0.0]}, {"sku": "KC9LAH57300", "asin": "B0HMRRHDZK", "cat": "大灯总成", "shop": "VC1", "q": [0.0, 0.0, 0.0, 0.0, 0.0], "amt": [0.0, 0.0, 0.0, 0.0, 0.0], "tr": [0.0, 0.0, 2.0, 0.0, 7.0], "sp": [0.0, 0.0, 0.0, 0.0, 3.02], "adq": [0.0, 0.0, 0.0, 0.0, 0.0]}, {"sku": "KC9LAH57400", "asin": "B0CSYYB8K4", "cat": "大灯总成", "shop": "VC1", "q": [0, 0, 0.0, 0, 0], "amt": [0, 0, 0.0, 0, 0], "tr": [0, 0, 2.0, 0, 0], "sp": [0, 0, 0.0, 0, 0], "adq": [0, 0, 0.0, 0, 0]}, {"sku": "KC9LAH57400", "asin": "B0HMRX4DHC", "cat": "大灯总成", "shop": "VC1", "q": [0, 0, 0.0, 0.0, 0], "amt": [0, 0, 0.0, 0.0, 0], "tr": [0, 0, 3.0, 2.0, 0], "sp": [0, 0, 0.0, 0.0, 0], "adq": [0, 0, 0.0, 0.0, 0]}, {"sku": "KC9LAH57800", "asin": "B0HMRSW79X", "cat": "大灯总成", "shop": "VC1", "q": [0.0, 0.0, 0.0, 0.0, 0.0], "amt": [0.0, 0.0, 0.0, 0.0, 0.0], "tr": [0.0, 0.0, 5.0, 9.0, 8.0], "sp": [0.0, 0.0, 0.0, 2.41, 7.57], "adq": [0.0, 0.0, 0.0, 0.0, 0.0]}, {"sku": "KC9LAH58200", "asin": "B0CT29X867", "cat": "大灯总成", "shop": "VC1", "q": [0.0, 0.0, 0.0, 0.0, 0.0], "amt": [0.0, 0.0, 0.0, 0.0, 0.0], "tr": [4.0, 6.0, 4.0, 7.0, 0.0], "sp": [11.39, 8.24, 0.0, 1.94, 0.0], "adq": [0.0, 0.0, 0.0, 0.0, 0.0]}, {"sku": "KC9LAH58200", "asin": "B0HMRWGZ7R", "cat": "大灯总成", "shop": "VC1", "q": [0.0, 0.0, 0.0, 0.0, 0.0], "amt": [0.0, 0.0, 0.0, 0.0, 0.0], "tr": [0.0, 0.0, 4.0, 6.0, 27.0], "sp": [0.0, 0.01, 0.01, 3.83, 59.9], "adq": [0.0, 0.0, 0.0, 0.0, 0.0]}, {"sku": "KC9LAH59000", "asin": "B0HMRNFFRS", "cat": "大灯总成", "shop": "VC1", "q": [0, 0, 0.0, 0.0, 0.0], "amt": [0, 0, 0.0, 0.0, 0.0], "tr": [0, 0, 2.0, 2.0, 5.0], "sp": [0, 0, 0.0, 0.0, 0.0], "adq": [0, 0, 0.0, 0.0, 0.0]}, {"sku": "KC9LAH59500", "asin": "B0HMRXVXZS", "cat": "大灯总成", "shop": "VC1", "q": [0, 0, 0.0, 0.0, 0.0], "amt": [0, 0, 0.0, 0.0, 0.0], "tr": [0, 0, 2.0, 3.0, 3.0], "sp": [0, 0, 0.0, 0.0, 0.0], "adq": [0, 0, 0.0, 0.0, 0.0]}, {"sku": "KC9LAH59900", "asin": "B0CSYZQYWG", "cat": "大灯总成", "shop": "US19", "q": [0, 0, 0, 0.0, 0], "amt": [0, 0, 0, 0.0, 0], "tr": [0, 0, 0, 1.0, 0], "sp": [0, 0, 0, 0.0, 0], "adq": [0, 0, 0, 0.0, 0]}, {"sku": "KC9LAH60000", "asin": "B0HMRQKKRV", "cat": "大灯总成", "shop": "VC1", "q": [0.0, 0.0, 0.0, 0.0, 0.0], "amt": [0.0, 0.0, 0.0, 0.0, 0.0], "tr": [0.0, 0.0, 0.0, 4.0, 0.0], "sp": [0.0, 0.0, 0.0, 2.35, 0.0], "adq": [0.0, 0.0, 0.0, 0.0, 0.0]}, {"sku": "KC9LAH60200", "asin": "B0HMRW7MTW", "cat": "大灯总成", "shop": "VC1", "q": [0, 0, 0.0, 0.0, 0.0], "amt": [0, 0, 0.0, 0.0, 0.0], "tr": [0, 0, 5.0, 4.0, 4.0], "sp": [0, 0, 0.0, 0.0, 0.0], "adq": [0, 0, 0.0, 0.0, 0.0]}, {"sku": "KC9LAH60400", "asin": "B0HMRN9KF1", "cat": "大灯总成", "shop": "VC1", "q": [0.0, 0.0, 0.0, 0.0, 0.0], "amt": [0.0, 0.0, 0.0, 0.0, 0.0], "tr": [0.0, 0.0, 5.0, 2.0, 8.0], "sp": [0.0, 0.0, 0.0, 0.0, 3.48], "adq": [0.0, 0.0, 0.0, 0.0, 0.0]}, {"sku": "KC9LAT01500", "asin": "B0HN8D326Q", "cat": "尾灯总成", "shop": "VC1", "q": [0, 0, 0, 0.0, 0], "amt": [0, 0, 0, 0.0, 0], "tr": [0, 0, 0, 1.0, 0], "sp": [0, 0, 0, 0.0, 0], "adq": [0, 0, 0, 0.0, 0]}, {"sku": "KC9LAT05400", "asin": "B0HN89Q14P", "cat": "尾灯总成", "shop": "VC1", "q": [0, 0, 0, 0, 0.0], "amt": [0, 0, 0, 0, 0.0], "tr": [0, 0, 0, 0, 1.0], "sp": [0, 0, 0, 0, 0.0], "adq": [0, 0, 0, 0, 0.0]}, {"sku": "KC9LAT05900", "asin": "B0DBVQPFX4", "cat": "尾灯总成", "shop": "VC1", "q": [0.0, 0.0, 0.0, 0.0, 0.0], "amt": [0.0, 0.0, 0.0, 0.0, 0.0], "tr": [0.0, 1.0, 4.0, 0.0, 0.0], "sp": [0.0, 3.35, 0.0, 0.0, 0.0], "adq": [0.0, 0.0, 0.0, 0.0, 0.0]}, {"sku": "KC9LAT05900", "asin": "B0HN89P1B1", "cat": "尾灯总成", "shop": "VC1", "q": [0, 0, 0, 0.0, 0], "amt": [0, 0, 0, 0.0, 0], "tr": [0, 0, 0, 2.0, 0], "sp": [0, 0, 0, 0.0, 0], "adq": [0, 0, 0, 0.0, 0]}, {"sku": "KC9LAT07800", "asin": "B0DBVNXCCX", "cat": "尾灯总成", "shop": "VC1", "q": [0, 0.0, 0.0, 0.0, 0.0], "amt": [0, 0.0, 0.0, 0.0, 0.0], "tr": [0, 1.0, 4.0, 1.0, 1.0], "sp": [0, 0.0, 0.0, 0.0, 0.0], "adq": [0, 0.0, 0.0, 0.0, 0.0]}, {"sku": "KC9LAT07800", "asin": "B0HN8L7DPG", "cat": "尾灯总成", "shop": "VC1", "q": [0, 0, 0, 0.0, 0], "amt": [0, 0, 0, 0.0, 0], "tr": [0, 0, 0, 4.0, 0], "sp": [0, 0, 0, 0.0, 0], "adq": [0, 0, 0, 0.0, 0]}, {"sku": "KC9LAT08700", "asin": "B0HMRR5D8S", "cat": "大灯总成", "shop": "VC1", "q": [0, 0, 0, 0.0, 0.0], "amt": [0, 0, 0, 0.0, 0.0], "tr": [0, 0, 0, 2.0, 2.0], "sp": [0, 0, 0, 0.0, 0.0], "adq": [0, 0, 0, 0.0, 0.0]}, {"sku": "TB9LAH00200U2", "asin": "B0C49M1FMM", "cat": "大灯总成", "shop": "US19", "q": [0, 0, 0.0, 0, 0], "amt": [0, 0, 0.0, 0, 0], "tr": [0, 0, 1.0, 0, 0], "sp": [0, 0, 0.0, 0, 0], "adq": [0, 0, 0.0, 0, 0]}, {"sku": "TB9LAH00200U2", "asin": "B0HMRSHJHS", "cat": "大灯总成", "shop": "VC1", "q": [0, 0, 0.0, 0, 0.0], "amt": [0, 0, 0.0, 0, 0.0], "tr": [0, 0, 2.0, 0, 2.0], "sp": [0, 0, 0.0, 0, 0.0], "adq": [0, 0, 0.0, 0, 0.0]}, {"sku": "TB9LAH01200U2", "asin": "B0HMRN4NRR", "cat": "大灯总成", "shop": "VC1", "q": [0, 0, 0.0, 0.0, 0], "amt": [0, 0, 0.0, 0.0, 0], "tr": [0, 0, 2.0, 5.0, 0], "sp": [0, 0, 0.0, 0.0, 0], "adq": [0, 0, 0.0, 0.0, 0]}, {"sku": "TB9LAH01900U2", "asin": "B0HMRYZ3K8", "cat": "大灯总成", "shop": "VC1", "q": [0.0, 0.0, 0.0, 0.0, 0.0], "amt": [0.0, 0.0, 0.0, 0.0, 0.0], "tr": [0.0, 0.0, 2.0, 4.0, 16.0], "sp": [0.0, 0.0, 0.0, 0.0, 5.09], "adq": [0.0, 0.0, 0.0, 0.0, 0.0]}, {"sku": "TB9LAH02100U2", "asin": "B0C4698L7W", "cat": "大灯总成", "shop": "VC1", "q": [0, 0, 0, 0.0, 0], "amt": [0, 0, 0, 0.0, 0], "tr": [0, 0, 0, 5.0, 0], "sp": [0, 0, 0, 0.0, 0], "adq": [0, 0, 0, 0.0, 0]}, {"sku": "TB9LAH02100U2", "asin": "B0HMRWZLVX", "cat": "大灯总成", "shop": "VC1", "q": [0, 0, 0, 0, 0.0], "amt": [0, 0, 0, 0, 0.0], "tr": [0, 0, 0, 0, 2.0], "sp": [0, 0, 0, 0, 0.0], "adq": [0, 0, 0, 0, 0.0]}, {"sku": "TB9LAH03800U1", "asin": "B0BLSCWLVZ", "cat": "大灯总成", "shop": "VC1", "q": [0, 0, 0.0, 0.0, 0.0], "amt": [0, 0, 0.0, 0.0, 0.0], "tr": [0, 0, 2.0, 7.0, 2.0], "sp": [0, 0, 0.0, 0.0, 0.0], "adq": [0, 0, 0.0, 0.0, 0.0]}, {"sku": "TB9LAH03800U1", "asin": "B0G4D7TYWN", "cat": "大灯总成", "shop": "US19", "q": [0.0, 0, 0.0, 0, 0], "amt": [0.0, 0, 0.0, 0, 0], "tr": [1.0, 0, 1.0, 0, 0], "sp": [0.0, 0, 0.0, 0, 0], "adq": [0.0, 0, 0.0, 0, 0]}, {"sku": "TB9LAH03800U1", "asin": "B0HMVYXCYB", "cat": "大灯总成", "shop": "VC1", "q": [0, 0, 0.0, 0.0, 0.0], "amt": [0, 0, 0.0, 0.0, 0.0], "tr": [0, 0, 4.0, 5.0, 3.0], "sp": [0, 0, 0.0, 0.0, 0.0], "adq": [0, 0, 0.0, 0.0, 0.0]}, {"sku": "TB9LAH04500U1", "asin": "B0CF96L9WH", "cat": "大灯总成", "shop": "VC1", "q": [0, 0, 0.0, 0.0, 0.0], "amt": [0, 0, 0.0, 0.0, 0.0], "tr": [0, 0, 2.0, 4.0, 3.0], "sp": [0, 0, 0.0, 0.0, 0.0], "adq": [0, 0, 0.0, 0.0, 0.0]}, {"sku": "TB9LAH04500U1", "asin": "B0CV48F8CG", "cat": "大灯总成", "shop": "VC1", "q": [0, 0, 0.0, 0, 0], "amt": [0, 0, 0.0, 0, 0], "tr": [0, 0, 1.0, 0, 0], "sp": [0, 0, 0.0, 0, 0], "adq": [0, 0, 0.0, 0, 0]}, {"sku": "TB9LAH04500U1", "asin": "B0HMRTGPJH", "cat": "大灯总成", "shop": "VC1", "q": [0, 0, 0, 0, 0.0], "amt": [0, 0, 0, 0, 0.0], "tr": [0, 0, 0, 0, 2.0], "sp": [0, 0, 0, 0, 0.0], "adq": [0, 0, 0, 0, 0.0]}, {"sku": "TB9LAH04600U1", "asin": "B0HMRV46XC", "cat": "大灯总成", "shop": "VC1", "q": [0, 0, 0.0, 0.0, 0], "amt": [0, 0, 0.0, 0.0, 0], "tr": [0, 0, 4.0, 2.0, 0], "sp": [0, 0, 0.0, 0.0, 0], "adq": [0, 0, 0.0, 0.0, 0]}, {"sku": "TB9LAH04800U1", "asin": "B0HMRT1Y87", "cat": "大灯总成", "shop": "VC1", "q": [0, 0, 0.0, 0, 0.0], "amt": [0, 0, 0.0, 0, 0.0], "tr": [0, 0, 2.0, 0, 6.0], "sp": [0, 0, 0.0, 0, 0.0], "adq": [0, 0, 0.0, 0, 0.0]}, {"sku": "TB9LAH05100U1", "asin": "B0BXDMDF3W", "cat": "大灯总成", "shop": "VC1", "q": [0, 0, 0, 0.0, 0], "amt": [0, 0, 0, 0.0, 0], "tr": [0, 0, 0, 1.0, 0], "sp": [0, 0, 0, 0.0, 0], "adq": [0, 0, 0, 0.0, 0]}, {"sku": "TB9LAH05100U1", "asin": "B0HMRY46XJ", "cat": "大灯总成", "shop": "VC1", "q": [0, 0, 0, 0.0, 0.0], "amt": [0, 0, 0, 0.0, 0.0], "tr": [0, 0, 0, 5.0, 5.0], "sp": [0, 0, 0, 0.0, 0.0], "adq": [0, 0, 0, 0.0, 0.0]}, {"sku": "TB9LAH06000U1", "asin": "B0HMRW62FY", "cat": "大灯总成", "shop": "VC1", "q": [0, 0, 0, 0.0, 0], "amt": [0, 0, 0, 0.0, 0], "tr": [0, 0, 0, 2.0, 0], "sp": [0, 0, 0, 0.0, 0], "adq": [0, 0, 0, 0.0, 0]}, {"sku": "TB9LAH06600U1", "asin": "B0HMRL84LX", "cat": "大灯总成", "shop": "VC1", "q": [0.0, 0.0, 0.0, 0.0, 0.0], "amt": [0.0, 0.0, 0.0, 0.0, 0.0], "tr": [0.0, 0.0, 0.0, 2.0, 2.0], "sp": [0.0, 0.0, 0.0, 0.0, 4.22], "adq": [0.0, 0.0, 0.0, 0.0, 0.0]}, {"sku": "TB9LAH06700U1", "asin": "B0BXN4W4MM", "cat": "大灯总成", "shop": "VC1", "q": [0.0, 0, 0.0, 0, 0.0], "amt": [0.0, 0, 0.0, 0, 0.0], "tr": [1.0, 0, 2.0, 0, 2.0], "sp": [0.0, 0, 0.0, 0, 0.0], "adq": [0.0, 0, 0.0, 0, 0.0]}, {"sku": "TB9LAH06700U1", "asin": "B0HMRYDKGB", "cat": "大灯总成", "shop": "VC1", "q": [0, 0, 0.0, 0, 0], "amt": [0, 0, 0.0, 0, 0], "tr": [0, 0, 2.0, 0, 0], "sp": [0, 0, 0.0, 0, 0], "adq": [0, 0, 0.0, 0, 0]}, {"sku": "TB9LAH07100U1", "asin": "B0BLYN2JN9", "cat": "大灯总成", "shop": "VC1", "q": [0, 0.0, 0.0, 0, 0.0], "amt": [0, 0.0, 0.0, 0, 0.0], "tr": [0, 1.0, 1.0, 0, 2.0], "sp": [0, 0.0, 0.0, 0, 0.0], "adq": [0, 0.0, 0.0, 0, 0.0]}, {"sku": "TB9LAH07100U1", "asin": "B0HMRSQPDB", "cat": "大灯总成", "shop": "VC1", "q": [0, 0, 0.0, 0.0, 0], "amt": [0, 0, 0.0, 0.0, 0], "tr": [0, 0, 2.0, 4.0, 0], "sp": [0, 0, 0.0, 0.0, 0], "adq": [0, 0, 0.0, 0.0, 0]}, {"sku": "TB9LAH36300", "asin": "B0CV45RGG3", "cat": "大灯总成", "shop": "VC1", "q": [0, 0, 0.0, 0.0, 0.0], "amt": [0, 0, 0.0, 0.0, 0.0], "tr": [0, 0, 1.0, 5.0, 6.0], "sp": [0, 0, 0.0, 0.0, 0.0], "adq": [0, 0, 0.0, 0.0, 0.0]}, {"sku": "TB9LAH36300", "asin": "B0HMRNGSYP", "cat": "大灯总成", "shop": "VC1", "q": [0, 0, 0.0, 0.0, 0], "amt": [0, 0, 0.0, 0.0, 0], "tr": [0, 0, 4.0, 2.0, 0], "sp": [0, 0, 0.0, 0.0, 0], "adq": [0, 0, 0.0, 0.0, 0]}, {"sku": "TB9LAH45700", "asin": "B0HMRYT9ZQ", "cat": "大灯总成", "shop": "VC1", "q": [0, 0, 0, 0, 0.0], "amt": [0, 0, 0, 0, 0.0], "tr": [0, 0, 0, 0, 5.0], "sp": [0, 0, 0, 0, 0.0], "adq": [0, 0, 0, 0, 0.0]}], "inventory": [{"sku": "KC9LAH44100", "fba": 0.0, "fba_wip": 0.0, "ov": 275.0, "ov_wip": 23.0, "loc": 180.0, "total": 478.0, "cov": 10.6944444444444, "s7": 6.0, "s14": 11.0}, {"sku": "KC9LAH34000", "fba": 0.0, "fba_wip": 0.0, "ov": 146.0, "ov_wip": 74.0, "loc": 108.0, "total": 328.0, "cov": 999.0, "s7": 0.0, "s14": 0.0}, {"sku": "03FAHD0011TU1", "fba": 1.0, "fba_wip": 0.0, "ov": 278.0, "ov_wip": 2.0, "loc": 1.0, "total": 282.0, "cov": 32.4333333333333, "s7": 2.0, "s14": 5.0}, {"sku": "03FAHD0101TU1", "fba": 0.0, "fba_wip": 0.0, "ov": 115.0, "ov_wip": 0.0, "loc": 114.0, "total": 229.0, "cov": 999.0, "s7": 0.0, "s14": 0.0}, {"sku": "KC9LAH58200", "fba": 0.0, "fba_wip": 0.0, "ov": 140.0, "ov_wip": 15.0, "loc": 65.0, "total": 220.0, "cov": 999.0, "s7": 0.0, "s14": 4.0}, {"sku": "KC9LAH56100", "fba": 0.0, "fba_wip": 0.0, "ov": 45.0, "ov_wip": 34.0, "loc": 103.0, "total": 182.0, "cov": 10.5, "s7": 1.0, "s14": 2.0}, {"sku": "TB9LAH04600U1", "fba": 0.0, "fba_wip": 0.0, "ov": 99.0, "ov_wip": 37.0, "loc": 41.0, "total": 177.0, "cov": 23.1, "s7": 1.0, "s14": 1.0}, {"sku": "KC9LAH57500", "fba": 0.0, "fba_wip": 0.0, "ov": 121.0, "ov_wip": 20.0, "loc": 33.0, "total": 174.0, "cov": 28.2333333333333, "s7": 1.0, "s14": 4.0}, {"sku": "KC9LAH57400", "fba": 0.0, "fba_wip": 0.0, "ov": 104.0, "ov_wip": 7.0, "loc": 23.0, "total": 134.0, "cov": 12.1333333333333, "s7": 2.0, "s14": 2.0}, {"sku": "KC9LAH57300", "fba": 0.0, "fba_wip": 0.0, "ov": 90.0, "ov_wip": 16.0, "loc": 21.0, "total": 127.0, "cov": 21.0, "s7": 1.0, "s14": 7.0}, {"sku": "TB9LAH01900U2", "fba": 0.0, "fba_wip": 0.0, "ov": 68.0, "ov_wip": 42.0, "loc": 10.0, "total": 120.0, "cov": 7.93333333333333, "s7": 2.0, "s14": 6.0}, {"sku": "KC9LAH39800", "fba": 0.0, "fba_wip": 0.0, "ov": 93.0, "ov_wip": 0.0, "loc": 23.0, "total": 116.0, "cov": 7.23333333333333, "s7": 3.0, "s14": 4.0}, {"sku": "KC9LAH01100U1", "fba": 0.0, "fba_wip": 0.0, "ov": 74.0, "ov_wip": 12.0, "loc": 22.0, "total": 108.0, "cov": 999.0, "s7": 0.0, "s14": 2.0}, {"sku": "KC9LAH42000", "fba": 0.0, "fba_wip": 0.0, "ov": 77.0, "ov_wip": 26.0, "loc": 0.0, "total": 103.0, "cov": 17.9666666666667, "s7": 1.0, "s14": 2.0}, {"sku": "KC9LAH53700", "fba": 0.0, "fba_wip": 0.0, "ov": 99.0, "ov_wip": 0.0, "loc": 0.0, "total": 99.0, "cov": 23.1, "s7": 1.0, "s14": 1.0}, {"sku": "KC9LAH57700", "fba": 0.0, "fba_wip": 0.0, "ov": 31.0, "ov_wip": 41.0, "loc": 23.0, "total": 95.0, "cov": 999.0, "s7": 0.0, "s14": 1.0}, {"sku": "TB9LAH03800U1", "fba": 0.0, "fba_wip": 0.0, "ov": 91.0, "ov_wip": 0.0, "loc": 0.0, "total": 91.0, "cov": 21.2333333333333, "s7": 1.0, "s14": 1.0}, {"sku": "03HATY0221TU1", "fba": 0.0, "fba_wip": 0.0, "ov": 77.0, "ov_wip": 5.0, "loc": 2.0, "total": 84.0, "cov": 17.9666666666667, "s7": 1.0, "s14": 2.0}, {"sku": "KC9LAH42200", "fba": 0.0, "fba_wip": 0.0, "ov": 37.0, "ov_wip": 0.0, "loc": 47.0, "total": 84.0, "cov": 8.63333333333333, "s7": 1.0, "s14": 1.0}, {"sku": "KC9LAH60200", "fba": 0.0, "fba_wip": 0.0, "ov": 42.0, "ov_wip": 30.0, "loc": 11.0, "total": 83.0, "cov": 9.8, "s7": 1.0, "s14": 1.0}, {"sku": "03HATY0123TU1", "fba": 0.0, "fba_wip": 0.0, "ov": 77.0, "ov_wip": 0.0, "loc": 1.0, "total": 78.0, "cov": 999.0, "s7": 0.0, "s14": 0.0}, {"sku": "KC9LAH59900", "fba": 0.0, "fba_wip": 0.0, "ov": 64.0, "ov_wip": 6.0, "loc": 6.0, "total": 76.0, "cov": 14.9333333333333, "s7": 1.0, "s14": 1.0}, {"sku": "KC9LAH43000", "fba": 0.0, "fba_wip": 0.0, "ov": 50.0, "ov_wip": 22.0, "loc": 1.0, "total": 73.0, "cov": 5.83333333333333, "s7": 2.0, "s14": 3.0}, {"sku": "KC9LAH44300", "fba": 0.0, "fba_wip": 0.0, "ov": 52.0, "ov_wip": 18.0, "loc": 2.0, "total": 72.0, "cov": 6.06666666666667, "s7": 2.0, "s14": 2.0}, {"sku": "KC9LAH53600", "fba": 0.0, "fba_wip": 0.0, "ov": 67.0, "ov_wip": 2.0, "loc": 1.0, "total": 70.0, "cov": 999.0, "s7": 0.0, "s14": 1.0}, {"sku": "KC9LAH48000", "fba": 0.0, "fba_wip": 0.0, "ov": 66.0, "ov_wip": 0.0, "loc": 1.0, "total": 67.0, "cov": 999.0, "s7": 0.0, "s14": 1.0}, {"sku": "TB9LAH02100U2", "fba": 0.0, "fba_wip": 0.0, "ov": 41.0, "ov_wip": 19.0, "loc": 7.0, "total": 67.0, "cov": 999.0, "s7": 0.0, "s14": 1.0}, {"sku": "TB9LAH00200U2", "fba": 1.0, "fba_wip": 0.0, "ov": 61.0, "ov_wip": 0.0, "loc": 0.0, "total": 62.0, "cov": 999.0, "s7": 0.0, "s14": 1.0}, {"sku": "TB9LAH01200U2", "fba": 0.0, "fba_wip": 0.0, "ov": 42.0, "ov_wip": 6.0, "loc": 14.0, "total": 62.0, "cov": 999.0, "s7": 0.0, "s14": 1.0}, {"sku": "KC9LAH56500", "fba": 0.0, "fba_wip": 0.0, "ov": 59.0, "ov_wip": 0.0, "loc": 1.0, "total": 60.0, "cov": 6.88333333333333, "s7": 2.0, "s14": 2.0}, {"sku": "TB9LAH07100U1", "fba": 0.0, "fba_wip": 0.0, "ov": 49.0, "ov_wip": 8.0, "loc": 2.0, "total": 59.0, "cov": 999.0, "s7": 0.0, "s14": 0.0}, {"sku": "KC9LAH38400", "fba": 0.0, "fba_wip": 0.0, "ov": 50.0, "ov_wip": 6.0, "loc": 1.0, "total": 57.0, "cov": 999.0, "s7": 0.0, "s14": 0.0}, {"sku": "03HACV0001TU1", "fba": 0.0, "fba_wip": 0.0, "ov": 55.0, "ov_wip": 0.0, "loc": 0.0, "total": 55.0, "cov": 999.0, "s7": 0.0, "s14": 0.0}, {"sku": "03HADG0001TU1", "fba": 0.0, "fba_wip": 0.0, "ov": 46.0, "ov_wip": 7.0, "loc": 2.0, "total": 55.0, "cov": 999.0, "s7": 0.0, "s14": 2.0}, {"sku": "KC9LAH42500", "fba": 0.0, "fba_wip": 0.0, "ov": 37.0, "ov_wip": 0.0, "loc": 18.0, "total": 55.0, "cov": 999.0, "s7": 0.0, "s14": 0.0}, {"sku": "KC9LAH57800", "fba": 0.0, "fba_wip": 0.0, "ov": 48.0, "ov_wip": 5.0, "loc": 0.0, "total": 53.0, "cov": 11.2, "s7": 1.0, "s14": 1.0}, {"sku": "TB9LAH36300", "fba": 0.0, "fba_wip": 0.0, "ov": 44.0, "ov_wip": 2.0, "loc": 7.0, "total": 53.0, "cov": 999.0, "s7": 0.0, "s14": 0.0}, {"sku": "TB9LAH05100U1", "fba": 0.0, "fba_wip": 0.0, "ov": 40.0, "ov_wip": 6.0, "loc": 7.0, "total": 53.0, "cov": 999.0, "s7": 0.0, "s14": 0.0}, {"sku": "KC9LAH59000", "fba": 0.0, "fba_wip": 0.0, "ov": 47.0, "ov_wip": 0.0, "loc": 0.0, "total": 47.0, "cov": 999.0, "s7": 0.0, "s14": 0.0}, {"sku": "03HAHD0031TU1", "fba": 0.0, "fba_wip": 0.0, "ov": 46.0, "ov_wip": 0.0, "loc": 1.0, "total": 47.0, "cov": 999.0, "s7": 0.0, "s14": 0.0}, {"sku": "KC9LAH53500", "fba": 0.0, "fba_wip": 0.0, "ov": 22.0, "ov_wip": 15.0, "loc": 10.0, "total": 47.0, "cov": 999.0, "s7": 0.0, "s14": 0.0}, {"sku": "KC9LAH31700", "fba": 0.0, "fba_wip": 0.0, "ov": 45.0, "ov_wip": 0.0, "loc": 0.0, "total": 45.0, "cov": 999.0, "s7": 0.0, "s14": 1.0}, {"sku": "TB9LAH06700U1", "fba": 0.0, "fba_wip": 0.0, "ov": 45.0, "ov_wip": 0.0, "loc": 0.0, "total": 45.0, "cov": 999.0, "s7": 0.0, "s14": 0.0}, {"sku": "KC9LAH37700", "fba": 0.0, "fba_wip": 0.0, "ov": 44.0, "ov_wip": 0.0, "loc": 0.0, "total": 44.0, "cov": 10.2666666666667, "s7": 1.0, "s14": 3.0}, {"sku": "03HACV0024TU1", "fba": 0.0, "fba_wip": 0.0, "ov": 43.0, "ov_wip": 0.0, "loc": 1.0, "total": 44.0, "cov": 999.0, "s7": 0.0, "s14": 0.0}, {"sku": "KC9LAH56400", "fba": 0.0, "fba_wip": 0.0, "ov": 24.0, "ov_wip": 19.0, "loc": 1.0, "total": 44.0, "cov": 999.0, "s7": 0.0, "s14": 0.0}, {"sku": "KC9LAH54500", "fba": 0.0, "fba_wip": 0.0, "ov": 39.0, "ov_wip": 3.0, "loc": 1.0, "total": 43.0, "cov": 999.0, "s7": 0.0, "s14": 0.0}, {"sku": "KC9LAH56600", "fba": 0.0, "fba_wip": 0.0, "ov": 41.0, "ov_wip": 0.0, "loc": 0.0, "total": 41.0, "cov": 9.56666666666667, "s7": 1.0, "s14": 1.0}, {"sku": "KC9LAH53400", "fba": 0.0, "fba_wip": 0.0, "ov": 28.0, "ov_wip": 12.0, "loc": 1.0, "total": 41.0, "cov": 999.0, "s7": 0.0, "s14": 0.0}, {"sku": "TB9LAH04800U1", "fba": 0.0, "fba_wip": 0.0, "ov": 40.0, "ov_wip": 0.0, "loc": 0.0, "total": 40.0, "cov": 999.0, "s7": 0.0, "s14": 0.0}, {"sku": "03HATY0211TU1", "fba": 0.0, "fba_wip": 0.0, "ov": 28.0, "ov_wip": 9.0, "loc": 1.0, "total": 38.0, "cov": 6.53333333333333, "s7": 1.0, "s14": 4.0}, {"sku": "03FAHD0121TU1", "fba": 0.0, "fba_wip": 0.0, "ov": 37.0, "ov_wip": 0.0, "loc": 0.0, "total": 37.0, "cov": 999.0, "s7": 0.0, "s14": 0.0}, {"sku": "KC9LAH41300", "fba": 0.0, "fba_wip": 0.0, "ov": 23.0, "ov_wip": 4.0, "loc": 9.0, "total": 36.0, "cov": 999.0, "s7": 0.0, "s14": 0.0}, {"sku": "KC9LAH43200", "fba": 0.0, "fba_wip": 0.0, "ov": 30.0, "ov_wip": 1.0, "loc": 4.0, "total": 35.0, "cov": 999.0, "s7": 0.0, "s14": 1.0}, {"sku": "KC9LAT07800", "fba": 0.0, "fba_wip": 0.0, "ov": 33.0, "ov_wip": 0.0, "loc": 1.0, "total": 34.0, "cov": 999.0, "s7": 0.0, "s14": 2.0}, {"sku": "TB9LAH04500U1", "fba": 0.0, "fba_wip": 0.0, "ov": 32.0, "ov_wip": 0.0, "loc": 0.0, "total": 32.0, "cov": 7.46666666666667, "s7": 1.0, "s14": 2.0}, {"sku": "KC9LAT05400", "fba": 0.0, "fba_wip": 0.0, "ov": 31.0, "ov_wip": 0.0, "loc": 1.0, "total": 32.0, "cov": 999.0, "s7": 0.0, "s14": 1.0}, {"sku": "KC9LAH54000", "fba": 1.0, "fba_wip": 0.0, "ov": 30.0, "ov_wip": 0.0, "loc": 1.0, "total": 32.0, "cov": 999.0, "s7": 0.0, "s14": 0.0}, {"sku": "KC9LAH34100", "fba": 0.0, "fba_wip": 0.0, "ov": 30.0, "ov_wip": 0.0, "loc": 0.0, "total": 30.0, "cov": 999.0, "s7": 0.0, "s14": 0.0}, {"sku": "KC9LAH59500", "fba": 0.0, "fba_wip": 0.0, "ov": 29.0, "ov_wip": 0.0, "loc": 1.0, "total": 30.0, "cov": 6.76666666666667, "s7": 1.0, "s14": 3.0}, {"sku": "03HATY0011TU1", "fba": 0.0, "fba_wip": 0.0, "ov": 29.0, "ov_wip": 0.0, "loc": 1.0, "total": 30.0, "cov": 999.0, "s7": 0.0, "s14": 0.0}, {"sku": "KC9LAH32600", "fba": 0.0, "fba_wip": 0.0, "ov": 29.0, "ov_wip": 0.0, "loc": 0.0, "total": 29.0, "cov": 6.76666666666667, "s7": 1.0, "s14": 2.0}, {"sku": "KC9LAH42700", "fba": 0.0, "fba_wip": 0.0, "ov": 28.0, "ov_wip": 0.0, "loc": 1.0, "total": 29.0, "cov": 999.0, "s7": 0.0, "s14": 0.0}, {"sku": "KC9LAH60400", "fba": 0.0, "fba_wip": 0.0, "ov": 28.0, "ov_wip": 0.0, "loc": 0.0, "total": 28.0, "cov": 999.0, "s7": 0.0, "s14": 1.0}, {"sku": "KC9LAH55100", "fba": 0.0, "fba_wip": 0.0, "ov": 27.0, "ov_wip": 0.0, "loc": 1.0, "total": 28.0, "cov": 6.3, "s7": 1.0, "s14": 1.0}, {"sku": "KC9LAH60000", "fba": 0.0, "fba_wip": 0.0, "ov": 25.0, "ov_wip": 3.0, "loc": 0.0, "total": 28.0, "cov": 5.83333333333333, "s7": 1.0, "s14": 2.0}, {"sku": "KC9LAH48500", "fba": 0.0, "fba_wip": 0.0, "ov": 26.0, "ov_wip": 0.0, "loc": 1.0, "total": 27.0, "cov": 999.0, "s7": 0.0, "s14": 0.0}, {"sku": "KC9LAT01500", "fba": 0.0, "fba_wip": 0.0, "ov": 25.0, "ov_wip": 0.0, "loc": 2.0, "total": 27.0, "cov": 999.0, "s7": 0.0, "s14": 0.0}, {"sku": "KC9LAT08700", "fba": 0.0, "fba_wip": 0.0, "ov": 24.0, "ov_wip": 0.0, "loc": 1.0, "total": 25.0, "cov": 999.0, "s7": 0.0, "s14": 0.0}, {"sku": "KC9LAT05900", "fba": 0.0, "fba_wip": 0.0, "ov": 24.0, "ov_wip": 0.0, "loc": 0.0, "total": 24.0, "cov": 999.0, "s7": 0.0, "s14": 0.0}, {"sku": "TB9LAH06000U1", "fba": 0.0, "fba_wip": 0.0, "ov": 23.0, "ov_wip": 0.0, "loc": 1.0, "total": 24.0, "cov": 5.36666666666667, "s7": 1.0, "s14": 1.0}, {"sku": "KC9LAH38600", "fba": 0.0, "fba_wip": 0.0, "ov": 23.0, "ov_wip": 0.0, "loc": 1.0, "total": 24.0, "cov": 999.0, "s7": 0.0, "s14": 1.0}, {"sku": "TB9LAH06600U1", "fba": 0.0, "fba_wip": 0.0, "ov": 23.0, "ov_wip": 0.0, "loc": 1.0, "total": 24.0, "cov": 999.0, "s7": 0.0, "s14": 1.0}, {"sku": "TB9LAH45700", "fba": 0.0, "fba_wip": 0.0, "ov": 23.0, "ov_wip": 0.0, "loc": 1.0, "total": 24.0, "cov": 999.0, "s7": 0.0, "s14": 0.0}, {"sku": "03FATY0101TU1", "fba": 0.0, "fba_wip": 0.0, "ov": 22.0, "ov_wip": 0.0, "loc": 0.0, "total": 22.0, "cov": 999.0, "s7": 0.0, "s14": 0.0}, {"sku": "KC9LAH33000", "fba": 0.0, "fba_wip": 0.0, "ov": 21.0, "ov_wip": 0.0, "loc": 1.0, "total": 22.0, "cov": 999.0, "s7": 0.0, "s14": 0.0}], "meta": {"category": "车灯总成(KAX)", "skus": 76, "products": {"大灯总成": 70, "尾灯总成": 4, "雾灯总成": 4}, "source": "BI MCP (销量/流量/广告) + 车灯总成.xlsx 进销存报表(库存)"}, "ad_zones": {"weeks": [{"week": "202640", "camps": 0, "spend": 0, "orders": 0, "sales": 0, "impressions": 0, "clicks": 0, "acos": null, "cvr": null, "ctr": null, "cpc": null, "li_camps": 0, "li_spend": 0, "li_orders": 0}, {"week": "202641", "camps": 0, "spend": 0, "orders": 0, "sales": 0, "impressions": 0, "clicks": 0, "acos": null, "cvr": null, "ctr": null, "cpc": null, "li_camps": 0, "li_spend": 0, "li_orders": 0}, {"week": "202642", "camps": 70, "spend": 0, "orders": 0, "sales": 0, "impressions": 781, "clicks": 1, "acos": null, "cvr": 0.0, "ctr": 0.13, "cpc": 0.42, "li_camps": 70, "li_spend": 0, "li_orders": 0}, {"week": "202643", "camps": 59, "spend": 10, "orders": 1, "sales": 113, "impressions": 566, "clicks": 17, "acos": 9.18, "cvr": 5.88, "ctr": 3.0, "cpc": 0.61, "li_camps": 59, "li_spend": 10, "li_orders": 1}, {"week": "202644", "camps": 65, "spend": 86, "orders": 5, "sales": 593, "impressions": 11421, "clicks": 124, "acos": 14.42, "cvr": 4.03, "ctr": 1.09, "cpc": 0.69, "li_camps": 65, "li_spend": 86, "li_orders": 5}], "acts": [{"name": "SP-KW-PH-车灯总成-李汝娴-大词1号", "operator": "李汝娴", "spend": 13, "orders": 1, "sales": 116, "acos": 11.4, "impressions": 3001, "clicks": 22, "state": "enabled", "bidding": "动态竞价-只降低"}, {"name": "车灯总成-李汝娴-B0CV47B9FZ-批量:26102104-KAX老链接-SP-KW", "operator": "李汝娴", "spend": 7, "orders": 0, "sales": 0, "acos": null, "impressions": 355, "clicks": 9, "state": "enabled", "bidding": "动态竞价-提高和降低"}, {"name": "车灯总成-李汝娴-B0BXPDSDST-批量:26102104-KAX老链接-SP-KW", "operator": "李汝娴", "spend": 7, "orders": 0, "sales": 0, "acos": null, "impressions": 203, "clicks": 6, "state": "enabled", "bidding": "动态竞价-提高和降低"}, {"name": "B0HMW12DKF-批量:26101602-大词1号-车灯总成-李汝娴-SP-KW", "operator": "李汝娴", "spend": 5, "orders": 0, "sales": 0, "acos": null, "impressions": 758, "clicks": 7, "state": "enabled", "bidding": "动态竞价-只降低"}, {"name": "B0HMRX8C94-批量:26101602-大词1号-车灯总成-李汝娴-SP-KW", "operator": "李汝娴", "spend": 4, "orders": 0, "sales": 0, "acos": null, "impressions": 166, "clicks": 5, "state": "enabled", "bidding": "动态竞价-只降低"}, {"name": "B0HMRWGZ7R-批量:26101602-大词1号-车灯总成-李汝娴-SP-KW", "operator": "李汝娴", "spend": 4, "orders": 0, "sales": 0, "acos": null, "impressions": 353, "clicks": 5, "state": "enabled", "bidding": "动态竞价-只降低"}, {"name": "车灯总成-李汝娴-B0CB6BCCRC-批量:26102104-KAX老链接-SP-KW", "operator": "李汝娴", "spend": 4, "orders": 1, "sales": 116, "acos": 3.1, "impressions": 86, "clicks": 4, "state": "enabled", "bidding": "动态竞价-提高和降低"}, {"name": "B0HMRWGZ7R-批量:26101604-紧密-车灯总成-李汝娴-SP-AUTO", "operator": "李汝娴", "spend": 3, "orders": 0, "sales": 0, "acos": null, "impressions": 181, "clicks": 4, "state": "enabled", "bidding": "动态竞价-只降低"}, {"name": "内容-B0HMRWGZ7R-批量:26101603-宽泛-车灯总成-李汝娴-SP-AUTO", "operator": "李汝娴", "spend": 3, "orders": 0, "sales": 0, "acos": null, "impressions": 79, "clicks": 4, "state": "enabled", "bidding": "动态竞价-只降低"}, {"name": "B0HMRX8C94-批量:26101604-紧密-车灯总成-李汝娴-SP-AUTO", "operator": "李汝娴", "spend": 3, "orders": 0, "sales": 0, "acos": null, "impressions": 1066, "clicks": 4, "state": "enabled", "bidding": "动态竞价-只降低"}, {"name": "B0HMRYJ2F6-批量:26101602-大词1号-车灯总成-李汝娴-SP-KW", "operator": "李汝娴", "spend": 2, "orders": 0, "sales": 0, "acos": null, "impressions": 91, "clicks": 3, "state": "enabled", "bidding": "动态竞价-只降低"}, {"name": "B0HMRYLC8W-批量:26101602-大词1号-车灯总成-李汝娴-SP-KW", "operator": "李汝娴", "spend": 2, "orders": 0, "sales": 0, "acos": null, "impressions": 98, "clicks": 3, "state": "enabled", "bidding": "动态竞价-只降低"}, {"name": "B0HMRT8XRV-批量:26101602-大词1号-车灯总成-李汝娴-SP-KW", "operator": "李汝娴", "spend": 2, "orders": 0, "sales": 0, "acos": null, "impressions": 220, "clicks": 3, "state": "enabled", "bidding": "动态竞价-只降低"}, {"name": "SP-AUTO-MIX-车灯总成-李汝娴-NO3", "operator": "李汝娴", "spend": 2, "orders": 0, "sales": 0, "acos": null, "impressions": 301, "clicks": 4, "state": "enabled", "bidding": "动态竞价-只降低"}, {"name": "B0HMW12DKF-批量:26101604-紧密-车灯总成-李汝娴-SP-AUTO", "operator": "李汝娴", "spend": 2, "orders": 0, "sales": 0, "acos": null, "impressions": 512, "clicks": 3, "state": "enabled", "bidding": "动态竞价-只降低"}, {"name": "车灯总成-李汝娴-B0CV47B9FZ-批量:26102105-KAX老链接-SP-AUTO", "operator": "李汝娴", "spend": 2, "orders": 1, "sales": 162, "acos": 1.1, "impressions": 288, "clicks": 4, "state": "enabled", "bidding": "动态竞价-提高和降低"}, {"name": "车灯总成-李汝娴-B0BXDPRB8H-批量:26102104-KAX老链接-SP-KW", "operator": "李汝娴", "spend": 2, "orders": 0, "sales": 0, "acos": null, "impressions": 336, "clicks": 2, "state": "enabled", "bidding": "动态竞价-提高和降低"}, {"name": "B0HMRL84NB-批量:26101602-大词1号-车灯总成-李汝娴-SP-KW", "operator": "李汝娴", "spend": 2, "orders": 0, "sales": 0, "acos": null, "impressions": 298, "clicks": 2, "state": "enabled", "bidding": "动态竞价-只降低"}, {"name": "内容-B0HMW12DKF-批量:26101603-宽泛-车灯总成-李汝娴-SP-AUTO", "operator": "李汝娴", "spend": 2, "orders": 0, "sales": 0, "acos": null, "impressions": 238, "clicks": 3, "state": "enabled", "bidding": "动态竞价-只降低"}, {"name": "车灯总成-李汝娴-B0BXPDSDST-批量:26102105-KAX老链接-SP-AUTO", "operator": "李汝娴", "spend": 1, "orders": 0, "sales": 0, "acos": null, "impressions": 32, "clicks": 2, "state": "enabled", "bidding": "动态竞价-提高和降低"}, {"name": "SP-KW-PH-车灯总成-李汝娴-大词(hou)", "operator": "李汝娴", "spend": 1, "orders": 1, "sales": 116, "acos": 0.8, "impressions": 432, "clicks": 2, "state": "enabled", "bidding": "动态竞价-只降低"}, {"name": "车灯总成-李汝娴-B0C89F3QCZ-批量:26102105-KAX老链接-SP-AUTO", "operator": "李汝娴", "spend": 1, "orders": 0, "sales": 0, "acos": null, "impressions": 3, "clicks": 2, "state": "enabled", "bidding": "动态竞价-提高和降低"}, {"name": "B0HMRLCM5B-批量:26101602-大词1号-车灯总成-李汝娴-SP-KW", "operator": "李汝娴", "spend": 1, "orders": 0, "sales": 0, "acos": null, "impressions": 40, "clicks": 1, "state": "enabled", "bidding": "动态竞价-只降低"}, {"name": "车灯总成-李汝娴-B0DBVPMJLR-批量:26102104-KAX老链接-SP-KW", "operator": "李汝娴", "spend": 1, "orders": 0, "sales": 0, "acos": null, "impressions": 98, "clicks": 1, "state": "enabled", "bidding": "动态竞价-提高和降低"}, {"name": "B0HMRZ3KL4-批量:26101602-大词1号-车灯总成-李汝娴-SP-KW", "operator": "李汝娴", "spend": 1, "orders": 0, "sales": 0, "acos": null, "impressions": 50, "clicks": 1, "state": "enabled", "bidding": "动态竞价-只降低"}, {"name": "B0HMRTVFRR-批量:26101602-大词1号-车灯总成-李汝娴-SP-KW", "operator": "李汝娴", "spend": 1, "orders": 0, "sales": 0, "acos": null, "impressions": 25, "clicks": 1, "state": "enabled", "bidding": "动态竞价-只降低"}, {"name": "B0HMRWN2JF-批量:26101602-大词1号-车灯总成-李汝娴-SP-KW", "operator": "李汝娴", "spend": 1, "orders": 0, "sales": 0, "acos": null, "impressions": 202, "clicks": 1, "state": "enabled", "bidding": "动态竞价-只降低"}, {"name": "车灯总成-李汝娴-B0C5DWPHQ6-批量:26102104-KAX老链接-SP-KW", "operator": "李汝娴", "spend": 1, "orders": 0, "sales": 0, "acos": null, "impressions": 72, "clicks": 1, "state": "enabled", "bidding": "动态竞价-提高和降低"}, {"name": "车灯总成-李汝娴-B0C5DWPHQ6-批量:26102105-KAX老链接-SP-AUTO", "operator": "李汝娴", "spend": 1, "orders": 0, "sales": 0, "acos": null, "impressions": 24, "clicks": 1, "state": "enabled", "bidding": "动态竞价-提高和降低"}, {"name": "B0HMRZ78GL-批量:26101604-紧密-车灯总成-李汝娴-SP-AUTO", "operator": "李汝娴", "spend": 1, "orders": 1, "sales": 83, "acos": 0.8, "impressions": 27, "clicks": 1, "state": "enabled", "bidding": "动态竞价-只降低"}], "issues": [], "total_acts": 65}, "disposal": {"title": "车灯总成 · 11月滞销清理（李汝娴 · KAX 76池）", "source": "《车灯总成11月滞销清理激励方案》v5 · 2026-11-03", "owner": "李汝娴", "brand": "KAX", "pool_skus": 76, "pool_ov_stock": 3240, "has_link": 73, "with_sales_90d": 62, "base_oct": 14, "target_nov": 50, "coefficient": 3.57, "growth": 257, "gp_redline": ">0", "bonus_fixed": 300, "bonus_extra_per_unit": 10, "bonus_pool": 1600, "risk": "广告单件成本不得高于10月的¥31；11/15达成率<50%触发预警", "note": "考核口径：本品牌在146池内 sales_qty_m 当月汇总；毛利率=gross_profit_real_m/sales_amount_m，>0才发奖金；库存不参与个人考核", "actions": ["① 建链接/恢复上架（76池里3个无链接）", "② 调价（让价底线=材料成本，最低8折）", "③ 推广告（单件成本≤¥31）", "④ 修主图/评论（提升转化）"], "progress": [{"label": "11月目标", "value": 50}, {"label": "已出库(截至11/03)", "value": 0}], "stock_curve": [5741, 5738, 5738, 5730, 5720], "stock_note": "库存曲线为推算值（当前总库存+各周出库倒推），车灯无周度库存快照数据源"}};
-
 const WE = P.weeks, O = P.overall;
 const W2 = WE.map(w => String(w).slice(2));
-
-(function(){
-  const q = O.q, amt = O.amt, tr = O.tr, sp = O.sp, ad = O.adq, cvr = O.cvr, acos = O.acos;
-  const i = q.length-1, i0 = i-1;
-  const dq = q[i]-q[i0], dtr = tr[i]-tr[i0], dsp = sp[i]-sp[i0], dad = ad[i]-ad[i0];
-  // 单价
-  const p0 = q[i0]>0 ? amt[i0]/q[i0] : 0, p1 = q[i]>0 ? amt[i]/q[i] : 0;
-  const dp = p1-p0, dpPct = p0>0 ? (dp/p0*100) : 0;
-  // 销量拆解：流量效应 + 转化效应
-  const trEffect = q[i0]>0 && tr[i0]>0 ? (tr[i]/tr[i0]-1)*q[i0] : 0;   // 若转化率不变，流量带来的销量变化
-  const cvrEffect = dq - trEffect;      // 剩余归于转化率
-  // 广告效率
-  const acos0 = acos[i0], acos1 = acos[i];
-  const adCvr0 = O.ad_cvr[i0], adCvr1 = O.ad_cvr[i];
-  const cpc0 = O.cpc[i0], cpc1 = O.cpc[i1=i];
-  
-  let L = [];
-  // ① 量价拆解
-  L.push('<b>① 销量与销售额为何不同步</b>：销量 ' + q[i0] + '→' + q[i] + '（' + (dq>=0?'+':'') + dq + '单，' + (q[i0]>0?((dq/q[i0]*100).toFixed(1)):'-') + '%），但<b>销售额 $' + amt[i0].toFixed(0) + '→$' + amt[i].toFixed(0) + '（' + ((amt[i]-amt[i0])/amt[i0]*100).toFixed(1) + '%）</b>，<b>销售额增幅是销量增幅的' + (dq!==0?(((amt[i]-amt[i0])/amt[i0])/(dq/q[i0])).toFixed(1):'-') + '倍</b>——差额全部来自<b>客单价 $' + p0.toFixed(0) + '→$' + p1.toFixed(0) + '（' + (dpPct>=0?'+':'') + dpPct.toFixed(1) + '%）</b>：' + (p1>p0*1.1 ? '<b>说明高价SKU（大灯总成）出货占比提升</b>，不是靠降价冲量' : (p1<p0*0.9 ? '说明在降价促销换量' : '单价基本稳定，靠纯销量拉动')) + '。');
-
-  // ② 流量与转化背离
-  L.push('<b>② 流量翻倍、转化率掉 4 成，为什么销量还涨</b>：流量 ' + tr[i0] + '→' + tr[i] + '（+' + (dtr/tr[i0]*100).toFixed(0) + '%，主要来自广告曝光 16,587 和车灯新品链接陆续上架带来的新访客），转化率 ' + cvr[i0].toFixed(2) + '%→' + cvr[i].toFixed(2) + '%（' + ((cvr[i]-cvr[i0])/cvr[i0]*100).toFixed(0) + '%）。<b>拆解：流量效应 +' + trEffect.toFixed(1) + ' 单，转化效应 ' + (cvrEffect>=0?'+':'') + cvrEffect.toFixed(1) + ' 单</b>，净 +' + dq + ' 单——<b>即"新流量没有老客户转化好"，转化率下降吃掉了流量红利的一半以上</b>。');
-
-  // ③ 广告：钱花在哪、换回什么
-  L.push('<b>③ 广告花费暴增 690%，只换回 5 个广告单</b>：花费 $' + sp[i0].toFixed(0) + '→$' + sp[i].toFixed(0) + '（+' + (dsp/sp[i0]*100).toFixed(0) + '%），广告单 ' + ad[i0] + '→' + ad[i] + '（+' + (dad/ad[i0]*100).toFixed(0) + '%），<b>ACOS ' + acos0.toFixed(2) + '%→' + acos1.toFixed(2) + '%</b>（恶化 ' + (acos1-acos0).toFixed(2) + 'pct）。<b>广告转化率 ' + (adCvr0||0).toFixed(2) + '%→' + (adCvr1||0).toFixed(2) + '%</b>。<b>根因：' + (adCvr1<adCvr0*0.8 ? '广告流量质量下降（点击进来不买）——25个问题活动全部0单，说明大量投放词与车灯适配性不匹配，$86 花了 8 成在无效点击上' : '转化端尚可，主要是CPC上升') + '</b>。');
-
-  // ④ 结构性归因
-  const cats = P.cats;
-  const big = cats['大灯总成'], tail = cats['尾灯总成'];
-  L.push('<b>④ 增长来自哪里</b>：大灯总成 ' + big.q[i0] + '→' + big.q[i] + ' 单（销售额 $' + big.amt[i0].toFixed(0) + '→$' + big.amt[i].toFixed(0) + '），尾灯总成 ' + tail.q[i0] + '→' + tail.q[i] + ' 单（$' + tail.amt[i0].toFixed(0) + '→$' + tail.amt[i].toFixed(0) + '）。<b>大灯贡献 ' + (big.q[i]-big.q[i0]) + ' 单是绝对主力，尾灯从 0 到 2 单是新开品类贡献</b>；雾灯总成连续 5 周 0 单——<b>流量 13 但无一转化，属"有曝光无需求"，应判断是适配/定价问题</b>。');
-
-  // ⑤ 结论与风险
-  L.push('<b>⑤ 一句话结论</b>：本周"<b>销量涨是新品上架+广告放量带来的流量红利，但转化率和广告效率双双下滑</b>"——<b>真正的风险不在销量，而在"用 690% 的广告增幅只换来 5 单"</b>，若继续这个投放效率，ACOS 会很快突破 20%，滞销清理的毛利率红线（>0）会被广告费吃掉。');
-
-  document.getElementById('concl').innerHTML = L.map(x=>'<div style="margin-bottom:9px">'+x+'</div>').join('');
-})();
-
-function line(id, x, series){
-  const c = echarts.init(document.getElementById(id));
-  c.setOption({tooltip:{trigger:'axis'}, legend:{bottom:0,textStyle:{fontSize:11}},
-    grid:{left:52,right:44,top:26,bottom:32},
-    xAxis:{type:'category',data:x,axisLabel:{fontSize:11}},
-    yAxis:[{type:'value',axisLabel:{fontSize:10}},{type:'value',axisLabel:{fontSize:10},splitLine:{show:false}}],
-    series:series});
-  window.__charts = window.__charts || []; window.__charts.push(c);
-  window.addEventListener('resize',()=>c.resize());
+const CHARTS = [];
+function mk(id, opt){
+  const el = document.getElementById(id);
+  if(!el) return null;
+  const c = echarts.init(el);
+  c.setOption(opt);
+  CHARTS.push(c);
+  return c;
 }
-line('c1', W2, [
-  {name:'销量',type:'line',smooth:true,data:O.q,itemStyle:{color:'#1a3b6d'},label:{show:true,fontSize:10,position:'top'}},
-  {name:'销售额',type:'bar',yAxisIndex:1,data:O.amt.map(v=>Math.round(v)),itemStyle:{color:'#7fb3e8'},label:{show:true,fontSize:9,position:'top',formatter:p=>'$'+Math.round(p.value/1000)+'k'}}
-]);
-line('c2', W2, [
-  {name:'流量',type:'line',smooth:true,data:O.tr,itemStyle:{color:'#2b6cb0'},label:{show:true,fontSize:10,position:'top'}},
-  {name:'转化率%',type:'line',yAxisIndex:1,smooth:true,data:O.cvr,itemStyle:{color:'#e67e22'},label:{show:true,fontSize:10,position:'bottom',formatter:p=>p.value+'%'}},
-  {name:'广告转化率%',type:'line',yAxisIndex:1,smooth:true,data:O.ad_cvr,itemStyle:{color:'#8e44ad'},lineStyle:{type:'dashed'},label:{show:true,fontSize:10,position:'top',formatter:p=>p.value+'%'}}
-]);
-line('c3', W2, [
-  {name:'广告花费$',type:'bar',data:O.sp.map(v=>Math.round(v)),itemStyle:{color:'#95a5a6'},label:{show:true,fontSize:10,position:'top',formatter:p=>'$'+Math.round(p.value)}},
-  {name:'ACOS%',type:'line',yAxisIndex:1,smooth:true,data:O.acos.map(v=>(v===null||v>999)?null:Math.min(v,100)),itemStyle:{color:'#c0392b'},label:{show:true,fontSize:10,formatter:p=>p.value===null?'':p.value+'%'}}
-]);
+window.addEventListener('resize', () => CHARTS.forEach(c => { try{c.resize()}catch(e){} }));
+
+/* ===== 结论：5段因果分析 ===== */
 (function(){
-  const cats = P.cats, names = Object.keys(cats);
-  const colors = {'大灯总成':'#1a3b6d','尾灯总成':'#e67e22','雾灯总成':'#27ae60'};
-  line('c4', W2, names.map(n => ({name:n,type:'bar',stack:'t',data:cats[n].q,itemStyle:{color:colors[n]},label:{show:true,fontSize:9,position:'inside',formatter:p=>p.value>0?p.value:''}})));
-})();
-// 滞销清理专区
-(function(){
-  const D2 = P.disposal; if(!D2) return;
-  const dk = [
-    ['11月目标', D2.target_nov + ' 件', '10月基线 ' + D2.base_oct + ' 件 × ' + D2.coefficient],
-    ['当前已出库', (D2.progress[1].value) + ' 件', '达成率 ' + (D2.progress[1].value/D2.target_nov*100).toFixed(1) + '%'],
-    ['毛利率红线', '&gt; 0', '低于0不达标']
-  ];
-  document.getElementById('d-kpis').innerHTML = dk.map(x=>'<div class="dk"><div class="dkl">'+x[0]+'</div><div class="dkv">'+x[1]+'</div><div class="dks">'+x[2]+'</div></div>').join('');
-  document.getElementById('d-target').textContent = D2.target_nov;
-  const pct = Math.min((D2.progress[1].value/D2.target_nov*100), 100);
-  document.getElementById('d-bar').style.width = pct + '%';
-  document.getElementById('d-bartx').textContent = (D2.progress[1].value) + ' / ' + D2.target_nov + ' 件（' + pct.toFixed(1) + '%）';
-  // 进度图
-  const c1 = echarts.init(document.getElementById('d-prog'));
-  c1.setOption({title:{text:'11月出库进度',left:'center',textStyle:{fontSize:12}},
-    tooltip:{}, grid:{left:50,right:30,top:44,bottom:30},
-    xAxis:{type:'category',data:['目标','当前']}, yAxis:{type:'value'},
-    series:[{type:'bar',data:[D2.target_nov, D2.progress[1].value],
-      itemStyle:{color:p=>p.dataIndex===0?'#ffd9b3':'#ee5a24'},
-      label:{show:true,position:'top',fontSize:12,fontWeight:'bold'}}]});
-  window.__charts = window.__charts || []; window.__charts.push(c1);
-  // 库销比分档
-  const inv = P.inventory;
-  const bins = {'>30月':0,'10-30月':0,'5-10月':0,'3-5月':0,'<3月':0,'无销量':0};
-  inv.forEach(r=>{
-    const cov = r.cov;
-    if(cov>=999) bins['无销量']++;
-    else if(cov>30) bins['>30月']++;
-    else if(cov>=10) bins['10-30月']++;
-    else if(cov>=5) bins['5-10月']++;
-    else if(cov>=3) bins['3-5月']++;
-    else bins['<3月']++;
-  });
-  const c2 = echarts.init(document.getElementById('d-cov'));
-  const bn = Object.keys(bins);
-  c2.setOption({title:{text:'76商编库销比分布',left:'center',textStyle:{fontSize:12}},
-    tooltip:{}, grid:{left:50,right:30,top:44,bottom:30},
-    xAxis:{type:'category',data:bn,axisLabel:{fontSize:10,rotate:20}}, yAxis:{type:'value'},
-    series:[{type:'bar',data:bn.map(b=>bins[b]),
-      itemStyle:{color:p=>['#8b0000','#c0392b','#e67e22','#f39c12','#27ae60','#95a5a6'][p.dataIndex]},
-      label:{show:true,position:'top',fontSize:11,fontWeight:'bold'}}]});
-  window.__charts = window.__charts || []; window.__charts.push(c2);
-  document.getElementById('d-actions').innerHTML =
-    '<div class="act"><b>11月必做动作：</b><br>' + D2.actions.join('<br>') + '</div>' +
-    '<div class="warn">⚠ ' + D2.risk + '</div>';
-  document.getElementById('d-note').innerText = D2.note + '｜数据源：' + D2.source + '｜池：' + D2.pool_ov_stock.toLocaleString() + '件海外仓 / 76 SKU / 有链接' + D2.has_link + '个';
-  // 明细表
-  let h = '<table><tr><th>商品编码</th><th>海外仓可用</th><th>海外仓在途</th><th>FBA可用</th><th>本地仓</th><th>总库存</th><th>7天销量</th><th>14天销量</th><th>库销比(月)</th><th>状态</th></tr>';
-  inv.forEach(r=>{
-    const covTxt = r.cov>=999 ? '—' : r.cov.toFixed(1);
-    const covCol = r.cov>=999 ? 'color:#999' : (r.cov>=10 ? 'color:#c0392b;font-weight:700' : (r.cov>=5?'color:#e67e22;font-weight:600':'color:#27ae60'));
-    const st = r.cov>=999 ? '无销量' : (r.cov>=10 ? '深度滞销' : (r.cov>=5 ? '普通滞销' : '可动销'));
-    h += '<tr><td class="asin">'+r.sku+'</td><td>'+r.ov+'</td><td>'+r.ov_wip+'</td><td>'+r.fba+'</td><td>'+r.loc+'</td><td><b>'+r.total+'</b></td><td>'+(r.s7||'-')+'</td><td>'+(r.s14||'-')+'</td><td style="'+covCol+'">'+covTxt+'</td><td>'+st+'</td></tr>';
-  });
-  h += '</table>';
-  document.getElementById('tbl-dis').innerHTML = h;
+  const q=O.q, amt=O.amt, tr=O.tr, sp=O.sp, ad=O.adq, cvr=O.cvr, acos=O.acos;
+  const i=q.length-1, i0=i-1;
+  const dq=q[i]-q[i0], dtr=tr[i]-tr[i0], dsp=sp[i]-sp[i0], dad=ad[i]-ad[i0];
+  const p0 = q[i0]>0 ? amt[i0]/q[i0] : 0;
+  const p1 = q[i]>0 ? amt[i]/q[i] : 0;
+  const dpPct = p0>0 ? (p1-p0)/p0*100 : 0;
+  const trEff = (tr[i0]>0 && q[i0]>0) ? (tr[i]/tr[i0]-1)*q[i0] : 0;
+  const cvrEff = dq - trEff;
+  const acos0=acos[i0]||0, acos1=acos[i]||0;
+  const adc0=O.ad_cvr[i0], adc1=O.ad_cvr[i];
+  const mult = (dq!==0 && q[i0]>0) ? (((amt[i]-amt[i0])/amt[i0])/(dq/q[i0])) : null;
+
+  const L=[];
+  L.push('<b>① 销量与销售额为何不同步</b>：销量 '+q[i0]+'→'+q[i]+'（'+(dq>=0?'+':'')+dq+'单，'
+    +(q[i0]>0?((dq/q[i0]*100).toFixed(1)):'-')+'%），但<b>销售额 $'+amt[i0].toFixed(0)+'→$'+amt[i].toFixed(0)
+    +'（'+((amt[i]-amt[i0])/amt[i0]*100).toFixed(1)+'%）</b>'
+    +(mult?('，<b>销售额增幅是销量增幅的'+mult.toFixed(1)+'倍</b>'):'')
+    +'——差额来自<b>客单价 $'+p0.toFixed(0)+'→$'+p1.toFixed(0)+'（'+(dpPct>=0?'+':'')+dpPct.toFixed(1)+'%）</b>：'
+    +(p1>p0*1.08?'<b>高价SKU（大灯总成）出货占比提升，不是靠降价冲量</b>'
+      :(p1<p0*0.92?'说明在降价换量':'单价基本稳定，靠纯销量拉动'))+'。');
+
+  L.push('<b>② 流量与转化的背离</b>：流量 '+tr[i0]+'→'+tr[i]
+    +'（'+(dtr>=0?'+':'')+(tr[i0]>0?((dtr/tr[i0]*100).toFixed(0)):'-')+'%），转化率 '
+    +cvr[i0].toFixed(2)+'%→'+cvr[i].toFixed(2)+'%（'+((cvr[i]-cvr[i0])/cvr[i0]*100).toFixed(0)+'%）。'
+    +'<b>拆解：流量效应 '+(trEff>=0?'+':'')+trEff.toFixed(1)+' 单，转化效应 '+(cvrEff>=0?'+':'')+cvrEff.toFixed(1)+' 单，净 '+(dq>=0?'+':'')+dq+' 单</b>——'
+    +(cvrEff<0?'<b>即"新流量没有老客户转化好"，转化率下滑吃掉了流量红利的一部分</b>':'转化端在改善，流量和转化同向贡献')
+    +'。');
+
+  L.push('<b>③ 广告效率</b>：花费 $'+sp[i0].toFixed(0)+'→$'+sp[i].toFixed(0)+'（'+(dsp>=0?'+':'')+(sp[i0]>0?((dsp/sp[i0]*100).toFixed(0)):'-')+'%），'
+    +'广告单 '+ad[i0]+'→'+ad[i]+'（'+(dad>=0?'+':'')+(ad[i0]>0?((dad/ad[i0]*100).toFixed(0)):'-')+'%），'
+    +'<b>ACOS '+acos0.toFixed(2)+'%→'+acos1.toFixed(2)+'%（'+(acos1>=acos0?'恶化':'改善')+' '+Math.abs(acos1-acos0).toFixed(2)+'pct）</b>；'
+    +'<b>广告转化率 '+(adc0||0).toFixed(2)+'%→'+(adc1||0).toFixed(2)+'%</b>。'
+    +((adc1||0) < (adc0||0)*0.8 ? '<b>根因是广告流量质量下降——点击进来不买，投放词与车灯适配性不匹配</b>' : '广告转化端稳定，ACOS变化主要来自CPC与客单价')
+    +'。');
+
+  const big=P.cats['大灯总成'], tail=P.cats['尾灯总成'], fog=P.cats['雾灯总成'];
+  L.push('<b>④ 增长来自哪个品类</b>：大灯总成 '+big.q[i0]+'→'+big.q[i]+' 单（销售额 $'+big.amt[i0].toFixed(0)+'→$'+big.amt[i].toFixed(0)+'），'
+    +'尾灯总成 '+tail.q[i0]+'→'+tail.q[i]+' 单（$'+tail.amt[i0].toFixed(0)+'→$'+tail.amt[i].toFixed(0)+'），雾灯总成 '+fog.q[i]+' 单。'
+    +'<b>大灯是绝对主力（贡献 '+(big.q[i]-big.q[i0])+' 单变动）</b>'
+    +(tail.q[i]>tail.q[i0]?'，尾灯从 '+tail.q[i0]+' 到 '+tail.q[i]+' 单是新开品类贡献':'')
+    +(fog.q[i]===0?'；雾灯连续多周 0 单但仍有流量——属"有曝光无需求"，应查适配与定价':'')+'。');
+
+  L.push('<b>⑤ 一句话结论</b>：本周是「<b>新品上架 + 广告放量带来的流量红利，但转化率与广告效率同步下滑</b>」——'
+    +'风险不在销量本身，而在<b>广告花费增幅（'+(sp[i0]>0?((dsp/sp[i0]*100).toFixed(0)):'-')+'%）远高于广告单增幅（'+(ad[i0]>0?((dad/ad[i0]*100).toFixed(0)):'-')+'%）</b>，'
+    +'若维持这个投放效率，ACOS 会继续走高，滞销清理的毛利率红线（&gt;0）会被广告费吃掉。');
+
+  document.getElementById('concl').innerHTML = L.map(x=>'<div>'+x+'</div>').join('');
 })();
 
-// 整体明细
+/* ===== 图1：销量 & 销售额 ===== */
+mk('c1', {
+  tooltip:{trigger:'axis'}, legend:{bottom:0,textStyle:{fontSize:11}},
+  grid:{left:52,right:52,top:26,bottom:34},
+  xAxis:{type:'category',data:W2,axisLabel:{fontSize:11}},
+  yAxis:[{type:'value',name:'销量',axisLabel:{fontSize:10}},
+         {type:'value',name:'销售额$',axisLabel:{fontSize:10},splitLine:{show:false}}],
+  series:[
+    {name:'销量',type:'line',smooth:true,data:O.q,itemStyle:{color:'#1a3b6d'},
+     label:{show:true,fontSize:10,position:'top'}},
+    {name:'销售额',type:'bar',yAxisIndex:1,data:O.amt.map(v=>Math.round(v)),
+     itemStyle:{color:'#7fb3e8'},label:{show:true,fontSize:9,position:'top',formatter:p=>'$'+Math.round(p.value/1000)+'k'}}
+  ]
+});
+
+/* ===== 图2：流量 & 转化率 & 广告转化率 ===== */
+mk('c2', {
+  tooltip:{trigger:'axis'}, legend:{bottom:0,textStyle:{fontSize:11}},
+  grid:{left:52,right:52,top:26,bottom:34},
+  xAxis:{type:'category',data:W2,axisLabel:{fontSize:11}},
+  yAxis:[{type:'value',name:'流量',axisLabel:{fontSize:10}},
+         {type:'value',name:'%',axisLabel:{fontSize:10},splitLine:{show:false}}],
+  series:[
+    {name:'流量',type:'line',smooth:true,data:O.tr,itemStyle:{color:'#2b6cb0'},
+     label:{show:true,fontSize:10,position:'top'}},
+    {name:'转化率%',type:'line',yAxisIndex:1,smooth:true,data:O.cvr,itemStyle:{color:'#e67e22'},
+     label:{show:true,fontSize:10,position:'bottom',formatter:p=>p.value+'%'}},
+    {name:'广告转化率%',type:'line',yAxisIndex:1,smooth:true,data:O.ad_cvr,
+     itemStyle:{color:'#8e44ad'},lineStyle:{type:'dashed'},
+     label:{show:true,fontSize:10,position:'top',formatter:p=>p.value===null?'':p.value+'%'}}
+  ]
+});
+
+/* ===== 图3：ACOS & 广告花费 ===== */
+mk('c3', {
+  tooltip:{trigger:'axis'}, legend:{bottom:0,textStyle:{fontSize:11}},
+  grid:{left:56,right:52,top:26,bottom:34},
+  xAxis:{type:'category',data:W2,axisLabel:{fontSize:11}},
+  yAxis:[{type:'value',name:'花费$',axisLabel:{fontSize:10}},
+         {type:'value',name:'ACOS%',axisLabel:{fontSize:10},splitLine:{show:false}}],
+  series:[
+    {name:'广告花费',type:'bar',data:O.sp.map(v=>Math.round(v)),itemStyle:{color:'#95a5a6'},
+     label:{show:true,fontSize:10,position:'top',formatter:p=>'$'+Math.round(p.value)}},
+    {name:'ACOS%',type:'line',yAxisIndex:1,smooth:true,
+     data:O.acos.map(v=>(v===null||v>999)?null:Math.min(v,100)),itemStyle:{color:'#c0392b'},
+     label:{show:true,fontSize:10,formatter:p=>p.value===null?'':p.value+'%'}}
+  ]
+});
+
+/* ===== 图4：品类堆叠 ===== */
 (function(){
-  const cols = [['周','w'],['流量','tr'],['销量','q'],['自然单','nat'],['广告单','adq'],['销售额','amt'],['转化率%','cvr'],['展示量','im'],['点击','cl'],['广告花费','sp'],['CPC','cpc'],['ACOS%','acos'],['广告转化率%','ad_cvr'],['CTR%','ctr']];
-  let h = '<table><tr>' + cols.map(c=>'<th>'+c[0]+'</th>').join('') + '</tr>';
+  const names=Object.keys(P.cats);
+  const colors={'大灯总成':'#1a3b6d','尾灯总成':'#e67e22','雾灯总成':'#27ae60'};
+  mk('c4', {
+    tooltip:{trigger:'axis'}, legend:{bottom:0,textStyle:{fontSize:11}},
+    grid:{left:52,right:30,top:26,bottom:34},
+    xAxis:{type:'category',data:W2,axisLabel:{fontSize:11}},
+    yAxis:{type:'value',name:'销量',axisLabel:{fontSize:10}},
+    series:names.map(n=>({name:n,type:'bar',stack:'t',data:P.cats[n].q,
+      itemStyle:{color:colors[n]||'#888'},
+      label:{show:true,fontSize:9,position:'inside',formatter:p=>p.value>0?p.value:''}}))
+  });
+})();
+
+/* ===== 整体明细表 ===== */
+(function(){
+  const cols=[['周','w'],['流量','tr'],['销量','q'],['自然单','nat'],['广告单','adq'],['销售额','amt'],
+              ['转化率%','cvr'],['展示量','im'],['点击','cl'],['广告花费','sp'],['CPC','cpc'],
+              ['ACOS%','acos'],['广告转化率%','ad_cvr'],['CTR%','ctr']];
+  let h='<table><thead><tr>'+cols.map(c=>'<th>'+c[0]+'</th>').join('')+'</tr></thead><tbody>';
   for(let i=0;i<WE.length;i++){
-    h += '<tr>';
+    h+='<tr>';
     cols.forEach(c=>{
-      const k = c[1]; let v = k==='w' ? WE[i] : O[k][i];
+      const k=c[1]; let v = (k==='w') ? WE[i] : O[k][i];
       if(v===null||v===undefined) v='-';
       else if(k==='amt'||k==='sp') v='$'+Math.round(v).toLocaleString();
       else if(k==='cpc') v='$'+Number(v).toFixed(2);
       else if(['cvr','acos','ad_cvr','ctr'].includes(k)) v=(k==='acos'&&Number(v)>999)?'—':Number(v).toFixed(2)+'%';
       else if(typeof v==='number') v=Math.round(v).toLocaleString();
-      h += '<td>' + v + '</td>';
+      h+='<td>'+v+'</td>';
     });
-    h += '</tr>';
+    h+='</tr>';
   }
-  h += '<tr style="background:#f8fafd;font-weight:600"><td>周环比</td>';
+  h+='<tr style="background:#f8fafd;font-weight:600"><td>周环比</td>';
   cols.slice(1).forEach(c=>{
-    const k = c[1], a=O[k][WE.length-2], b=O[k][WE.length-1];
+    const k=c[1], a=O[k][WE.length-2], b=O[k][WE.length-1];
     if(a===null||b===null||!a){ h+='<td>-</td>'; return; }
-    const ch=((b-a)/a*100);
-    h += '<td class="'+(ch>=0?'up':'dn')+'">'+(ch>=0?'+':'')+ch.toFixed(1)+'%</td>';
+    const ch=(b-a)/a*100;
+    h+='<td class="'+(ch>=0?'up':'dn')+'">'+(ch>=0?'+':'')+ch.toFixed(1)+'%</td>';
   });
-  h += '</tr></table>';
-  document.getElementById('tbl-ov').innerHTML = h;
+  h+='</tr></tbody></table>';
+  document.getElementById('tbl-ov').innerHTML=h;
 })();
 
-// 广告专区
+/* ===== 广告专区 ===== */
 (function(){
-  const A = P.ad_zones; if(!A) return;
-  const W = A.weeks;
-  const c = echarts.init(document.getElementById('c6'));
-  c.setOption({tooltip:{trigger:'axis'}, legend:{bottom:0,textStyle:{fontSize:11}},
-    grid:{left:55,right:50,top:24,bottom:34},
+  const A=P.ad_zones; if(!A) return;
+  const W=A.weeks;
+  mk('c6', {
+    tooltip:{trigger:'axis'}, legend:{bottom:0,textStyle:{fontSize:11}},
+    grid:{left:56,right:52,top:26,bottom:34},
     xAxis:{type:'category',data:W.map(w=>String(w.week).slice(2)),axisLabel:{fontSize:11}},
-    yAxis:[{type:'value',name:'花费$'},{type:'value',name:'ACOS%',splitLine:{show:false}}],
+    yAxis:[{type:'value',name:'花费$',axisLabel:{fontSize:10}},
+           {type:'value',name:'单/ACOS',axisLabel:{fontSize:10},splitLine:{show:false}}],
     series:[
-      {name:'广告花费',type:'bar',data:W.map(w=>w.spend),itemStyle:{color:'#95a5a6'},label:{show:true,fontSize:10,position:'top',formatter:p=>'$'+p.value}},
-      {name:'广告单',type:'line',data:W.map(w=>w.orders),itemStyle:{color:'#1a3b6d'},label:{show:true,fontSize:10}},
-      {name:'ACOS%',type:'line',yAxisIndex:1,data:W.map(w=>w.acos),itemStyle:{color:'#c0392b'},label:{show:true,fontSize:10,formatter:p=>(p.value===null?'':p.value+'%')}}
-    ]});
-  window.addEventListener('resize',()=>c.resize());
-  let h = '<table><tr><th>周</th><th>活动数</th><th>曝光</th><th>点击</th><th>花费</th><th>广告单</th><th>广告销售</th><th>ACOS%</th><th>CTR%</th><th>CPC</th><th>CVR%</th></tr>';
-  for(const w of W){
-    h += '<tr><td>'+w.week+'</td><td>'+w.camps+'</td><td>'+(w.impressions||0).toLocaleString()+'</td><td>'+(w.clicks||0).toLocaleString()+'</td><td>$'+w.spend.toLocaleString()+'</td><td>'+w.orders+'</td><td>$'+w.sales.toLocaleString()+'</td><td>'+(w.acos??'-')+'%</td><td>'+(w.ctr??'-')+'%</td><td>$'+(w.cpc??'-')+'</td><td>'+(w.cvr??'-')+'%</td></tr>';
-  }
-  // 周环比行
-  const a = W[W.length-2], b = W[W.length-1];
-  function ch(x,y){ if(!x||!y||x===0) return '-'; const v=((y-x)/x*100); return (v>=0?'+':'')+v.toFixed(1)+'%'; }
-  h += '<tr style="background:#f8fafd;font-weight:600"><td>周环比</td>'
-     + '<td>'+ch(a.camps,b.camps)+'</td>'
-     + '<td class="'+(b.impressions>=a.impressions?'up':'dn')+'">'+ch(a.impressions,b.impressions)+'</td>'
-     + '<td class="'+(b.clicks>=a.clicks?'up':'dn')+'">'+ch(a.clicks,b.clicks)+'</td>'
-     + '<td class="'+(b.spend>=a.spend?'up':'dn')+'">'+ch(a.spend,b.spend)+'</td>'
-     + '<td class="'+(b.orders>=a.orders?'up':'dn')+'">'+ch(a.orders,b.orders)+'</td>'
-     + '<td class="'+(b.sales>=a.sales?'up':'dn')+'">'+ch(a.sales,b.sales)+'</td>'
-     + '<td class="'+(b.acos>=a.acos?'dn':'up')+'">'+((b.acos-a.acos)>=0?'+':'')+(b.acos-a.acos).toFixed(2)+'pct</td>'
-     + '<td class="'+(b.ctr>=a.ctr?'up':'dn')+'">'+((b.ctr-a.ctr)>=0?'+':'')+(b.ctr-a.ctr).toFixed(2)+'pct</td>'
-     + '<td class="'+(b.cpc<=a.cpc?'up':'dn')+'">'+ch(a.cpc,b.cpc)+'</td>'
-     + '<td class="'+(b.cvr>=a.cvr?'up':'dn')+'">'+((b.cvr-a.cvr)>=0?'+':'')+(b.cvr-a.cvr).toFixed(2)+'pct</td>'
-     + '</tr>';
-  h += '</table>';
-  document.getElementById('tbl-ad').innerHTML = h;
-  // 问题活动：花费>0 且 (0单 或 ACOS>30%)，按花费降序
-  const myIssues = (A.acts||[]).filter(a=>a.spend>0 && (a.orders===0 || (a.acos!==null && a.acos>30))).sort((x,y)=>y.spend-x.spend);
-  let h3 = '<table><tr><th>活动名</th><th>花费</th><th>单</th><th>销售</th><th>ACOS</th><th>曝光</th><th>点击</th><th>状态</th><th>问题</th></tr>';
-  for(const a of myIssues){
-    const prob = a.orders===0 ? '0单' : ('ACOS '+(a.acos||0).toFixed(0)+'%');
-    h3 += '<tr style="color:#c0392b"><td style="text-align:left;max-width:380px;font-size:11.5px">'+a.name.slice(0,75)+'</td><td>$'+a.spend+'</td><td>'+a.orders+'</td><td>$'+a.sales+'</td><td>'+(a.acos===null?'-':a.acos+'%')+'</td><td>'+a.impressions+'</td><td>'+a.clicks+'</td><td>'+a.state+'</td><td><b>'+prob+'</b></td></tr>';
-  }
-  if(!myIssues.length) h3 += '<tr><td colspan="9" style="color:#27ae60">本周无问题活动（所有投放活动均有出单且ACOS健康）</td></tr>';
-  h3 += '</table>';
-  document.getElementById('tbl-issue').innerHTML = h3;
-  document.getElementById('ad-note').innerText = '口径：领星MCP · VC店铺 · 活动名含"车灯总成"+"李汝娴" · 每周取花费TOP500活动后筛选｜共' + A.total_acts + '个活动（李汝娴）';
+      {name:'广告花费',type:'bar',data:W.map(w=>w.spend),itemStyle:{color:'#95a5a6'},
+       label:{show:true,fontSize:10,position:'top',formatter:p=>'$'+p.value}},
+      {name:'广告单',type:'line',data:W.map(w=>w.orders),itemStyle:{color:'#1a3b6d'},
+       label:{show:true,fontSize:10,position:'top'}},
+      {name:'ACOS%',type:'line',yAxisIndex:1,data:W.map(w=>w.acos),itemStyle:{color:'#c0392b'},
+       label:{show:true,fontSize:10,formatter:p=>p.value===null?'':p.value+'%'}}
+    ]
+  });
+
+  let h='<table><thead><tr><th>周</th><th>活动数</th><th>曝光</th><th>点击</th><th>花费</th><th>广告单</th>'
+    +'<th>广告销售</th><th>ACOS%</th><th>CTR%</th><th>CPC</th><th>CVR%</th></tr></thead><tbody>';
+  W.forEach(w=>{
+    h+='<tr><td>'+w.week+'</td><td>'+w.camps+'</td><td>'+(w.impressions||0).toLocaleString()+'</td>'
+      +'<td>'+(w.clicks||0).toLocaleString()+'</td><td>$'+w.spend.toLocaleString()+'</td>'
+      +'<td>'+w.orders+'</td><td>$'+w.sales.toLocaleString()+'</td>'
+      +'<td>'+(w.acos===null?'-':w.acos+'%')+'</td><td>'+(w.ctr===null?'-':w.ctr+'%')+'</td>'
+      +'<td>'+(w.cpc===null?'-':'$'+w.cpc)+'</td><td>'+(w.cvr===null?'-':w.cvr+'%')+'</td></tr>';
+  });
+  const a=W[W.length-2], b=W[W.length-1];
+  const pc=(x,y)=> (!x||!y||x===0)?'-':(((y-x)/x*100>=0?'+':'')+((y-x)/x*100).toFixed(1)+'%');
+  const pt=(x,y)=> (x===null||y===null)?'-':(((y-x)>=0?'+':'')+(y-x).toFixed(2)+'pct');
+  h+='<tr style="background:#f8fafd;font-weight:600"><td>周环比</td>'
+    +'<td>'+pc(a.camps,b.camps)+'</td>'
+    +'<td class="'+((b.impressions||0)>=(a.impressions||0)?'up':'dn')+'">'+pc(a.impressions,b.impressions)+'</td>'
+    +'<td class="'+((b.clicks||0)>=(a.clicks||0)?'up':'dn')+'">'+pc(a.clicks,b.clicks)+'</td>'
+    +'<td class="'+(b.spend>=a.spend?'up':'dn')+'">'+pc(a.spend,b.spend)+'</td>'
+    +'<td class="'+(b.orders>=a.orders?'up':'dn')+'">'+pc(a.orders,b.orders)+'</td>'
+    +'<td class="'+(b.sales>=a.sales?'up':'dn')+'">'+pc(a.sales,b.sales)+'</td>'
+    +'<td class="'+(b.acos>=a.acos?'dn':'up')+'">'+pt(a.acos,b.acos)+'</td>'
+    +'<td class="'+(b.ctr>=a.ctr?'up':'dn')+'">'+pt(a.ctr,b.ctr)+'</td>'
+    +'<td class="'+(b.cpc<=a.cpc?'up':'dn')+'">'+pc(a.cpc,b.cpc)+'</td>'
+    +'<td class="'+(b.cvr>=a.cvr?'up':'dn')+'">'+pt(a.cvr,b.cvr)+'</td></tr>';
+  h+='</tbody></table>';
+  document.getElementById('tbl-ad').innerHTML=h;
+
+  const iss=(A.acts||[]).filter(x=>x.spend>0 && (x.orders===0 || (x.acos!==null && x.acos>30)))
+                         .sort((x,y)=>y.spend-x.spend);
+  let h2='<table><thead><tr><th>活动名</th><th>花费</th><th>单</th><th>销售</th><th>ACOS</th>'
+    +'<th>曝光</th><th>点击</th><th>状态</th><th>问题</th></tr></thead><tbody>';
+  iss.forEach(x=>{
+    const prob = x.orders===0 ? '0单' : ('ACOS '+(x.acos||0).toFixed(0)+'%');
+    h2+='<tr style="color:#c0392b"><td style="text-align:left;max-width:380px;font-size:11.5px">'
+      +x.name.slice(0,75)+'</td><td>$'+x.spend+'</td><td>'+x.orders+'</td><td>$'+x.sales+'</td>'
+      +'<td>'+(x.acos===null?'-':x.acos+'%')+'</td><td>'+(x.impressions||0)+'</td>'
+      +'<td>'+(x.clicks||0)+'</td><td>'+(x.state||'')+'</td><td><b>'+prob+'</b></td></tr>';
+  });
+  if(!iss.length) h2+='<tr><td colspan="9" style="color:#27ae60">本周无问题活动（所有投放活动均有出单且ACOS健康）</td></tr>';
+  h2+='</tbody></table>';
+  document.getElementById('tbl-issue').innerHTML=h2;
+
+  document.getElementById('ad-note').innerText =
+    '口径：领星MCP · VC店铺 · 活动名含"车灯总成"+"李汝娴" · 每周取花费TOP500后筛选 · 共'+A.total_acts+'个活动';
 })();
 
-// ASIN明细 -> 增长TOP5 + 未动销库存TOP5
+/* ===== 增长TOP10 + 未动销TOP10 ===== */
 (function(){
-  const i = WE.length-1, i0 = i-1;
-  const ups = P.detail.map(r=>({asin:r.asin,sku:r.sku,cat:r.cat,shop:r.shop,a:r.q[i0],b:r.q[i],d:r.q[i]-r.q[i0]})).filter(r=>r.d>0).sort((x,y)=>y.d-x.d).slice(0,10);
-  let h1 = '<table><tr><th>ASIN</th><th>SKU</th><th>品类</th><th>上周</th><th>本周</th><th>增量</th><th>增幅</th></tr>';
-  for(const r of ups){
+  const i=WE.length-1, i0=i-1;
+  const ups=P.detail.map(r=>({asin:r.asin,sku:r.sku,cat:r.cat,a:r.q[i0],b:r.q[i],d:r.q[i]-r.q[i0]}))
+                     .filter(r=>r.d>0).sort((x,y)=>y.d-x.d).slice(0,10);
+  let h1='<table><thead><tr><th>ASIN</th><th>SKU</th><th>品类</th><th>上周</th><th>本周</th><th>增量</th><th>增幅</th>'
+    +'</tr></thead><tbody>';
+  ups.forEach(r=>{
     const pc = r.a>0 ? ((r.d/r.a)*100).toFixed(0)+'%' : '首单';
-    h1 += '<tr><td class="asin">'+r.asin+'</td><td class="asin" style="font-size:11px;color:#666">'+r.sku+'</td><td>'+r.cat+'</td><td>'+r.a+'</td><td><b>'+r.b+'</b></td><td class="up">+'+r.d+'</td><td class="up">'+pc+'</td></tr>';
-  }
-  if(!ups.length) h1 += '<tr><td colspan="7" style="color:#999">本周无增长ASIN</td></tr>';
-  h1 += '</table>';
-  document.getElementById('tbl-up').innerHTML = h1;
+    h1+='<tr><td class="asin">'+r.asin+'</td><td class="asin" style="font-size:11px;color:#666">'
+      +r.sku+'</td><td>'+r.cat+'</td><td>'+r.a+'</td><td><b>'+r.b+'</b></td>'
+      +'<td class="up">+'+r.d+'</td><td class="up">'+pc+'</td></tr>';
+  });
+  if(!ups.length) h1+='<tr><td colspan="7" style="color:#999">本周无增长ASIN</td></tr>';
+  h1+='</tbody></table>';
+  document.getElementById('tbl-up').innerHTML=h1;
 
-  const duds = P.inventory.filter(r=>((r.s14||0)===0) && ((r.ov||0)>0)).sort((a,b)=>b.ov-a.ov).slice(0,10);
-  // sku -> asin 映射
-  const sku2asin = {};
-  P.detail.forEach(d=>{ if(d.sku && d.asin && !sku2asin[d.sku]) sku2asin[d.sku] = d.asin; });
-  // 读数
-  let LS = {};
-  try { LS = JSON.parse(localStorage.getItem('light_measures') || '{}'); } catch(e){}
-  let h2 = '<table><tr><th>ASIN</th><th>商品编码</th><th>海外仓可用</th><th>在途</th><th>总库存</th><th>14天销量</th><th>库销比</th><th style="min-width:200px">措施(记录)</th></tr>';
-  for(const r of duds){
+  const sku2asin={};
+  P.detail.forEach(d=>{ if(d.sku && d.asin && !sku2asin[d.sku]) sku2asin[d.sku]=d.asin; });
+  let LS={};
+  try{ LS=JSON.parse(localStorage.getItem('light_measures')||'{}'); }catch(e){}
+  const duds=P.inventory.filter(r=>((r.s14||0)===0)&&((r.ov||0)>0))
+                        .sort((x,y)=>y.ov-x.ov).slice(0,10);
+  let h2='<table><thead><tr><th>ASIN</th><th>商品编码</th><th>海外仓可用</th><th>在途</th>'
+    +'<th>总库存</th><th>14天销量</th><th>库销比</th><th style="min-width:190px">措施(记录)</th></tr></thead><tbody>';
+  duds.forEach(r=>{
     const cov = r.cov>=999 ? '无销量' : r.cov.toFixed(1)+'月';
     const asin = sku2asin[r.sku] || '—';
-    const mv = LS[r.sku] || '';
-    h2 += '<tr><td class="asin">'+asin+'</td><td class="asin" style="font-size:11px">'+r.sku+'</td><td><b style="color:#c0392b">'+r.ov+'</b></td><td>'+r.ov_wip+'</td><td>'+r.total+'</td><td style="color:#c0392b">0</td><td style="color:#c0392b">'+cov+'</td>'
-       + '<td style="min-width:200px"><input class="dud-mv" data-sku="'+r.sku+'" type="text" value="'+mv.replace(/"/g,'&quot;')+'" placeholder="填写清理措施(如:降价/加广告/建链接)" style="width:100%;padding:5px 8px;border:1px solid #ccc;border-radius:5px;font-size:12px;box-sizing:border-box"></td></tr>';
-  }
-  if(!duds.length) h2 += '<tr><td colspan="8" style="color:#999">无</td></tr>';
-  h2 += '</table><div style="font-size:11.5px;color:#888;margin-top:6px" id="dud-tip">措施填写后自动保存到本机（刷新不丢），下周可回看</div>';
-  document.getElementById('tbl-dud').innerHTML = h2;
-  // 绑定保存
-  document.querySelectorAll('.dud-mv').forEach(function(inp){
-    if(inp.dataset.bound) return; inp.dataset.bound='1';
+    const mv = (LS[r.sku]||'').replace(/"/g,'&quot;');
+    h2+='<tr><td class="asin">'+asin+'</td><td class="asin" style="font-size:11px">'+r.sku+'</td>'
+      +'<td><b style="color:#c0392b">'+r.ov+'</b></td><td>'+r.ov_wip+'</td><td>'+r.total+'</td>'
+      +'<td style="color:#c0392b">0</td><td style="color:#c0392b">'+cov+'</td>'
+      +'<td><input class="mv dud-mv" data-sku="'+r.sku+'" type="text" value="'+mv+'" '
+      +'placeholder="填写清理措施(降价/加广告/建链接)"></td></tr>';
+  });
+  if(!duds.length) h2+='<tr><td colspan="8" style="color:#999">无</td></tr>';
+  h2+='</tbody></table>';
+  document.getElementById('tbl-dud').innerHTML=h2;
+
+  document.querySelectorAll('.dud-mv').forEach(inp=>{
     inp.addEventListener('change', function(){
-      const sku = this.dataset.sku, txt = this.value.trim();
-      let o = {};
-      try { o = JSON.parse(localStorage.getItem('light_measures') || '{}'); } catch(e){}
-      if(txt) o[sku] = txt; else delete o[sku];
+      const sku=this.dataset.sku, txt=this.value.trim();
+      let o={};
+      try{ o=JSON.parse(localStorage.getItem('light_measures')||'{}'); }catch(e){}
+      if(txt) o[sku]=txt; else delete o[sku];
       localStorage.setItem('light_measures', JSON.stringify(o));
-      const tip = document.getElementById('dud-tip');
-      if(tip) tip.innerHTML = '✓ 已保存（'+sku+'）— '+new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'});
+      const tip=document.getElementById('dud-tip');
+      if(tip) tip.innerHTML='✓ 已保存（'+sku+'）— '
+        + new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'})
+        + '｜未动销=近14天销量0且海外仓有货';
     });
   });
 })();
 
-
-
-// 库存总表（76商编，海外仓倒序）放最下面
+/* ===== 库存总表（海外仓倒序 + 筛选） ===== */
 (function(){
-  const rows = (P.inventory||[]).slice().sort((a,b)=>b.ov-a.ov);
-  let h = '<table><tr><th>商品编码</th><th>海外仓可用</th><th>海外仓在途</th><th>FBA可用</th><th>本地仓</th><th>总库存</th><th>7天销量</th><th>14天销量</th><th>库销比(月)</th><th>状态</th></tr>';
-  for(const r of rows){
+  const rows=(P.inventory||[]).slice().sort((a,b)=>b.ov-a.ov);
+  let h='<table><thead><tr><th>商品编码</th><th>海外仓可用</th><th>海外仓在途</th><th>FBA可用</th>'
+    +'<th>本地仓</th><th>总库存</th><th>7天销量</th><th>14天销量</th><th>库销比(月)</th><th>状态</th>'
+    +'</tr></thead><tbody>';
+  rows.forEach(r=>{
     const covTxt = r.cov>=999 ? '—' : r.cov.toFixed(1);
-    const covCol = r.cov>=999 ? 'color:#999' : (r.cov>=10 ? 'color:#c0392b;font-weight:700' : (r.cov>=5?'color:#e67e22;font-weight:600':'color:#27ae60'));
+    const covCol = r.cov>=999 ? 'color:#999'
+      : (r.cov>=10 ? 'color:#c0392b;font-weight:700'
+      : (r.cov>=5 ? 'color:#e67e22;font-weight:600' : 'color:#27ae60'));
     const st = r.cov>=999 ? '无销量' : (r.cov>=10 ? '深度滞销' : (r.cov>=5 ? '普通滞销' : '可动销'));
-    h += '<tr><td class="asin">'+r.sku+'</td><td><b>'+r.ov+'</b></td><td>'+r.ov_wip+'</td><td>'+r.fba+'</td><td>'+r.loc+'</td><td>'+r.total+'</td><td>'+(r.s7||'-')+'</td><td>'+(r.s14||'-')+'</td><td style="'+covCol+'">'+covTxt+'</td><td>'+st+'</td></tr>';
-  }
-  h += '</table>';
-  const box = document.getElementById('tbl-inv-all');
-  if(box) box.innerHTML = h;
+    h+='<tr><td class="asin">'+r.sku+'</td><td><b>'+r.ov+'</b></td><td>'+r.ov_wip+'</td>'
+      +'<td>'+r.fba+'</td><td>'+r.loc+'</td><td>'+r.total+'</td>'
+      +'<td>'+(r.s7||'-')+'</td><td>'+(r.s14||'-')+'</td>'
+      +'<td style="'+covCol+'">'+covTxt+'</td><td>'+st+'</td></tr>';
+  });
+  h+='</tbody></table>';
+  const box=document.getElementById('tbl-inv-all');
+  if(box) box.innerHTML=h;
 
-  // ===== 筛选逻辑 =====
-  function applyInvFilter(){
-    const kw = (document.getElementById('inv-search').value || '').trim().toUpperCase();
-    const st = document.getElementById('inv-status').value;
-    const trs = document.querySelectorAll('#tbl-inv-all tbody tr, #tbl-inv-all tr');
-    let shown = 0, total = 0;
-    trs.forEach(function(tr){
-      if(tr.querySelector('th')) return;   // 跳过表头
+  function applyFilter(){
+    const kw=(document.getElementById('inv-search').value||'').trim().toUpperCase();
+    const st=document.getElementById('inv-status').value;
+    let shown=0,total=0;
+    box.querySelectorAll('tbody tr').forEach(tr=>{
       total++;
-      const t = tr.innerText.toUpperCase();
-      const okKw = !kw || t.indexOf(kw) >= 0;
-      const okSt = !st || t.indexOf(st) >= 0;
-      const show = okKw && okSt;
-      tr.style.display = show ? '' : 'none';
-      if(show) shown++;
+      const t=tr.innerText.toUpperCase();
+      const ok=(!kw || t.indexOf(kw)>=0) && (!st || t.indexOf(st)>=0);
+      tr.style.display = ok ? '' : 'none';
+      if(ok) shown++;
     });
-    const c = document.getElementById('inv-count');
-    if(c) c.innerText = '显示 ' + shown + ' / ' + total + ' 个商编';
+    document.getElementById('inv-count').innerText='显示 '+shown+' / '+total+' 个商编';
   }
-  const si = document.getElementById('inv-search');
-  const ss = document.getElementById('inv-status');
-  if(si){ si.addEventListener('input', applyInvFilter); si.addEventListener('keyup', applyInvFilter); }
-  if(ss){ ss.addEventListener('change', applyInvFilter); }
-  applyInvFilter();
+  const si=document.getElementById('inv-search'), ss=document.getElementById('inv-status');
+  if(si) si.addEventListener('input', applyFilter);
+  if(ss) ss.addEventListener('change', applyFilter);
+  applyFilter();
 })();
-</script></body></html>
+</script>
+</body>
+</html>
