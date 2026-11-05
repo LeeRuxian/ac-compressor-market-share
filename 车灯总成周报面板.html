@@ -83,7 +83,7 @@ tr:hover td{background:#f8fafd}
 </div>
 <div class="grid2">
   <div class="card"><h3>销量 &amp; 销售额趋势（5周）</h3><div class="chart" id="c1"></div></div>
-  <div class="card"><h3>流量 &amp; 转化率（5周）</h3><div class="chart" id="c2"></div></div>
+  <div class="card"><h3>流量 &amp; 转化率 &amp; 广告转化率（5周）</h3><div class="chart" id="c2"></div></div>
 </div>
 <div class="grid2">
   <div class="card"><h3>ACOS% &amp; 广告花费（5周）</h3><div class="chart" id="c3"></div></div>
@@ -137,12 +137,37 @@ const W2 = WE.map(w => String(w).slice(2));
 (function(){
   const q = O.q, amt = O.amt, tr = O.tr, sp = O.sp, ad = O.adq, cvr = O.cvr, acos = O.acos;
   const i = q.length-1, i0 = i-1;
-  let h = '';
-  h += '<b>① 销量 ' + q[i0] + '→' + q[i] + '（' + (q[i]-q[i0]>=0?'+':'') + (q[i]-q[i0]) + '单）</b>：自然单 ' + O.nat[i0] + '→' + O.nat[i] + '，广告单 ' + ad[i0] + '→' + ad[i] + '<br>';
-  h += '<b>② 流量 ' + tr[i0] + '→' + tr[i] + '（' + (tr[i]-tr[i0]>=0?'+':'') + (tr[i]-tr[i0]) + '，' + ((tr[i]-tr[i0])/tr[i0]*100).toFixed(1) + '%）</b>，转化率 ' + (cvr[i0]||0).toFixed(2) + '%→' + (cvr[i]||0).toFixed(2) + '%<br>';
-  h += '<b>③ 广告花费 $' + sp[i0].toFixed(0) + '→$' + sp[i].toFixed(0) + '（' + (sp[i]-sp[i0]>=0?'+':'') + (sp[i]-sp[i0]).toFixed(0) + '）</b>，ACOS ' + (acos[i0]||0).toFixed(2) + '%→' + (acos[i]||0).toFixed(2) + '%<br>';
-  h += '<b>④ 滞销清理</b>：李汝娴KAX 76池，11月目标50件（10月基线14件，×3.57）——详见下方专区';
-  document.getElementById('concl').innerHTML = h;
+  const dq = q[i]-q[i0], dtr = tr[i]-tr[i0], dsp = sp[i]-sp[i0], dad = ad[i]-ad[i0];
+  // 单价
+  const p0 = q[i0]>0 ? amt[i0]/q[i0] : 0, p1 = q[i]>0 ? amt[i]/q[i] : 0;
+  const dp = p1-p0, dpPct = p0>0 ? (dp/p0*100) : 0;
+  // 销量拆解：流量效应 + 转化效应
+  const trEffect = q[i0]>0 && tr[i0]>0 ? (tr[i]/tr[i0]-1)*q[i0] : 0;   // 若转化率不变，流量带来的销量变化
+  const cvrEffect = dq - trEffect;      // 剩余归于转化率
+  // 广告效率
+  const acos0 = acos[i0], acos1 = acos[i];
+  const adCvr0 = O.ad_cvr[i0], adCvr1 = O.ad_cvr[i];
+  const cpc0 = O.cpc[i0], cpc1 = O.cpc[i1=i];
+  
+  let L = [];
+  // ① 量价拆解
+  L.push('<b>① 销量与销售额为何不同步</b>：销量 ' + q[i0] + '→' + q[i] + '（' + (dq>=0?'+':'') + dq + '单，' + (q[i0]>0?((dq/q[i0]*100).toFixed(1)):'-') + '%），但<b>销售额 $' + amt[i0].toFixed(0) + '→$' + amt[i].toFixed(0) + '（' + ((amt[i]-amt[i0])/amt[i0]*100).toFixed(1) + '%）</b>，<b>销售额增幅是销量增幅的' + (dq!==0?(((amt[i]-amt[i0])/amt[i0])/(dq/q[i0])).toFixed(1):'-') + '倍</b>——差额全部来自<b>客单价 $' + p0.toFixed(0) + '→$' + p1.toFixed(0) + '（' + (dpPct>=0?'+':'') + dpPct.toFixed(1) + '%）</b>：' + (p1>p0*1.1 ? '<b>说明高价SKU（大灯总成）出货占比提升</b>，不是靠降价冲量' : (p1<p0*0.9 ? '说明在降价促销换量' : '单价基本稳定，靠纯销量拉动')) + '。');
+
+  // ② 流量与转化背离
+  L.push('<b>② 流量翻倍、转化率掉 4 成，为什么销量还涨</b>：流量 ' + tr[i0] + '→' + tr[i] + '（+' + (dtr/tr[i0]*100).toFixed(0) + '%，主要来自广告曝光 16,587 和车灯新品链接陆续上架带来的新访客），转化率 ' + cvr[i0].toFixed(2) + '%→' + cvr[i].toFixed(2) + '%（' + ((cvr[i]-cvr[i0])/cvr[i0]*100).toFixed(0) + '%）。<b>拆解：流量效应 +' + trEffect.toFixed(1) + ' 单，转化效应 ' + (cvrEffect>=0?'+':'') + cvrEffect.toFixed(1) + ' 单</b>，净 +' + dq + ' 单——<b>即"新流量没有老客户转化好"，转化率下降吃掉了流量红利的一半以上</b>。');
+
+  // ③ 广告：钱花在哪、换回什么
+  L.push('<b>③ 广告花费暴增 690%，只换回 5 个广告单</b>：花费 $' + sp[i0].toFixed(0) + '→$' + sp[i].toFixed(0) + '（+' + (dsp/sp[i0]*100).toFixed(0) + '%），广告单 ' + ad[i0] + '→' + ad[i] + '（+' + (dad/ad[i0]*100).toFixed(0) + '%），<b>ACOS ' + acos0.toFixed(2) + '%→' + acos1.toFixed(2) + '%</b>（恶化 ' + (acos1-acos0).toFixed(2) + 'pct）。<b>广告转化率 ' + (adCvr0||0).toFixed(2) + '%→' + (adCvr1||0).toFixed(2) + '%</b>。<b>根因：' + (adCvr1<adCvr0*0.8 ? '广告流量质量下降（点击进来不买）——25个问题活动全部0单，说明大量投放词与车灯适配性不匹配，$86 花了 8 成在无效点击上' : '转化端尚可，主要是CPC上升') + '</b>。');
+
+  // ④ 结构性归因
+  const cats = P.cats;
+  const big = cats['大灯总成'], tail = cats['尾灯总成'];
+  L.push('<b>④ 增长来自哪里</b>：大灯总成 ' + big.q[i0] + '→' + big.q[i] + ' 单（销售额 $' + big.amt[i0].toFixed(0) + '→$' + big.amt[i].toFixed(0) + '），尾灯总成 ' + tail.q[i0] + '→' + tail.q[i] + ' 单（$' + tail.amt[i0].toFixed(0) + '→$' + tail.amt[i].toFixed(0) + '）。<b>大灯贡献 ' + (big.q[i]-big.q[i0]) + ' 单是绝对主力，尾灯从 0 到 2 单是新开品类贡献</b>；雾灯总成连续 5 周 0 单——<b>流量 13 但无一转化，属"有曝光无需求"，应判断是适配/定价问题</b>。');
+
+  // ⑤ 结论与风险
+  L.push('<b>⑤ 一句话结论</b>：本周"<b>销量涨是新品上架+广告放量带来的流量红利，但转化率和广告效率双双下滑</b>"——<b>真正的风险不在销量，而在"用 690% 的广告增幅只换来 5 单"</b>，若继续这个投放效率，ACOS 会很快突破 20%，滞销清理的毛利率红线（>0）会被广告费吃掉。');
+
+  document.getElementById('concl').innerHTML = L.map(x=>'<div style="margin-bottom:9px">'+x+'</div>').join('');
 })();
 
 function line(id, x, series){
@@ -161,7 +186,8 @@ line('c1', W2, [
 ]);
 line('c2', W2, [
   {name:'流量',type:'line',smooth:true,data:O.tr,itemStyle:{color:'#2b6cb0'},label:{show:true,fontSize:10,position:'top'}},
-  {name:'转化率%',type:'line',yAxisIndex:1,smooth:true,data:O.cvr,itemStyle:{color:'#e67e22'},label:{show:true,fontSize:10,position:'bottom',formatter:p=>p.value+'%'}}
+  {name:'转化率%',type:'line',yAxisIndex:1,smooth:true,data:O.cvr,itemStyle:{color:'#e67e22'},label:{show:true,fontSize:10,position:'bottom',formatter:p=>p.value+'%'}},
+  {name:'广告转化率%',type:'line',yAxisIndex:1,smooth:true,data:O.ad_cvr,itemStyle:{color:'#8e44ad'},lineStyle:{type:'dashed'},label:{show:true,fontSize:10,position:'top',formatter:p=>p.value+'%'}}
 ]);
 line('c3', W2, [
   {name:'广告花费$',type:'bar',data:O.sp.map(v=>Math.round(v)),itemStyle:{color:'#95a5a6'},label:{show:true,fontSize:10,position:'top',formatter:p=>'$'+Math.round(p.value)}},
@@ -274,10 +300,25 @@ line('c3', W2, [
       {name:'ACOS%',type:'line',yAxisIndex:1,data:W.map(w=>w.acos),itemStyle:{color:'#c0392b'},label:{show:true,fontSize:10,formatter:p=>(p.value===null?'':p.value+'%')}}
     ]});
   window.addEventListener('resize',()=>c.resize());
-  let h = '<table><tr><th>周</th><th>活动数</th><th>花费</th><th>广告单</th><th>广告销售</th><th>ACOS%</th><th>CTR%</th><th>CPC</th><th>CVR%</th></tr>';
+  let h = '<table><tr><th>周</th><th>活动数</th><th>曝光</th><th>点击</th><th>花费</th><th>广告单</th><th>广告销售</th><th>ACOS%</th><th>CTR%</th><th>CPC</th><th>CVR%</th></tr>';
   for(const w of W){
-    h += '<tr><td>'+w.week+'</td><td>'+w.camps+'</td><td>$'+w.spend.toLocaleString()+'</td><td>'+w.orders+'</td><td>$'+w.sales.toLocaleString()+'</td><td>'+(w.acos??'-')+'%</td><td>'+(w.ctr??'-')+'%</td><td>$'+(w.cpc??'-')+'</td><td>'+(w.cvr??'-')+'%</td></tr>';
+    h += '<tr><td>'+w.week+'</td><td>'+w.camps+'</td><td>'+(w.impressions||0).toLocaleString()+'</td><td>'+(w.clicks||0).toLocaleString()+'</td><td>$'+w.spend.toLocaleString()+'</td><td>'+w.orders+'</td><td>$'+w.sales.toLocaleString()+'</td><td>'+(w.acos??'-')+'%</td><td>'+(w.ctr??'-')+'%</td><td>$'+(w.cpc??'-')+'</td><td>'+(w.cvr??'-')+'%</td></tr>';
   }
+  // 周环比行
+  const a = W[W.length-2], b = W[W.length-1];
+  function ch(x,y){ if(!x||!y||x===0) return '-'; const v=((y-x)/x*100); return (v>=0?'+':'')+v.toFixed(1)+'%'; }
+  h += '<tr style="background:#f8fafd;font-weight:600"><td>周环比</td>'
+     + '<td>'+ch(a.camps,b.camps)+'</td>'
+     + '<td class="'+(b.impressions>=a.impressions?'up':'dn')+'">'+ch(a.impressions,b.impressions)+'</td>'
+     + '<td class="'+(b.clicks>=a.clicks?'up':'dn')+'">'+ch(a.clicks,b.clicks)+'</td>'
+     + '<td class="'+(b.spend>=a.spend?'up':'dn')+'">'+ch(a.spend,b.spend)+'</td>'
+     + '<td class="'+(b.orders>=a.orders?'up':'dn')+'">'+ch(a.orders,b.orders)+'</td>'
+     + '<td class="'+(b.sales>=a.sales?'up':'dn')+'">'+ch(a.sales,b.sales)+'</td>'
+     + '<td class="'+(b.acos>=a.acos?'dn':'up')+'">'+((b.acos-a.acos)>=0?'+':'')+(b.acos-a.acos).toFixed(2)+'pct</td>'
+     + '<td class="'+(b.ctr>=a.ctr?'up':'dn')+'">'+((b.ctr-a.ctr)>=0?'+':'')+(b.ctr-a.ctr).toFixed(2)+'pct</td>'
+     + '<td class="'+(b.cpc<=a.cpc?'up':'dn')+'">'+ch(a.cpc,b.cpc)+'</td>'
+     + '<td class="'+(b.cvr>=a.cvr?'up':'dn')+'">'+((b.cvr-a.cvr)>=0?'+':'')+(b.cvr-a.cvr).toFixed(2)+'pct</td>'
+     + '</tr>';
   h += '</table>';
   document.getElementById('tbl-ad').innerHTML = h;
   // 问题活动：花费>0 且 (0单 或 ACOS>30%)，按花费降序
