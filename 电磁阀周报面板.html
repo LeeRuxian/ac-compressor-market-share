@@ -144,18 +144,7 @@ table th{background:var(--blue);color:#fff;white-space:nowrap;font-size:12px;}
     <div class="note">口径：出库口径（BI损益明细·sales_amount_m）｜毛利率=毛利润实际÷出库销售额｜净利率=净利润÷出库销售额｜费率均由金额重算（非各店铺平均）｜数据源：SmartBI bi-getdata-finance</div>
   </div>
 
-  <div class="card" style="border-left:5px solid #8e44ad">
-    <h3 style="border-left-color:#8e44ad">📊 市场市占分析（Idle Air Control Valves · 月度）</h3>
-    <div id="ms-kpis" style="display:grid;grid-template-columns:repeat(5,1fr);gap:11px;margin-bottom:14px"></div>
-    <div style="display:grid;grid-template-columns:1.3fr 1fr;gap:15px;margin-bottom:14px">
-      <div><div class="chart" id="ms-c1" style="height:280px"></div></div>
-      <div><div class="chart" id="ms-c2" style="height:280px"></div></div>
-    </div>
-    <div style="font-size:13px;font-weight:600;color:#1a3b6d;margin:14px 0 8px">月度市占明细（含品牌拆分）</div>
-    <div style="overflow-x:auto" id="ms-table"></div>
-    <div id="ms-insight" style="margin-top:12px"></div>
-    <div class="note" id="ms-note"></div>
-  </div>
+  
 
   <div class="card" style="border-left:5px solid #c0392b">
     <h3 style="border-left-color:#c0392b">📦 仓储费 × 库存 排行榜（电磁阀 · 月度计提口径）</h3>
@@ -167,6 +156,19 @@ table th{background:var(--blue);color:#fff;white-space:nowrap;font-size:12px;}
     <div style="font-size:13px;font-weight:600;color:#1a3b6d;margin:16px 0 8px">③ 仓储费占销售额比 TOP12（卖100块花多少仓储费）</div>
     <div style="overflow-x:auto" id="tbl-st-pct"></div>
     <div class="note">口径：月度仓储费=W45（2026-10整月一次性计提）｜单件月成本=月仓储费÷当前可售库存｜年化=月费×12｜占销售额比=月仓储÷同月销售额｜库存=ERP实时可售（FBA+海外仓+本地）</div>
+  </div>
+
+<div class="card" style="border-left:5px solid #8e44ad">
+    <h3 style="border-left-color:#8e44ad">📊 市场市占分析（Idle Air Control Valves · 月度）</h3>
+    <div id="ms-kpis" style="display:grid;grid-template-columns:repeat(5,1fr);gap:11px;margin-bottom:14px"></div>
+    <div style="display:grid;grid-template-columns:1.3fr 1fr;gap:15px;margin-bottom:14px">
+      <div><div class="chart" id="ms-c1" style="height:280px"></div></div>
+      <div><div class="chart" id="ms-c2" style="height:280px"></div></div>
+    </div>
+    <div style="font-size:13px;font-weight:600;color:#1a3b6d;margin:14px 0 8px">月度市占明细（含品牌拆分）</div>
+    <div style="overflow-x:auto" id="ms-table"></div>
+    <div id="ms-insight" style="margin-top:12px"></div>
+    <div class="note" id="ms-note"></div>
   </div>
 
 
