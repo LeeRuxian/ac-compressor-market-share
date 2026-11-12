@@ -1057,9 +1057,9 @@ renderKeyLinks();
   const L = S.length-1;
 
   document.getElementById('ms-kpis').innerHTML = [
-    ['当前市占率', SM.share.toFixed(2)+'%', (SM.share_chg>=0?'+':'')+SM.share_chg+'pct vs 上月'],
-    ['市场总量(月)', SM.market_qty.toLocaleString()+' 件', '我方 '+SM.mine_qty.toLocaleString()+' 件'],
-    ['KAX 品牌排名', '第 '+SM.kax_rank+' 名', 'KAX市占 '+SM.kax_share.toFixed(2)+'%'],
+    ['合计市占率', SM.share.toFixed(2)+'%', (SM.share_chg>=0?'+':'')+SM.share_chg+'pct vs 上月'],
+    ['KAX 市占', (S[L].kax/S[L].market*100).toFixed(2)+'%', '第 '+SM.kax_rank+' 名 · '+S[L].kax+' 件'],
+    ['PHILTOP 市占', (S[L].philtop/S[L].market*100).toFixed(2)+'%', S[L].philtop+' 件 · '+S[0].philtop+'→'+S[L].philtop],
     ['年内市占提升', (SM.share_growth>=0?'+':'')+SM.share_growth+'pct', S[0].month.slice(4)+'月 '+SM.share_first+'%'],
     ['市场第一', SM.competitor_top, SM.competitor_top_share.toFixed(2)+'%']
   ].map(x=>'<div class="kpi" style="border-left-color:#8e44ad"><div class="kl">'+x[0]+'</div>'
@@ -1071,15 +1071,23 @@ renderKeyLinks();
     grid:{left:56,right:52,top:26,bottom:36},
     xAxis:{type:'category',data:WL,axisLabel:{fontSize:10}},
     yAxis:[{type:'value',name:'件',axisLabel:{fontSize:10}},
-           {type:'value',name:'市占%',max:20,axisLabel:{fontSize:10},splitLine:{show:false}}],
+           {type:'value',name:'市占%',max:16,axisLabel:{fontSize:10},splitLine:{show:false}}],
     series:[
       {name:'市场总量',type:'bar',data:S.map(x=>x.market),itemStyle:{color:'#d5dbe3'},
        label:{show:true,fontSize:9,position:'top',formatter:p=>Math.round(p.value/1000)+'k'}},
       {name:'我方销量',type:'bar',data:S.map(x=>x.mine),itemStyle:{color:'#8e44ad'},
        label:{show:true,fontSize:9,position:'top'}},
-      {name:'市占率%',type:'line',yAxisIndex:1,smooth:true,data:S.map(x=>x.share),
-       itemStyle:{color:'#e67e22'},lineStyle:{width:3},
-       label:{show:true,fontSize:10,fontWeight:'bold',color:'#e67e22',formatter:p=>p.value+'%'}}
+      {name:'KAX 市占%',type:'line',yAxisIndex:1,smooth:true,
+       data:S.map(x=>+(x.kax/x.market*100).toFixed(2)),
+       itemStyle:{color:'#8e44ad'},lineStyle:{width:3},
+       label:{show:true,fontSize:10,fontWeight:'bold',color:'#8e44ad',formatter:p=>p.value+'%'}},
+      {name:'PHILTOP 市占%',type:'line',yAxisIndex:1,smooth:true,
+       data:S.map(x=>+(x.philtop/x.market*100).toFixed(2)),
+       itemStyle:{color:'#2980b9'},lineStyle:{width:3},
+       label:{show:true,fontSize:10,fontWeight:'bold',color:'#2980b9',formatter:p=>p.value+'%'}},
+      {name:'合计市占%',type:'line',yAxisIndex:1,smooth:true,data:S.map(x=>x.share),
+       itemStyle:{color:'#e67e22'},lineStyle:{width:2,type:'dashed'},
+       label:{show:true,fontSize:9,color:'#e67e22',formatter:p=>p.value+'%'}}
     ]
   });
 
@@ -1095,15 +1103,19 @@ renderKeyLinks();
         formatter:p=>p.value+'%'}}]
   });
 
-  let h = '<table><thead><tr><th>月份</th><th>市场总量</th><th>我方销量</th><th>市占率</th>'
-        + '<th>KAX</th><th>PHILTOP</th><th>ZonCar</th><th>市占环比</th></tr></thead><tbody>';
+  let h = '<table><thead><tr><th>月份</th><th>市场总量</th><th>KAX 销量</th><th>KAX 市占</th>'
+        + '<th>PHILTOP 销量</th><th>PHILTOP 市占</th><th>合计销量</th><th>合计市占</th><th>市占环比</th></tr></thead><tbody>';
   S.forEach((x,i)=>{
     const d = i>0 ? (x.share - S[i-1].share) : null;
     const dCol = d===null?'#888':(d>=0?'#00A050':'#C00000');
+    const ks = (x.kax/x.market*100), ps = (x.philtop/x.market*100);
     h += '<tr><td>'+x.month+'</td><td>'+x.market.toLocaleString()+'</td>'
+      + '<td>'+x.kax+'</td>'
+      + '<td style="color:#8e44ad;font-weight:700">'+ks.toFixed(2)+'%</td>'
+      + '<td>'+x.philtop+'</td>'
+      + '<td style="color:#2980b9;font-weight:700">'+ps.toFixed(2)+'%</td>'
       + '<td><b>'+x.mine.toLocaleString()+'</b></td>'
-      + '<td style="color:#8e44ad;font-weight:700">'+x.share+'%</td>'
-      + '<td>'+x.kax+'</td><td>'+x.philtop+'</td><td>'+x.zoncar+'</td>'
+      + '<td style="color:#e67e22;font-weight:700">'+x.share+'%</td>'
       + '<td style="color:'+dCol+';font-weight:600">'
       + (d===null?'-':(d>=0?'+':'')+d.toFixed(2)+'pct')+'</td></tr>';
   });
@@ -1121,12 +1133,11 @@ renderKeyLinks();
       + (top && top.brand.toUpperCase()!=='KAX' ? '，与第一名 '+top.brand+'（'+top.share+'%）差 '
         + (top.share-kax.share).toFixed(2)+'pct' : '')+'；<br>';
   }
-  const zc = S[L].zoncar, zc0 = S[0].zoncar;
-  ins += '③ ZonCar 从 '+zc0+' 件降到 '+zc+' 件'
-    + (zc0>0 && zc/zc0<0.3 ? '（<b style="color:#c0392b">萎缩 ' + Math.round((1-zc/zc0)*100) + '%</b>，需决定保留或退出）' : '')
-    + '；<br>'
-    + '④ 市场总量 '+SM.market_qty.toLocaleString()+' 件/月，近几月稳定在 1.1~1.5 万件，'
-    + '<b>市占提升主要来自抢份额，不是市场变大</b>。'
+  const ks = S[L].kax/S[L].market*100, ps = S[L].philtop/S[L].market*100;
+  const ks0 = S[0].kax/S[0].market*100, ps0 = S[0].philtop/S[0].market*100;
+  ins += '③ KAX 市占 '+ks0.toFixed(2)+'% → <b>'+ks.toFixed(2)+'%</b>（'+((ks-ks0)>=0?'+':'')+(ks-ks0).toFixed(2)+'pct），'
+    + 'PHILTOP '+ps0.toFixed(2)+'% → <b>'+ps.toFixed(2)+'%</b>（'+((ps-ps0)>=0?'+':'')+(ps-ps0).toFixed(2)+'pct）；<br>'
+    + '④ 市场总量近几月稳定在 1.1~1.5 万件，<b>市占提升主要来自抢份额，不是市场变大</b>。'
     + '</div>';
   document.getElementById('ms-insight').innerHTML = ins;
 
