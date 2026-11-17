@@ -143,18 +143,6 @@ table th{background:var(--blue);color:#fff;white-space:nowrap;font-size:12px;}
     <div id="pf-diag" style="margin-top:14px"></div>
     <div class="note">口径：出库口径（BI损益明细·sales_amount_m）｜毛利率=毛利润实际÷出库销售额｜净利率=净利润÷出库销售额｜费率均由金额重算（非各店铺平均）｜数据源：SmartBI bi-getdata-finance</div>
   </div>
-
-  
-
-  <div class="card" style="border-left:5px solid #c0392b">
-    <h3 style="border-left-color:#c0392b">📦 仓储费 × 库存 排行榜（电磁阀 · 月度计提口径）</h3>
-    <div id="st-kpis" style="display:grid;grid-template-columns:repeat(4,1fr);gap:11px;margin-bottom:14px"></div>
-    <div style="font-size:13px;font-weight:600;color:#1a3b6d;margin:12px 0 8px">① 月度仓储费 TOP15（谁最贵）</div>
-    <div style="overflow-x:auto" id="tbl-st-cost"></div>
-    <div style="font-size:13px;font-weight:600;color:#1a3b6d;margin:16px 0 8px">② 单件月仓储成本 TOP10（单位持有成本最贵 → 最该先清）</div>
-    <div style="overflow-x:auto" id="tbl-st-unit"></div>
-    <div style="font-size:13px;font-weight:600;color:#1a3b6d;margin:16px 0 8px">③ 仓储费占销售额比 TOP12（卖100块花多少仓储费）</div>
-    <div style="overflow-x:auto" id="tbl-st-pct"></div>
     <div class="note">口径：月度仓储费=W45（2026-10整月一次性计提）｜单件月成本=月仓储费÷当前可售库存｜年化=月费×12｜占销售额比=月仓储÷同月销售额｜库存=ERP实时可售（FBA+海外仓+本地）</div>
   </div>
 
@@ -992,49 +980,7 @@ renderKeyLinks();
 
 
 /* ===== 仓储费×库存排行榜 ===== */
-(function(){
-  const SR = P.storage_rank;
-  if(!SR) return;
-  const rows = SR.rows || [], S = SR.summary || {};
-  const money = v => '¥' + Number(v).toLocaleString(undefined,{maximumFractionDigits:2});
 
-  document.getElementById('st-kpis').innerHTML = [
-    ['月仓储费合计', money(S.total_monthly||0), '占月销售额 ' + (S.total_monthly && P.profit ? (S.total_monthly/P.profit.series.amt[4]*100).toFixed(2) : '-') + '%'],
-    ['涉及库存', (S.total_qty||0).toLocaleString() + ' 件', (S.n_sku||0) + ' 个SKU有仓储费'],
-    ['平均单件月成本', '¥' + (S.avg_per_unit||0), '年化 $' + ((S.avg_per_unit||0)*12).toFixed(1) + '/件'],
-    ['年化仓储成本', money(S.total_annual||0), '按当前费率×12']
-  ].map(x=>'<div class="kpi" style="border-left-color:#c0392b"><div class="kl">'+x[0]+'</div>'
-    +'<div class="kv" style="color:#c0392b">'+x[1]+'</div><div class="ks">'+x[2]+'</div></div>').join('');
-
-  function tbl(id, list, showCols){
-    let h = '<table><thead><tr><th>SKU</th><th>ASIN</th><th>店铺</th><th>品牌</th>'
-          + '<th>月仓储费</th><th>可售</th><th>单件月成本</th><th>年化仓储</th>'
-          + '<th>月销售额</th><th>仓储/销售</th><th>建议</th></tr></thead><tbody>';
-    list.forEach(r=>{
-      const puCol = (r.per_unit||0) >= 5 ? '#8b0000' : ((r.per_unit||0) >= 1.5 ? '#c0392b' : 'inherit');
-      const pctCol = (r.st_pct_sales||0) >= 5 ? '#c0392b' : 'inherit';
-      h += '<tr><td class="asin">'+r.sku+'</td><td class="asin" style="font-size:11px">'+r.asin+'</td>'
-        + '<td>'+r.shop+'</td><td>'+String(r.brand||'').slice(0,8)+'</td>'
-        + '<td><b>'+money(r.monthly)+'</b></td><td>'+r.qty+'</td>'
-        + '<td style="color:'+puCol+';font-weight:'+((r.per_unit||0)>=1.5?'700':'400')+'">'
-        + (r.per_unit===null?'-':'¥'+r.per_unit)+'</td>'
-        + '<td>'+money(r.annual)+'</td><td>'+money(r.sales)+'</td>'
-        + '<td style="color:'+pctCol+'">'+(r.st_pct_sales===null?'-':r.st_pct_sales+'%')+'</td>'
-        + '<td style="text-align:left;font-size:11.5px">'+(r.advice||'')+'</td></tr>';
-    });
-    h += '</tbody></table>';
-    document.getElementById(id).innerHTML = h;
-  }
-
-  const byCost = rows.slice().sort((a,b)=>b.monthly-a.monthly).slice(0,15);
-  tbl('tbl-st-cost', byCost);
-
-  const byUnit = rows.filter(r=>r.per_unit!==null).sort((a,b)=>b.per_unit-a.per_unit).slice(0,10);
-  tbl('tbl-st-unit', byUnit);
-
-  const byPct = rows.filter(r=>r.st_pct_sales!==null).sort((a,b)=>b.st_pct_sales-a.st_pct_sales).slice(0,12);
-  tbl('tbl-st-pct', byPct);
-})();
 
 
 /* ===== 市场市占分析 ===== */
