@@ -50,7 +50,7 @@ input.mv{width:100%;padding:5px 8px;border:1px solid #ccc;border-radius:5px;font
   <h1>🚗 车灯总成（KAX · VC店铺）周报面板 202646</h1>
   <div class="sub">2026-11-01~10-31（周日-周六）｜76个商编 · 大灯70 / 尾灯4 / 雾灯4｜数据源：SmartBI MCP + 《车灯总成.xlsx》进销存｜广告：领星MCP（VC · 车灯总成 · 李汝娴）</div>
 
-  <div class="kpis"><div class="kpi"><div class="kl">本周销量</div><div class="kv">50 单</div><div class="ks"><span style="color:#C00000;font-weight:600">▲ 100.0%</span> 自然27 + 广告23</div></div><div class="kpi"><div class="kl">本周销售额</div><div class="kv">$31,868</div><div class="ks"><span style="color:#C00000;font-weight:600">▲ 124.4%</span> 均价$637</div></div><div class="kpi"><div class="kl">流量(Sessions)</div><div class="kv">1,868.0</div><div class="ks"><span style="color:#C00000;font-weight:600">▲ 65.7%</span> 展示65,030.92</div></div><div class="kpi"><div class="kl">转化率</div><div class="kv">2.68%</div><div class="ks"> 上周 2.22%</div></div><div class="kpi"><div class="kl">广告ACOS</div><div class="kv">15.25%</div><div class="ks"> 花费$2,566</div></div><div class="kpi"><div class="kl">广告花费</div><div class="kv">$2,566</div><div class="ks"><span style="color:#C00000;font-weight:600">▲ 58.5%</span> 广告单23</div></div></div>
+  <div class="kpis"><div class="kpi"><div class="kl">本周销量</div><div class="kv">50 单</div><div class="ks"><span style="color:#C00000;font-weight:600">▲ 100.0%</span> 自然27 + 广告23</div></div><div class="kpi"><div class="kl">本周销售额</div><div class="kv">¥31,868</div><div class="ks"><span style="color:#C00000;font-weight:600">▲ 124.4%</span> 均价¥637</div></div><div class="kpi"><div class="kl">流量(Sessions)</div><div class="kv">1,868.0</div><div class="ks"><span style="color:#C00000;font-weight:600">▲ 65.7%</span> 展示65,030.92</div></div><div class="kpi"><div class="kl">转化率</div><div class="kv">2.68%</div><div class="ks"> 上周 2.22%</div></div><div class="kpi"><div class="kl">广告ACOS</div><div class="kv">15.25%</div><div class="ks"> 花费¥2,566</div></div><div class="kpi"><div class="kl">广告花费</div><div class="kv">¥2,566</div><div class="ks"><span style="color:#C00000;font-weight:600">▲ 58.5%</span> 广告单23</div></div></div>
 
   <div class="card">
     <h3>📌 本周结论（202646 vs 202645）</h3>
@@ -176,7 +176,7 @@ window.addEventListener('resize', () => CHARTS.forEach(c => { try{c.resize()}cat
   }
   const WE = PF.weeks, N = WE.length, L = N-1, L0 = N-2;
   const S = PF.series, R = PF.rates;
-  const money = v => (v===null||v===undefined) ? '-' : '$'+Math.round(v).toLocaleString();
+  const money = v => (v===null||v===undefined) ? '-' : '¥'+Math.round(v).toLocaleString();
   const pct = v => (v===null||v===undefined) ? '-' : v.toFixed(2)+'%';
 
   function chg(cur, prev){
@@ -215,14 +215,14 @@ window.addEventListener('resize', () => CHARTS.forEach(c => { try{c.resize()}cat
     tooltip:{trigger:'axis'}, legend:{bottom:0,textStyle:{fontSize:11}},
     grid:{left:56,right:52,top:28,bottom:36},
     xAxis:{type:'category',data:WE,axisLabel:{fontSize:10}},
-    yAxis:[{type:'value',name:'$',axisLabel:{fontSize:10}},
+    yAxis:[{type:'value',name:'¥',axisLabel:{fontSize:10}},
            {type:'value',name:'%',axisLabel:{fontSize:10},splitLine:{show:false}}],
     series:[
       {name:'毛利润',type:'bar',data:S.gp.map(v=>Math.round(v)),itemStyle:{color:'#16a085'},
-       label:{show:true,fontSize:9,position:'top',formatter:p=>'$'+Math.round(p.value)}},
+       label:{show:true,fontSize:9,position:'top',formatter:p=>'¥'+Math.round(p.value)}},
       {name:'净利润',type:'bar',data:S.np.map(v=>Math.round(v)),
        itemStyle:{color:p=>p.value<0?'#c0392b':'#2b6cb0'},
-       label:{show:true,fontSize:9,position:'top',formatter:p=>'$'+Math.round(p.value)}},
+       label:{show:true,fontSize:9,position:'top',formatter:p=>'¥'+Math.round(p.value)}},
       {name:'毛利率%',type:'line',yAxisIndex:1,smooth:true,data:R['毛利率'],itemStyle:{color:'#e67e22'},
        label:{show:true,fontSize:9,formatter:p=>p.value===null?'':p.value+'%'}},
       {name:'净利率%',type:'line',yAxisIndex:1,smooth:true,data:R['净利率'],itemStyle:{color:'#8e44ad'},
@@ -235,15 +235,15 @@ window.addEventListener('resize', () => CHARTS.forEach(c => { try{c.resize()}cat
     tooltip:{trigger:'axis'}, legend:{bottom:0,textStyle:{fontSize:11}},
     grid:{left:52,right:30,top:28,bottom:36},
     xAxis:{type:'category',data:WE,axisLabel:{fontSize:10}},
-    yAxis:{type:'value',name:'$/单',axisLabel:{fontSize:10}},
+    yAxis:{type:'value',name:'¥/单',axisLabel:{fontSize:10}},
     series:[
       {name:'单均销售额',type:'line',smooth:true,data:PF.per['单均销售额'],itemStyle:{color:'#95a5a6'},
-       label:{show:true,fontSize:9,formatter:p=>p.value===null?'':'$'+p.value}},
+       label:{show:true,fontSize:9,formatter:p=>p.value===null?'':'¥'+p.value}},
       {name:'单均毛利',type:'line',smooth:true,data:PF.per['单均毛利'],itemStyle:{color:'#16a085'},
-       label:{show:true,fontSize:9,formatter:p=>p.value===null?'':'$'+p.value}},
+       label:{show:true,fontSize:9,formatter:p=>p.value===null?'':'¥'+p.value}},
       {name:'单均净利',type:'bar',data:PF.per['单均净利'],
        itemStyle:{color:p=>p.value<0?'#c0392b':'#2b6cb0'},
-       label:{show:true,fontSize:9,position:'top',formatter:p=>p.value===null?'':'$'+p.value}}
+       label:{show:true,fontSize:9,position:'top',formatter:p=>p.value===null?'':'¥'+p.value}}
     ]
   });
 
@@ -303,7 +303,7 @@ window.addEventListener('resize', () => CHARTS.forEach(c => { try{c.resize()}cat
   let p = '<table><thead><tr><th>指标</th>'+WE.map(w=>'<th>'+w+'</th>').join('')+'</tr></thead><tbody>';
   ['单均销售额','单均毛利','单均净利'].forEach(k=>{
     p += '<tr><td style="text-align:left">'+k+'</td>'
-       + PF.per[k].map(v=>'<td style="color:'+(v!==null&&v<0?'#c0392b':'inherit')+'">'+(v===null?'-':'$'+v)+'</td>').join('')
+       + PF.per[k].map(v=>'<td style="color:'+(v!==null&&v<0?'#c0392b':'inherit')+'">'+(v===null?'-':'¥'+v)+'</td>').join('')
        + '</tr>';
   });
   p += '</tbody></table>';
@@ -345,7 +345,7 @@ window.addEventListener('resize', () => CHARTS.forEach(c => { try{c.resize()}cat
     + '），毛利率 '+(gpD!==null?((gpD>=0?'+':'')+gpD.toFixed(2)+'pct'):'-')+'；<br>'
     + (worst? '② <b>恶化最大的费用项：'+worst.k+'</b> '+worst.prv.toFixed(2)+'% → <b style="color:#c0392b">'+worst.cur.toFixed(2)+'%</b>（'
         + (worst.d>=0?'+':'') + worst.d.toFixed(2) + 'pct）；<br>' : '')
-    + '③ 单均净利 '+(PF.per['单均净利'][L0]===null?'-':'$'+PF.per['单均净利'][L0])+' → <b>'+(PF.per['单均净利'][L]===null?'-':'$'+PF.per['单均净利'][L])+'</b>；'
+    + '③ 单均净利 '+(PF.per['单均净利'][L0]===null?'-':'¥'+PF.per['单均净利'][L0])+' → <b>'+(PF.per['单均净利'][L]===null?'-':'¥'+PF.per['单均净利'][L])+'</b>；'
     + (PF.shops||[]).filter(s=>s.np<0).length
       ? '其中 <b style="color:#c0392b">'+(PF.shops||[]).filter(s=>s.np<0).map(s=>s.shop).join('、')+'</b> 净利润为负。'
       : '各店铺净利润均为正。'
@@ -353,10 +353,10 @@ window.addEventListener('resize', () => CHARTS.forEach(c => { try{c.resize()}cat
   if(PF.storage && PF.storage.excess > 50){
     dg += '<div style="margin-top:9px;background:#fff8e6;border-left:4px solid #BF8F00;border-radius:6px;padding:11px 14px;font-size:12.5px;line-height:1.85">'
       + '<b>⚠ 仓储费口径提示：</b>' + PF.storage.note
-      + '<br>→ <b>调整后净利 $' + Math.round(PF.storage.adj_np).toLocaleString()
+      + '<br>→ <b>调整后净利 ¥' + Math.round(PF.storage.adj_np).toLocaleString()
       + '（净利率 ' + PF.storage.adj_np_rate + '%）</b>，环比 '
       + (PF.storage.adj_yoy >= 0 ? '+' : '') + PF.storage.adj_yoy + '%'
-      + '　<span style="color:#888">（上周净利 $' + Math.round(PF.storage.prev_np).toLocaleString() + '）</span>'
+      + '　<span style="color:#888">（上周净利 ¥' + Math.round(PF.storage.prev_np).toLocaleString() + '）</span>'
       + '</div>';
   }
   document.getElementById('pf-diag').innerHTML = dg;
@@ -379,10 +379,10 @@ window.addEventListener('resize', () => CHARTS.forEach(c => { try{c.resize()}cat
 
   const L=[];
   L.push('<b>① 销量与销售额为何不同步</b>：销量 '+q[i0]+'→'+q[i]+'（'+(dq>=0?'+':'')+dq+'单，'
-    +(q[i0]>0?((dq/q[i0]*100).toFixed(1)):'-')+'%），但<b>销售额 $'+amt[i0].toFixed(0)+'→$'+amt[i].toFixed(0)
+    +(q[i0]>0?((dq/q[i0]*100).toFixed(1)):'-')+'%），但<b>销售额 ¥'+amt[i0].toFixed(0)+'→¥'+amt[i].toFixed(0)
     +'（'+((amt[i]-amt[i0])/amt[i0]*100).toFixed(1)+'%）</b>'
     +(mult?('，<b>销售额增幅是销量增幅的'+mult.toFixed(1)+'倍</b>'):'')
-    +'——差额来自<b>客单价 $'+p0.toFixed(0)+'→$'+p1.toFixed(0)+'（'+(dpPct>=0?'+':'')+dpPct.toFixed(1)+'%）</b>：'
+    +'——差额来自<b>客单价 ¥'+p0.toFixed(0)+'→¥'+p1.toFixed(0)+'（'+(dpPct>=0?'+':'')+dpPct.toFixed(1)+'%）</b>：'
     +(p1>p0*1.08?'<b>高价SKU（大灯总成）出货占比提升，不是靠降价冲量</b>'
       :(p1<p0*0.92?'说明在降价换量':'单价基本稳定，靠纯销量拉动'))+'。');
 
@@ -393,7 +393,7 @@ window.addEventListener('resize', () => CHARTS.forEach(c => { try{c.resize()}cat
     +(cvrEff<0?'<b>即"新流量没有老客户转化好"，转化率下滑吃掉了流量红利的一部分</b>':'转化端在改善，流量和转化同向贡献')
     +'。');
 
-  L.push('<b>③ 广告效率</b>：花费 $'+sp[i0].toFixed(0)+'→$'+sp[i].toFixed(0)+'（'+(dsp>=0?'+':'')+(sp[i0]>0?((dsp/sp[i0]*100).toFixed(0)):'-')+'%），'
+  L.push('<b>③ 广告效率</b>：花费 ¥'+sp[i0].toFixed(0)+'→¥'+sp[i].toFixed(0)+'（'+(dsp>=0?'+':'')+(sp[i0]>0?((dsp/sp[i0]*100).toFixed(0)):'-')+'%），'
     +'广告单 '+ad[i0]+'→'+ad[i]+'（'+(dad>=0?'+':'')+(ad[i0]>0?((dad/ad[i0]*100).toFixed(0)):'-')+'%），'
     +'<b>ACOS '+acos0.toFixed(2)+'%→'+acos1.toFixed(2)+'%（'+(acos1>=acos0?'恶化':'改善')+' '+Math.abs(acos1-acos0).toFixed(2)+'pct）</b>；'
     +'<b>广告转化率 '+(adc0||0).toFixed(2)+'%→'+(adc1||0).toFixed(2)+'%</b>。'
@@ -401,8 +401,8 @@ window.addEventListener('resize', () => CHARTS.forEach(c => { try{c.resize()}cat
     +'。');
 
   const big=P.cats['大灯总成'], tail=P.cats['尾灯总成'], fog=P.cats['雾灯总成'];
-  L.push('<b>④ 增长来自哪个品类</b>：大灯总成 '+big.q[i0]+'→'+big.q[i]+' 单（销售额 $'+big.amt[i0].toFixed(0)+'→$'+big.amt[i].toFixed(0)+'），'
-    +'尾灯总成 '+tail.q[i0]+'→'+tail.q[i]+' 单（$'+tail.amt[i0].toFixed(0)+'→$'+tail.amt[i].toFixed(0)+'），雾灯总成 '+fog.q[i]+' 单。'
+  L.push('<b>④ 增长来自哪个品类</b>：大灯总成 '+big.q[i0]+'→'+big.q[i]+' 单（销售额 ¥'+big.amt[i0].toFixed(0)+'→¥'+big.amt[i].toFixed(0)+'），'
+    +'尾灯总成 '+tail.q[i0]+'→'+tail.q[i]+' 单（$'+tail.amt[i0].toFixed(0)+'→¥'+tail.amt[i].toFixed(0)+'），雾灯总成 '+fog.q[i]+' 单。'
     +'<b>大灯是绝对主力（贡献 '+(big.q[i]-big.q[i0])+' 单变动）</b>'
     +(tail.q[i]>tail.q[i0]?'，尾灯从 '+tail.q[i0]+' 到 '+tail.q[i]+' 单是新开品类贡献':'')
     +(fog.q[i]===0?'；雾灯连续多周 0 单但仍有流量——属"有曝光无需求"，应查适配与定价':'')+'。');
@@ -420,12 +420,12 @@ mk('c1', {
   grid:{left:52,right:52,top:26,bottom:34},
   xAxis:{type:'category',data:W2,axisLabel:{fontSize:11}},
   yAxis:[{type:'value',name:'销量',axisLabel:{fontSize:10}},
-         {type:'value',name:'销售额$',axisLabel:{fontSize:10},splitLine:{show:false}}],
+         {type:'value',name:'销售额¥',axisLabel:{fontSize:10},splitLine:{show:false}}],
   series:[
     {name:'销量',type:'line',smooth:true,data:O.q,itemStyle:{color:'#1a3b6d'},
      label:{show:true,fontSize:10,position:'top'}},
     {name:'销售额',type:'bar',yAxisIndex:1,data:O.amt.map(v=>Math.round(v)),
-     itemStyle:{color:'#7fb3e8'},label:{show:true,fontSize:9,position:'top',formatter:p=>'$'+Math.round(p.value/1000)+'k'}}
+     itemStyle:{color:'#7fb3e8'},label:{show:true,fontSize:9,position:'top',formatter:p=>'¥'+Math.round(p.value/1000)+'k'}}
   ]
 });
 
@@ -452,11 +452,11 @@ mk('c3', {
   tooltip:{trigger:'axis'}, legend:{bottom:0,textStyle:{fontSize:11}},
   grid:{left:56,right:52,top:26,bottom:34},
   xAxis:{type:'category',data:W2,axisLabel:{fontSize:11}},
-  yAxis:[{type:'value',name:'花费$',axisLabel:{fontSize:10}},
+  yAxis:[{type:'value',name:'花费¥',axisLabel:{fontSize:10}},
          {type:'value',name:'ACOS%',axisLabel:{fontSize:10},splitLine:{show:false}}],
   series:[
     {name:'广告花费',type:'bar',data:O.sp.map(v=>Math.round(v)),itemStyle:{color:'#95a5a6'},
-     label:{show:true,fontSize:10,position:'top',formatter:p=>'$'+Math.round(p.value)}},
+     label:{show:true,fontSize:10,position:'top',formatter:p=>'¥'+Math.round(p.value)}},
     {name:'ACOS%',type:'line',yAxisIndex:1,smooth:true,
      data:O.acos.map(v=>(v===null||v>999)?null:Math.min(v,100)),itemStyle:{color:'#c0392b'},
      label:{show:true,fontSize:10,formatter:p=>p.value===null?'':p.value+'%'}}
@@ -489,8 +489,8 @@ mk('c3', {
     cols.forEach(c=>{
       const k=c[1]; let v = (k==='w') ? WE[i] : O[k][i];
       if(v===null||v===undefined) v='-';
-      else if(k==='amt'||k==='sp') v='$'+Math.round(v).toLocaleString();
-      else if(k==='cpc') v='$'+Number(v).toFixed(2);
+      else if(k==='amt'||k==='sp') v='¥'+Math.round(v).toLocaleString();
+      else if(k==='cpc') v='¥'+Number(v).toFixed(2);
       else if(['cvr','acos','ad_cvr','ctr'].includes(k)) v=(k==='acos'&&Number(v)>999)?'—':Number(v).toFixed(2)+'%';
       else if(typeof v==='number') v=Math.round(v).toLocaleString();
       h+='<td>'+v+'</td>';
@@ -516,11 +516,11 @@ mk('c3', {
     tooltip:{trigger:'axis'}, legend:{bottom:0,textStyle:{fontSize:11}},
     grid:{left:56,right:52,top:26,bottom:34},
     xAxis:{type:'category',data:W.map(w=>String(w.week).slice(2)),axisLabel:{fontSize:11}},
-    yAxis:[{type:'value',name:'花费$',axisLabel:{fontSize:10}},
+    yAxis:[{type:'value',name:'花费¥',axisLabel:{fontSize:10}},
            {type:'value',name:'单/ACOS',axisLabel:{fontSize:10},splitLine:{show:false}}],
     series:[
       {name:'广告花费',type:'bar',data:W.map(w=>w.spend),itemStyle:{color:'#95a5a6'},
-       label:{show:true,fontSize:10,position:'top',formatter:p=>'$'+p.value}},
+       label:{show:true,fontSize:10,position:'top',formatter:p=>'¥'+p.value}},
       {name:'广告单',type:'line',data:W.map(w=>w.orders),itemStyle:{color:'#1a3b6d'},
        label:{show:true,fontSize:10,position:'top'}},
       {name:'ACOS%',type:'line',yAxisIndex:1,data:W.map(w=>w.acos),itemStyle:{color:'#c0392b'},
@@ -532,10 +532,10 @@ mk('c3', {
     +'<th>广告销售</th><th>ACOS%</th><th>CTR%</th><th>CPC</th><th>CVR%</th></tr></thead><tbody>';
   W.forEach(w=>{
     h+='<tr><td>'+w.week+'</td><td>'+w.camps+'</td><td>'+(w.impressions||0).toLocaleString()+'</td>'
-      +'<td>'+(w.clicks||0).toLocaleString()+'</td><td>$'+w.spend.toLocaleString()+'</td>'
-      +'<td>'+w.orders+'</td><td>$'+w.sales.toLocaleString()+'</td>'
+      +'<td>'+(w.clicks||0).toLocaleString()+'</td><td>¥'+w.spend.toLocaleString()+'</td>'
+      +'<td>'+w.orders+'</td><td>¥'+w.sales.toLocaleString()+'</td>'
       +'<td>'+(w.acos===null?'-':w.acos+'%')+'</td><td>'+(w.ctr===null?'-':w.ctr+'%')+'</td>'
-      +'<td>'+(w.cpc===null?'-':'$'+w.cpc)+'</td><td>'+(w.cvr===null?'-':w.cvr+'%')+'</td></tr>';
+      +'<td>'+(w.cpc===null?'-':'¥'+w.cpc)+'</td><td>'+(w.cvr===null?'-':w.cvr+'%')+'</td></tr>';
   });
   const a=W[W.length-2], b=W[W.length-1];
   const pc=(x,y)=> (!x||!y||x===0)?'-':(((y-x)/x*100>=0?'+':'')+((y-x)/x*100).toFixed(1)+'%');
@@ -561,7 +561,7 @@ mk('c3', {
   iss.forEach(x=>{
     const prob = x.orders===0 ? '0单' : ('ACOS '+(x.acos||0).toFixed(0)+'%');
     h2+='<tr style="color:#c0392b"><td style="text-align:left;max-width:380px;font-size:11.5px">'
-      +x.name.slice(0,75)+'</td><td>$'+x.spend+'</td><td>'+x.orders+'</td><td>$'+x.sales+'</td>'
+      +x.name.slice(0,75)+'</td><td>¥'+x.spend+'</td><td>'+x.orders+'</td><td>¥'+x.sales+'</td>'
       +'<td>'+(x.acos===null?'-':x.acos+'%')+'</td><td>'+(x.impressions||0)+'</td>'
       +'<td>'+(x.clicks||0)+'</td><td>'+(x.state||'')+'</td><td><b>'+prob+'</b></td></tr>';
   });

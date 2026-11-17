@@ -98,11 +98,11 @@ table th{background:var(--blue);color:#fff;white-space:nowrap;font-size:12px;}
 
 <div class="conclusion">
   <h3>📌 本周整体结论（202646 vs 202645）</h3>
-  <b>① 🔴 销量280单(-7.6%)连续第二周下滑：</b>自然215(-3.6%)、<b>广告65(-18.8%)</b>、销售额$42,641(-11.8%)；<br>
+  <b>① 🔴 销量280单(-7.6%)连续第二周下滑：</b>自然215(-3.6%)、<b>广告65(-18.8%)</b>、销售额¥42,641(-11.8%)；<br>
   <b>② 🔴 主因换人了——US19掉38单：</b>213→<b>175(-17.8%)</b>｜上周的"灾星"US22反而回升86→<b>103(+19.8%)</b>｜US8 4→2；<br>
   <b>③ 🔴 新品崩盘：</b>128→<b>79(-49单，-38.3%)</b>——转化率15.76%→<b>12.06%</b>、利润率19.36%→<b>9.32%</b>（腰斩）；<br>
   <b>④ 🟢 老品逆势第二周：</b>85→<b>96(+12.9%)</b>，但转化率23.90%→17.36%、ACOS 8.10→9.93%——<b>靠加投换量</b>；<br>
-  <b>⑤ 🟠 广告效率继续走低：</b>花费$1,602→$1,441(-10.1%)、广告单80→65(-18.8%)、ACOS 11.87→12.42%、<b>广告转化率16.38%→13.81%</b>；<br>
+  <b>⑤ 🟠 广告效率继续走低：</b>花费¥1,602→¥1,441(-10.1%)、广告单80→65(-18.8%)、ACOS 11.87→12.42%、<b>广告转化率16.38%→13.81%</b>；<br>
   <b>⑥ 流量1,875(-5.4%)六周连降（2,347→2,194→2,275→1,982→1,875）；利润率20.05%(-3.97pct)，退款35(-6)小幅改善。</b>
 </div>
 </div>
@@ -229,7 +229,7 @@ table th{background:var(--blue);color:#fff;white-space:nowrap;font-size:12px;}
   <b style="color:var(--red)">【核心问题｜销量-23单，主因 = 新品-49单（US19店铺）】</b><br>
   <b>① 拖累来自新品、不再来自US22：</b>新品128→79（<b>-49单</b>），老品85→96（+11单），净-38单；分店铺看US19 -38单、US22 +17单——<b>US19是新品主战场，新品崩了US19就崩了</b>。<br>
   <b>② 新品的病在转化率：</b>转化率15.76%→<b>12.06%</b>（-3.7pct）、广告转化率10.74%→10.40%——<b>流量还在（812→655只降19%），但进来不买</b>。同时新品利润率19.36%→<b>9.32%</b>（-10pct），说明<b>上周靠让价/促销冲的量本周没接住</b>。<br>
-  <b>③ 老品在用广告买增长：</b>老品销量+12.9%，但花费$289→$327(+13.2%)、ACOS 8.10%→9.93%、转化率23.90%→<b>17.36%</b>——<b>量涨了但质量在降</b>。<br>
+  <b>③ 老品在用广告买增长：</b>老品销量+12.9%，但花费¥289→¥327(+13.2%)、ACOS 8.10%→9.93%、转化率23.90%→<b>17.36%</b>——<b>量涨了但质量在降</b>。<br>
   <b>④ 全店流量-5.4%六周连降：</b>2,347→2,194→2,275→1,982→<b>1,875</b>，累计-20%——<b>自然位在持续退，不只是广告的事</b>。<br><br>
   <b style="color:var(--green)">【做对了的】</b>退款41→35（-6单，退款率13.53%→12.50%）；US22从86回到103（+19.8%），上周的滑坡止住了。<br><br>
   <b style="color:#BF8F00">【下周动作】</b><br>
@@ -294,13 +294,13 @@ window.__P__ = P;
 function renderAdZoneSol(){
   const AZ = P.ad_zones || null;
   const Z = AZ ? (AZ['电磁阀'] || (AZ.weeks ? AZ : null)) : null;
-  const money = v => '$'+Number(v).toLocaleString();
+  const money = v => '¥'+Number(v).toLocaleString();
   const pct = v => (v===null||v===undefined)?'-':(Number(v).toFixed(2)+'%');
   if(!Z){ const o=document.getElementById('ad-table'); if(o) o.innerText='(广告数据未采集)'; return; }
   const rows = Z.weeks;
   let h = '<table><tr><th>周</th><th>曝光</th><th>点击</th><th>CTR</th><th>CPC</th><th>广告花费</th><th>ACOS</th><th>广告CVR<br><small>广告SKU销量/点击</small></th><th>广告单</th></tr>';
   for(const r of rows){
-    h += `<tr><td>${r.week}</td><td>${r.imps.toLocaleString()}</td><td>${r.clicks.toLocaleString()}</td><td>${pct(r.ctr)}</td><td>$${r.cpc}</td><td>${money(r.spend)}</td><td>${pct(r.acos)}</td><td>${pct(r.cvr)}</td><td>${r.orders}</td></tr>`;
+    h += `<tr><td>${r.week}</td><td>${r.imps.toLocaleString()}</td><td>${r.clicks.toLocaleString()}</td><td>${pct(r.ctr)}</td><td>¥${r.cpc}</td><td>${money(r.spend)}</td><td>${pct(r.acos)}</td><td>${pct(r.cvr)}</td><td>${r.orders}</td></tr>`;
   }
   const c = rows[rows.length-1], p = rows[rows.length-2];
   const chgTxt = (cur,prev,inv,dec) => { const d=cur-prev; const pc = prev>0?Math.abs(d/prev*100):0;
@@ -320,7 +320,7 @@ function renderAdZoneSol(){
     yAxis:[{type:'value',axisLabel:{fontSize:10}},{type:'value',axisLabel:{fontSize:10}}],
     series:[
       {name:'CTR%',type:'line',data:rows.map(r=>r.ctr),itemStyle:{color:'#2E75B6'},lineStyle:{width:2},label:{show:true,fontSize:10,color:'#2E75B6',formatter:p=>p.value+'%'}},
-      {name:'CPC$',type:'line',data:rows.map(r=>r.cpc),itemStyle:{color:'#70AD47'},lineStyle:{width:2},label:{show:true,fontSize:10,color:'#70AD47',formatter:p=>'$'+p.value}},
+      {name:'CPC$',type:'line',data:rows.map(r=>r.cpc),itemStyle:{color:'#70AD47'},lineStyle:{width:2},label:{show:true,fontSize:10,color:'#70AD47',formatter:p=>'¥'+p.value}},
       {name:'广告CVR%',type:'line',data:rows.map(r=>r.cvr),itemStyle:{color:'#BF8F00'},lineStyle:{width:2},label:{show:true,fontSize:10,color:'#BF8F00',formatter:p=>p.value+'%'}},
       {name:'ACOS%',type:'line',yAxisIndex:1,data:rows.map(r=>r.acos),itemStyle:{color:'#C00000'},lineStyle:{width:3},label:{show:true,fontSize:10,color:'#C00000',formatter:p=>p.value+'%'}},
     ]
@@ -345,7 +345,7 @@ function renderAdZoneSol(){
     for(const it of Zc.issues.slice(0,12)){
       const saved = effVal(it.name);
       const esc = (saved||'').replace(/"/g,'&quot;').replace(/</g,'&lt;');
-      ih += `<tr><td style="text-align:left;max-width:240px">${it.name}</td><td>${it.cpc===null?'-':'$'+it.cpc}</td><td>${it.acos===null?'-':it.acos+'%'}</td><td>$${it.spend}</td><td>${it.cvr===null?'-':it.cvr+'%'}</td><td>${it.orders}</td><td style="text-align:left;white-space:nowrap">${it.flags.join('<br>')}</td><td style="text-align:left;max-width:280px;color:#7a5c00">${it.advice||'-'}</td><td style="min-width:190px"><input data-adname="${encodeURIComponent(it.name)}" type="text" value="${esc}" placeholder="输入本周实际调整..." style="width:100%;padding:5px 8px;border:1px solid #ccc;border-radius:5px;font-size:12px;box-sizing:border-box"></td></tr>`;
+      ih += `<tr><td style="text-align:left;max-width:240px">${it.name}</td><td>${it.cpc===null?'-':'¥'+it.cpc}</td><td>${it.acos===null?'-':it.acos+'%'}</td><td>¥${it.spend}</td><td>${it.cvr===null?'-':it.cvr+'%'}</td><td>${it.orders}</td><td style="text-align:left;white-space:nowrap">${it.flags.join('<br>')}</td><td style="text-align:left;max-width:280px;color:#7a5c00">${it.advice||'-'}</td><td style="min-width:190px"><input data-adname="${encodeURIComponent(it.name)}" type="text" value="${esc}" placeholder="输入本周实际调整..." style="width:100%;padding:5px 8px;border:1px solid #ccc;border-radius:5px;font-size:12px;box-sizing:border-box"></td></tr>`;
     }
     ih += '</table></div><div id="ad-save-tip" style="color:#2E75B6;font-size:11.5px;margin-top:4px"></div>';
     ih += '<div id="ad-sync-warn" style="display:none;background:#fff3cd;color:#7a5c00;font-size:11.5px;border-radius:5px;padding:5px 10px;margin-top:6px">⚠ 本机同步服务未运行：保存仅存本机浏览器。启动桌面 <b>sync_server.py</b> 后可同步到云端(组长可见)。</div>';
@@ -400,7 +400,7 @@ function renderAdZoneSol(){
   let adv = '<b>🔧 资深运营诊断与优化建议（电磁阀 · 领星口径）</b><br>';
   if(iss.length){
     const burn = iss.filter(x=>x.flags.some(f=>f.includes('烧钱无单')));
-    if(burn.length) adv += `1. <b>止损烧钱活动</b>：${burn.length}个活动花费≥$10零出单——检查投放链接<b>页面是否正常(购物车/断货/价格)、星级评论</b>；正常则多为<b>词/ASIN相关性差</b>，降bid 30-40%或暂停。<br>`;
+    if(burn.length) adv += `1. <b>止损烧钱活动</b>：${burn.length}个活动花费≥¥10零出单——检查投放链接<b>页面是否正常(购物车/断货/价格)、星级评论</b>；正常则多为<b>词/ASIN相关性差</b>，降bid 30-40%或暂停。<br>`;
     const acosBad = iss.filter(x=>x.flags.some(f=>f.includes('ACOS高')||f.includes('ACOS恶化')));
     if(acosBad.length) adv += `2. <b>ACOS恶化活动(朱鹏锃26新活动为主)</b>：${acosBad.length}个——'26怠速电磁阀提高'ACOS 51%(+42pct)、新品/老品宽泛自动ACOS 27-47%——查<b>搜索词报告</b>否定无转化词；宽泛匹配在淡季易烧钱，改<b>紧密匹配或降bid</b>；新品B0GHS1F3W7注意<b>库存</b>(离岸0.55个月将断)慎放量。<br>`;
   }
@@ -412,7 +412,7 @@ function renderAdZoneSol(){
 
 const W = P.weeks, W3 = P.weeks3;
 const F = (v,d=0)=> (v===null||v===undefined||v==='')? d : v;
-const money = v => '$'+Number(v).toLocaleString();
+const money = v => '¥'+Number(v).toLocaleString();
 const num = v => Number(v).toLocaleString();
 const chg = (cur,prev) => prev>0 ? (cur-prev)/prev*100 : null;
 function kpiChg(cur,prev,inv=false){
@@ -453,7 +453,7 @@ const cmpTxt = (name,arr,unit='',ii=i,jj=j)=>{
   const s = c===null? '' : (c>=0?'▲+':'▼')+Math.abs(c).toFixed(1)+'%';
   return `${name}：本周 ${num(arr[ii])}${unit} ${s}`;
 };
-document.getElementById('cmp1').innerHTML = cmpTxt('销量',o.sales_qty,'单')+' ｜ '+cmpTxt('销售额',o.sales_amount,'$');
+document.getElementById('cmp1').innerHTML = cmpTxt('销量',o.sales_qty,'单')+' ｜ '+cmpTxt('销售额',o.sales_amount,'¥');
 document.getElementById('cmp2').innerHTML = cmpTxt('自然单',o.natural_qty,'单')+' ｜ '+cmpTxt('广告单',o.ad_qty,'单');
 document.getElementById('cmp3').innerHTML = cmpTxt('US19',P.shops.US19.sales_qty,'单',2,1)+' ｜ '+cmpTxt('US22',P.shops.US22.sales_qty,'单',2,1)+' ｜ '+cmpTxt('US8',P.shops.US8.sales_qty,'单',2,1);
 document.getElementById('cmp5').innerHTML = cmpTxt('新品',P.newold.new.sales_qty,'单')+' ｜ '+cmpTxt('老品',P.newold.old.sales_qty,'单')+' ｜ 新品占比'+(P.newold.new.sales_qty[i]/(P.newold.new.sales_qty[i]+P.newold.old.sales_qty[i])*100).toFixed(1)+'%';
@@ -466,13 +466,13 @@ echarts.init(document.getElementById('c1')).setOption({
   xAxis:{type:'category',data:W,axisLabel:{fontSize:11}},
   yAxis:[
     {type:'value',name:'销量',axisLabel:{fontSize:10}},
-    {type:'value',name:'金额$',axisLabel:{fontSize:10,formatter:v=>v>=1000?(v/1000)+'k':v}},
+    {type:'value',name:'金额¥',axisLabel:{fontSize:10,formatter:v=>v>=1000?(v/1000)+'k':v}},
     {type:'value',name:'毛利率%',min:0,max:50,axisLabel:{fontSize:10,formatter:'{value}%'}},
   ],
   series:[
     {name:'销量',type:'bar',data:o.sales_qty,itemStyle:{color:'#2E75B6'},barWidth:18,label:LABEL_TOP},
-    {name:'销售额',type:'line',yAxisIndex:1,data:o.sales_amount.map(v=>F(v)),itemStyle:{color:'#C00000'},lineStyle:{width:3},label:{show:true,fontSize:10,color:'#C00000',formatter:p=> p.value? '$'+(p.value/1000).toFixed(1)+'k':'-'}},
-    {name:'毛利润',type:'line',yAxisIndex:1,data:(o.gross_profit||[]).map(v=>F(v)),itemStyle:{color:'#70AD47'},lineStyle:{width:2,type:'dashed'},label:{show:true,fontSize:10,color:'#70AD47',formatter:p=> p.value? '$'+(p.value/1000).toFixed(1)+'k':'-'}},
+    {name:'销售额',type:'line',yAxisIndex:1,data:o.sales_amount.map(v=>F(v)),itemStyle:{color:'#C00000'},lineStyle:{width:3},label:{show:true,fontSize:10,color:'#C00000',formatter:p=> p.value? '¥'+(p.value/1000).toFixed(1)+'k':'-'}},
+    {name:'毛利润',type:'line',yAxisIndex:1,data:(o.gross_profit||[]).map(v=>F(v)),itemStyle:{color:'#70AD47'},lineStyle:{width:2,type:'dashed'},label:{show:true,fontSize:10,color:'#70AD47',formatter:p=> p.value? '¥'+(p.value/1000).toFixed(1)+'k':'-'}},
     {name:'毛利率%',type:'line',yAxisIndex:2,data:o.profit_rate,itemStyle:{color:'#BF8F00'},lineStyle:{width:2,type:'dotted'},label:{show:true,fontSize:10,color:'#BF8F00',formatter:p=>p.value+'%'}},
   ]
 });
@@ -524,8 +524,8 @@ echarts.init(document.getElementById('c8')).setOption(baseOpt([
   const M = ['流量','销量','销售额','转化率','展示量','点击数','广告花费','CPC','ACOS','广告转化率','广告sku销售额','广告sku销量','毛利润'];
   const isM = m => m==='销售额'||m==='毛利润'||m==='广告sku销售额'||m==='广告花费';
   const isP = m => m==='转化率'||m==='ACOS'||m==='广告转化率';
-  const fmt = (m,v)=> v===null||v===undefined?'-':(isM(m)?'$'+Number(v).toLocaleString(undefined,{maximumFractionDigits:0})
-      :(isP(m)?Number(v).toFixed(1)+'%':(m==='CPC'?'$'+Number(v).toFixed(2):Number(v).toLocaleString(undefined,{maximumFractionDigits:0}))));
+  const fmt = (m,v)=> v===null||v===undefined?'-':(isM(m)?'¥'+Number(v).toLocaleString(undefined,{maximumFractionDigits:0})
+      :(isP(m)?Number(v).toFixed(1)+'%':(m==='CPC'?'¥'+Number(v).toFixed(2):Number(v).toLocaleString(undefined,{maximumFractionDigits:0}))));
   const rel = (c,p)=> (p>0&&c!==null&&c!==undefined)?(((c-p)/p*100)):null;
   const isUpGood = m => !(m==='ACOS'||m==='CPC');
   let h = '<div style="overflow-x:auto"><table><tr><th style="min-width:56px">新老品</th><th style="min-width:56px">周</th>'+M.map(m=>'<th>'+m+'</th>').join('')+'</tr>';
@@ -822,17 +822,17 @@ function renderKeyLinks(){
   const num = v=>Number(v).toLocaleString();
   const dash = v=> (v===null||v===undefined?'<span style="color:#bbb">待补</span>':v);
   const carsTxt = r=> r.cars && r.cars.length ? r.cars.slice(0,3).join('<br>') + (r.cars.length>3?'<br><span style="color:#999">+'+ (r.cars.length-3) +' 车型</span>':'') : '<span style="color:#bbb">-</span>';
-  let h = '<table><tr><th>ASIN</th><th>SKU(商品编码)</th><th>新老品</th><th>店铺</th><th>可售库存</th><th>头程在途</th><th>销量涨幅</th><th>毛利率</th><th>退款率</th><th>周销量(2026456)</th><th>页面价格$</th><th>促销活动</th><th>星级/评论数</th><th>🚗车型(make model)</th><th>购物车异常</th></tr>';
+  let h = '<table><tr><th>ASIN</th><th>SKU(商品编码)</th><th>新老品</th><th>店铺</th><th>可售库存</th><th>头程在途</th><th>销量涨幅</th><th>毛利率</th><th>退款率</th><th>周销量(2026456)</th><th>页面价格¥</th><th>促销活动</th><th>星级/评论数</th><th>🚗车型(make model)</th><th>购物车异常</th></tr>';
   for(const r of rows){
     const up = r.growth>=30?'color:var(--red);font-weight:700':(r.growth>=10?'color:#BF8F00;font-weight:600':'color:#333');
-    const promo = r.promo>0 ? `<span style="color:#C00000;font-weight:600">促销$${num(r.promo)}</span>` : '无';
+    const promo = r.promo>0 ? `<span style="color:#C00000;font-weight:600">促销${num(r.promo)}</span>` : '无';
     const bb = r.buybox===0 ? '<span style="color:var(--green)">正常</span>' : (r.buybox===1?'<span style="color:var(--red);font-weight:700">异常!</span>':'<span style="color:#bbb">-</span>');
     h += `<tr><td>${r.asin}</td><td>${r.sku}</td><td>${tcol(r)}</td><td>${r.shop}</td>
       <td>${r.sell}</td><td>${r.onway}</td>
       <td style="${up}">+${r.growth}%</td>
       <td>${r.gm}%</td><td>${r.refund}%</td>
       <td>${r.wk_qty}</td>
-      <td>${r.q_price===null||r.q_price===undefined?'<span style="color:#bbb">-</span>':'$'+r.q_price}</td>
+      <td>${r.q_price===null||r.q_price===undefined?'<span style="color:#bbb">-</span>':'¥'+r.q_price}</td>
       <td>${promo}</td>
       <td>${(r.rating===null&&r.reviews===null)?'<span style="color:#bbb">-</span>':(r.rating!==null?r.rating:'-')+'/'+(r.reviews!==null?r.reviews:'-')}</td>
       <td style="text-align:left;font-size:11.5px;color:#555">${carsTxt(r)}</td>
@@ -912,7 +912,7 @@ renderKeyLinks();
   const tcol = r=> r.type==='新品' ? '<span style="color:#2E75B6;font-weight:600">新品</span>' : '<span style="color:#888">老品</span>';
   const delta = r=> { const d=(r.qty6||0)-(r.qty5||0); return (d>0?'+':d<0?'':'-') + Math.abs(d); };
   const pct = (c,p)=> (p>0&&c!==null&&c!==undefined)?(((c-p)/p*100).toFixed(0)+'%'):'-';
-  const money = v=>'$'+Number(v).toLocaleString();
+  const money = v=>'¥'+Number(v).toLocaleString();
   const up10 = mv.filter(r=>(r.qty6||0)>(r.qty5||0)).sort((a,b)=>((b.qty6||0)-(b.qty5||0))-((a.qty6||0)-(a.qty5||0))).slice(0,10);
   const down10 = mv.filter(r=>(r.qty6||0)<(r.qty5||0)).sort((a,b)=>((a.qty6||0)-(a.qty5||0))-((b.qty6||0)-(b.qty5||0))).slice(0,10);
   function tbl(rows,up){
@@ -966,16 +966,16 @@ renderKeyLinks();
 (function(){
   const o = P.overall;
   const W5 = P.weeks;
-  const money = v=>'$'+Number(v).toLocaleString();
-  const fmtC = (v,ty)=> v===null||v===undefined?'-':(ty==='$'?money(v):(ty==='%'?Number(v).toFixed(1)+'%':(ty==='cpc'?'$'+Number(v).toFixed(2):Number(v).toLocaleString())));
+  const money = v=>'¥'+Number(v).toLocaleString();
+  const fmtC = (v,ty)=> v===null||v===undefined?'-':(ty==='¥'?money(v):(ty==='%'?Number(v).toFixed(1)+'%':(ty==='cpc'?'¥'+Number(v).toFixed(2):Number(v).toLocaleString())));
   const cols = [
-    ['流量',o.traffic,'n'],['销量',o.sales_qty,'n'],['销售额',o.sales_amount,'$'],['转化率',o.cvr,'%'],
-    ['展示量',o.impressions,'n'],['点击数',o.clicks,'n'],['广告花费',o.ad_spend,'$'],
+    ['流量',o.traffic,'n'],['销量',o.sales_qty,'n'],['销售额',o.sales_amount,'¥'],['转化率',o.cvr,'%'],
+    ['展示量',o.impressions,'n'],['点击数',o.clicks,'n'],['广告花费',o.ad_spend,'¥'],
     ['CPC',o.clicks.map((c,i)=> c? +(o.ad_spend[i]/c).toFixed(2):null),'cpc'],
-    ['ACOS',o.acos,'%'],['广告转化率',o.ad_cvr||[],'%'],['广告sku销售额',o.ad_sales_amount||[],'$'],['广告sku销量',o.ad_qty,'n'],
-    ['毛利润',o.gross_profit||[],'$'],['毛利率',o.profit_rate,'%'],
+    ['ACOS',o.acos,'%'],['广告转化率',o.ad_cvr||[],'%'],['广告sku销售额',o.ad_sales_amount||[],'¥'],['广告sku销量',o.ad_qty,'n'],
+    ['毛利润',o.gross_profit||[],'¥'],['毛利率',o.profit_rate,'%'],
     ['页面浏览量',o.page_views,'n'],['退款数量',o.refund_qty,'n'],['退款率',o.refund_rate,'%'],
-    ['促销折扣',o.promotion,'$'],['促销占比',o.promo_ratio,'%'],['推广占比',o.spread_ratio,'%'],['coupon使用费',o.coupon,'$'],
+    ['促销折扣',o.promotion,'¥'],['促销占比',o.promo_ratio,'%'],['推广占比',o.spread_ratio,'%'],['coupon使用费',o.coupon,'¥'],
   ];
   const rel = (c,p)=> (p>0&&c!==null&&c!==undefined)?(((c-p)/p*100)):null;
   const upGood = m => !(m==='ACOS'||m==='CPC'||m==='退款数量'||m==='退款率');
@@ -1000,12 +1000,12 @@ renderKeyLinks();
   const SR = P.storage_rank;
   if(!SR) return;
   const rows = SR.rows || [], S = SR.summary || {};
-  const money = v => '$' + Number(v).toLocaleString(undefined,{maximumFractionDigits:2});
+  const money = v => '¥' + Number(v).toLocaleString(undefined,{maximumFractionDigits:2});
 
   document.getElementById('st-kpis').innerHTML = [
     ['月仓储费合计', money(S.total_monthly||0), '占月销售额 ' + (S.total_monthly && P.profit ? (S.total_monthly/P.profit.series.amt[4]*100).toFixed(2) : '-') + '%'],
     ['涉及库存', (S.total_qty||0).toLocaleString() + ' 件', (S.n_sku||0) + ' 个SKU有仓储费'],
-    ['平均单件月成本', '$' + (S.avg_per_unit||0), '年化 $' + ((S.avg_per_unit||0)*12).toFixed(1) + '/件'],
+    ['平均单件月成本', '¥' + (S.avg_per_unit||0), '年化 ¥' + ((S.avg_per_unit||0)*12).toFixed(1) + '/件'],
     ['年化仓储成本', money(S.total_annual||0), '按当前费率×12']
   ].map(x=>'<div class="kpi" style="border-left-color:#c0392b"><div class="kl">'+x[0]+'</div>'
     +'<div class="kv" style="color:#c0392b">'+x[1]+'</div><div class="ks">'+x[2]+'</div></div>').join('');
@@ -1021,7 +1021,7 @@ renderKeyLinks();
         + '<td>'+r.shop+'</td><td>'+String(r.brand||'').slice(0,8)+'</td>'
         + '<td><b>'+money(r.monthly)+'</b></td><td>'+r.qty+'</td>'
         + '<td style="color:'+puCol+';font-weight:'+((r.per_unit||0)>=1.5?'700':'400')+'">'
-        + (r.per_unit===null?'-':'$'+r.per_unit)+'</td>'
+        + (r.per_unit===null?'-':'¥'+r.per_unit)+'</td>'
         + '<td>'+money(r.annual)+'</td><td>'+money(r.sales)+'</td>'
         + '<td style="color:'+pctCol+'">'+(r.st_pct_sales===null?'-':r.st_pct_sales+'%')+'</td>'
         + '<td style="text-align:left;font-size:11.5px">'+(r.advice||'')+'</td></tr>';
@@ -1160,7 +1160,7 @@ renderAdZoneSol();
   }
   const WE = PF.weeks, N = WE.length, L = N-1, L0 = N-2;
   const S = PF.series, R = PF.rates;
-  const money = v => (v===null||v===undefined) ? '-' : '$'+Math.round(v).toLocaleString();
+  const money = v => (v===null||v===undefined) ? '-' : '¥'+Math.round(v).toLocaleString();
   const pct = v => (v===null||v===undefined) ? '-' : v.toFixed(2)+'%';
 
   function chg(cur, prev){
@@ -1199,14 +1199,14 @@ renderAdZoneSol();
     tooltip:{trigger:'axis'}, legend:{bottom:0,textStyle:{fontSize:11}},
     grid:{left:56,right:52,top:28,bottom:36},
     xAxis:{type:'category',data:WE,axisLabel:{fontSize:10}},
-    yAxis:[{type:'value',name:'$',axisLabel:{fontSize:10}},
+    yAxis:[{type:'value',name:'¥',axisLabel:{fontSize:10}},
            {type:'value',name:'%',axisLabel:{fontSize:10},splitLine:{show:false}}],
     series:[
       {name:'毛利润',type:'bar',data:S.gp.map(v=>Math.round(v)),itemStyle:{color:'#16a085'},
-       label:{show:true,fontSize:9,position:'top',formatter:p=>'$'+Math.round(p.value)}},
+       label:{show:true,fontSize:9,position:'top',formatter:p=>'¥'+Math.round(p.value)}},
       {name:'净利润',type:'bar',data:S.np.map(v=>Math.round(v)),
        itemStyle:{color:p=>p.value<0?'#c0392b':'#2b6cb0'},
-       label:{show:true,fontSize:9,position:'top',formatter:p=>'$'+Math.round(p.value)}},
+       label:{show:true,fontSize:9,position:'top',formatter:p=>'¥'+Math.round(p.value)}},
       {name:'毛利率%',type:'line',yAxisIndex:1,smooth:true,data:R['毛利率'],itemStyle:{color:'#e67e22'},
        label:{show:true,fontSize:9,formatter:p=>p.value===null?'':p.value+'%'}},
       {name:'净利率%',type:'line',yAxisIndex:1,smooth:true,data:R['净利率'],itemStyle:{color:'#8e44ad'},
@@ -1219,15 +1219,15 @@ renderAdZoneSol();
     tooltip:{trigger:'axis'}, legend:{bottom:0,textStyle:{fontSize:11}},
     grid:{left:52,right:30,top:28,bottom:36},
     xAxis:{type:'category',data:WE,axisLabel:{fontSize:10}},
-    yAxis:{type:'value',name:'$/单',axisLabel:{fontSize:10}},
+    yAxis:{type:'value',name:'¥/单',axisLabel:{fontSize:10}},
     series:[
       {name:'单均销售额',type:'line',smooth:true,data:PF.per['单均销售额'],itemStyle:{color:'#95a5a6'},
-       label:{show:true,fontSize:9,formatter:p=>p.value===null?'':'$'+p.value}},
+       label:{show:true,fontSize:9,formatter:p=>p.value===null?'':'¥'+p.value}},
       {name:'单均毛利',type:'line',smooth:true,data:PF.per['单均毛利'],itemStyle:{color:'#16a085'},
-       label:{show:true,fontSize:9,formatter:p=>p.value===null?'':'$'+p.value}},
+       label:{show:true,fontSize:9,formatter:p=>p.value===null?'':'¥'+p.value}},
       {name:'单均净利',type:'bar',data:PF.per['单均净利'],
        itemStyle:{color:p=>p.value<0?'#c0392b':'#2b6cb0'},
-       label:{show:true,fontSize:9,position:'top',formatter:p=>p.value===null?'':'$'+p.value}}
+       label:{show:true,fontSize:9,position:'top',formatter:p=>p.value===null?'':'¥'+p.value}}
     ]
   });
 
@@ -1287,7 +1287,7 @@ renderAdZoneSol();
   let p = '<table><thead><tr><th>指标</th>'+WE.map(w=>'<th>'+w+'</th>').join('')+'</tr></thead><tbody>';
   ['单均销售额','单均毛利','单均净利'].forEach(k=>{
     p += '<tr><td style="text-align:left">'+k+'</td>'
-       + PF.per[k].map(v=>'<td style="color:'+(v!==null&&v<0?'#c0392b':'inherit')+'">'+(v===null?'-':'$'+v)+'</td>').join('')
+       + PF.per[k].map(v=>'<td style="color:'+(v!==null&&v<0?'#c0392b':'inherit')+'">'+(v===null?'-':'¥'+v)+'</td>').join('')
        + '</tr>';
   });
   p += '</tbody></table>';
@@ -1329,7 +1329,7 @@ renderAdZoneSol();
     + '），毛利率 '+(gpD!==null?((gpD>=0?'+':'')+gpD.toFixed(2)+'pct'):'-')+'；<br>'
     + (worst? '② <b>恶化最大的费用项：'+worst.k+'</b> '+worst.prv.toFixed(2)+'% → <b style="color:#c0392b">'+worst.cur.toFixed(2)+'%</b>（'
         + (worst.d>=0?'+':'') + worst.d.toFixed(2) + 'pct）；<br>' : '')
-    + '③ 单均净利 '+(PF.per['单均净利'][L0]===null?'-':'$'+PF.per['单均净利'][L0])+' → <b>'+(PF.per['单均净利'][L]===null?'-':'$'+PF.per['单均净利'][L])+'</b>；'
+    + '③ 单均净利 '+(PF.per['单均净利'][L0]===null?'-':'¥'+PF.per['单均净利'][L0])+' → <b>'+(PF.per['单均净利'][L]===null?'-':'¥'+PF.per['单均净利'][L])+'</b>；'
     + (PF.shops||[]).filter(s=>s.np<0).length
       ? '其中 <b style="color:#c0392b">'+(PF.shops||[]).filter(s=>s.np<0).map(s=>s.shop).join('、')+'</b> 净利润为负。'
       : '各店铺净利润均为正。'
@@ -1337,10 +1337,10 @@ renderAdZoneSol();
   if(PF.storage && PF.storage.excess > 50){
     dg += '<div style="margin-top:9px;background:#fff8e6;border-left:4px solid #BF8F00;border-radius:6px;padding:11px 14px;font-size:12.5px;line-height:1.85">'
       + '<b>⚠ 仓储费口径提示：</b>' + PF.storage.note
-      + '<br>→ <b>调整后净利 $' + Math.round(PF.storage.adj_np).toLocaleString()
+      + '<br>→ <b>调整后净利 ¥' + Math.round(PF.storage.adj_np).toLocaleString()
       + '（净利率 ' + PF.storage.adj_np_rate + '%）</b>，环比 '
       + (PF.storage.adj_yoy >= 0 ? '+' : '') + PF.storage.adj_yoy + '%'
-      + '　<span style="color:#888">（上周净利 $' + Math.round(PF.storage.prev_np).toLocaleString() + '）</span>'
+      + '　<span style="color:#888">（上周净利 ¥' + Math.round(PF.storage.prev_np).toLocaleString() + '）</span>'
       + '</div>';
   }
   document.getElementById('pf-diag').innerHTML = dg;
