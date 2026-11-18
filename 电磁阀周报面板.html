@@ -1430,22 +1430,22 @@ renderAdZoneSol();
           kids.forEach(function(k){
             if(k.tagName==='H3'||k.id==='detail'||(k.classList&&k.classList.contains('note'))){ blocks.push({el:k,sec:'detail'}); }
             else if(k.classList&&k.classList.contains('card')){
-              var h=k.querySelector('h3'), t=h?h.innerText:'';
+              var h=k.querySelector('h3'), t=h?h.textContent:'';
               blocks.push({el:k,sec:secOf(t)||'detail'});
             } else if(k.classList&&k.classList.contains('table-card')){
-              var h2=k.querySelector('h3'), t2=h2?h2.innerText:'';
+              var h2=k.querySelector('h3'), t2=h2?h2.textContent:'';
               blocks.push({el:k,sec:secOf(t2)||'detail'});
             } else { blocks.push({el:k,sec:'detail'}); }
           });
           el.style.display='none';
         } else {
-          var h=el.querySelector('h3'), t=h?h.innerText:'';
+          var h=el.querySelector('h3'), t=h?h.textContent:'';
           blocks.push({el:el,sec:secOf(t)||'detail'});
         }
         return;
       }
       if(c.indexOf('card')>=0 || el.id==='newold'){
-        var h=el.querySelector?el.querySelector('h3'):null; var t=h?h.innerText:'';
+        var h=el.querySelector?el.querySelector('h3'):null; var t=h?h.textContent:'';
         blocks.push({el:el,sec:secOf(t)||'prod'});
         return;
       }
@@ -1471,6 +1471,33 @@ renderAdZoneSol();
         secs[g[0]].classList.add('on');
         window.scrollTo(0,0);
         setTimeout(function(){ try{ if(window.echarts) document.querySelectorAll('.chart').forEach(function(c){var i=echarts.getInstanceByDom(c); if(i)i.resize();}); }catch(e){} }, 60);
+      };
+      nav.appendChild(a);
+    });
+    // 事后修正：把误归到 prod 的广告/总结块移到对应 section
+    [].slice.call(document.querySelectorAll('.navsec')).forEach(function(sc){
+      if(sc.id==='sec-ad' || sc.id==='sec-sum') return;
+      [].slice.call(sc.children).forEach(function(ch){
+        var t = (ch.textContent||'').replace(/\s+/g,'');
+        if(t.indexOf('广告分析')>=0 || t.indexOf('品牌维度广告')>=0 || t.indexOf('新老品广告')>=0){
+          secs['ad'].appendChild(ch);
+        } else if(t.indexOf('闭环总结')>=0){
+          secs['sum'].appendChild(ch);
+        }
+      });
+    });
+    // 补建漏掉的导航项
+    var EXTRA = [['ad','📣 广告'],['sum','✅ 总结']];
+    EXTRA.forEach(function(g){
+      if(!secs[g[0]].children.length) return;
+      if(nav.querySelector('a[data-sec="'+g[0]+'"]')) return;
+      var a=document.createElement('a'); a.textContent=g[1]; a.dataset.sec=g[0];
+      a.onclick=function(){
+        [].forEach.call(nav.querySelectorAll('a'),function(x){x.classList.remove('on')});
+        a.classList.add('on');
+        Object.keys(secs).forEach(function(k){secs[k].classList.remove('on')});
+        secs[g[0]].classList.add('on');
+        window.scrollTo(0,0);
       };
       nav.appendChild(a);
     });
