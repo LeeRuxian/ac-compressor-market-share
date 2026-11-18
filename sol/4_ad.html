@@ -288,7 +288,22 @@ body{padding:0 !important}
     <div style="margin:6px 0 4px;font-size:12.5px">风险筛选：
       <select id="nm-risk" onchange="renderNewMon()" style="padding:4px 8px;border-radius:5px;border:1px solid #ccc"><option value="ALL">全部</option><option value="h">🔴 高风险(&lt;30天)</option><option value="m">🟠 偏低(30-60天)</option><option value="l">🟡 一般(60-90天)</option><option value="ok">🟢 充足(&gt;90天)</option><option value="no">未动销(无实际DD)</option></select>
       <span id="nm-count" style="color:#666;margin-left:6px"></span></div>
-    <div id="nm-table"></div>
+    <!-- AD_DEEP_START --><div style="margin-top:22px">
+<h3 style="color:#1F4E78;font-size:14.5px;margin:0 0 10px;border-left:4px solid #e67e22;padding-left:9px">🔍 广告下探 · 投放方式维度（202646 · 领星活动明细）</h3>
+<div style="overflow-x:auto"><table><thead><tr>
+<th>投放方式</th><th>活动数</th><th>花费</th><th>订单</th><th>点击</th><th>展示</th><th>CTR</th><th>CPC</th><th>ACOS</th><th>CVR</th><th>广告销售额</th><th>诊断</th>
+</tr></thead><tbody>
+<tr><td><b>关键词投放(KW)</b></td><td>4</td><td>¥50.9</td><td>10</td><td>94</td><td>7,005</td><td>1.3%</td><td>¥0.54</td><td style="color:#e67e22;font-weight:700">18.0%</td><td>10.6%</td><td>¥282.4</td><td style="color:#e67e22;font-size:11.5px">🟠 偏高，观察</td></tr>
+<tr><td><b>自动-紧密(CL)</b></td><td>2</td><td>¥24.4</td><td>5</td><td>45</td><td>2,087</td><td>2.2%</td><td>¥0.54</td><td style="color:#e67e22;font-weight:700">16.2%</td><td>11.1%</td><td>¥150.9</td><td style="color:#e67e22;font-size:11.5px">🟠 偏高，观察</td></tr>
+<tr><td><b>SD 广告</b></td><td>1</td><td>¥23.9</td><td>16</td><td>33</td><td>23,595</td><td>0.1%</td><td>¥0.73</td><td style="color:#27ae60;font-weight:700">5.2%</td><td>48.5%</td><td>¥458.9</td><td style="color:#27ae60;font-size:11.5px">🟢 健康</td></tr>
+<tr><td><b>自动-宽泛(LS)</b></td><td>1</td><td>¥16.1</td><td>4</td><td>31</td><td>2,138</td><td>1.4%</td><td>¥0.52</td><td style="color:#e74c3c;font-weight:700">24.9%</td><td>12.9%</td><td>¥64.8</td><td style="color:#e74c3c;font-size:11.5px">🔴 高ACOS，需收紧</td></tr>
+</tbody></table></div>
+<div style="background:#fff9f0;border-left:4px solid #e67e22;border-radius:9px;padding:13px 16px;margin-top:12px;font-size:12.5px;line-height:1.95"><b>📌 投放方式诊断：</b><br>
+• <b style="color:#27ae60">SD 广告最优</b>：花费 ¥24 换 16 单，ACOS 仅 5.2%、CVR 48.5% —— 性价比最高，建议加预算<br>
+• <b style="color:#e74c3c">自动-宽泛最差</b>：花费 ¥16 只换 4 单，ACOS 24.9%、CVR 12.9% —— 建议降 bid 30% 或改紧密<br>
+• <b style="color:#e67e22">关键词投放偏高</b>：ACOS 18.0%、CVR 10.6% —— 需查是哪些词烧钱<br>
+<span style="color:#999;font-size:11.5px">⚠ 竞价策略 / 广告位明细：领星批量接口受限，需从亚马逊广告后台导出（广告位报告）后补充</span></div></div><!-- AD_DEEP_END -->
+<div id="nm-table"></div>
   </div>
 
 </div>
