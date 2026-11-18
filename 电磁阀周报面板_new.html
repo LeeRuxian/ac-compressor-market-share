@@ -64,12 +64,12 @@ table th{background:var(--blue);color:#fff;white-space:nowrap;font-size:12px;}
 @media(max-width:1100px){.kpis{grid-template-columns:repeat(2,1fr);}.grid{grid-template-columns:1fr;}}
 
 /* ===== 左侧导航 ===== */
-.sidenav{position:fixed;left:0;top:0;bottom:0;width:128px;background:#0f2942;padding:14px 0;overflow-y:auto;z-index:9999}
+.sidenav{display:none !important;position:fixed;left:0;top:0;bottom:0;width:128px;background:#0f2942;padding:14px 0;overflow-y:auto;z-index:9999}
 .sidenav a{display:block;color:#b8c7d9;text-decoration:none;font-size:12.5px;padding:10px 12px;border-left:3px solid transparent;cursor:pointer;line-height:1.3}
 .sidenav a:hover{background:#16395c;color:#fff}
 .sidenav a.on{background:#1F4E78;color:#fff;border-left-color:#4da3ff;font-weight:700}
 .sidenav .brand{color:#fff;font-size:12.5px;font-weight:700;padding:0 12px 11px;border-bottom:1px solid #1e4266;margin-bottom:8px}
-body{padding-left:128px !important;box-sizing:border-box}
+
 .navsec{display:none !important}
 .navsec.on{display:block !important}
 
@@ -1392,6 +1392,8 @@ renderAdZoneSol();
 
 /* ===== 左侧导航 v4：URL hash 驱动 ===== */
 (function(){
+  return; /* 导航禁用：改为单页长滚动 */
+
   var G = [
     ['ov','📊 总览'],
     ['detail','📋 明细'],
