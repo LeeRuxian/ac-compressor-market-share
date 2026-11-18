@@ -1422,7 +1422,12 @@ renderAdZoneSol();
     function push(el){
       if(!el.classList) { blocks.push({el:el, sec:'ov'}); return; }
       var c = el.className || '';
-      if(c.indexOf('kpis')>=0 || c.indexOf('conclusion')>=0 || c.indexOf('grid')>=0){ blocks.push({el:el,sec:'ov'}); return; }
+      if(c.indexOf('kpis')>=0 || c.indexOf('conclusion')>=0){ blocks.push({el:el,sec:'ov'}); return; }
+      if(c.indexOf('grid')>=0){
+        var gh = el.querySelector('h3'); var gt = gh ? (gh.textContent||'') : '';
+        blocks.push({el:el, sec: gt ? (secOf(gt)||'ov') : 'ov'});
+        return;
+      }
       if(c.indexOf('table-card')>=0){
         var kids=[].slice.call(el.children);
         var hasCard=kids.some(function(k){return k.classList&&k.classList.contains('card');});
@@ -1467,10 +1472,12 @@ renderAdZoneSol();
       a.onclick=function(){
         [].forEach.call(nav.querySelectorAll('a'),function(x){x.classList.remove('on')});
         a.classList.add('on');
-        Object.keys(secs).forEach(function(k){secs[k].classList.remove('on')});
+        Object.keys(secs).forEach(function(k){ secs[k].style.display='none'; secs[k].classList.remove('on'); });
+        secs[g[0]].style.display='block';
         secs[g[0]].classList.add('on');
+        try{ showCh('overview'); }catch(e){}
         window.scrollTo(0,0);
-        setTimeout(function(){ try{ if(window.echarts) document.querySelectorAll('.chart').forEach(function(c){var i=echarts.getInstanceByDom(c); if(i)i.resize();}); }catch(e){} }, 60);
+        setTimeout(function(){ try{ if(window.echarts) document.querySelectorAll('.chart').forEach(function(c){var i=echarts.getInstanceByDom(c); if(i)i.resize();}); }catch(e){} }, 80);
       };
       nav.appendChild(a);
     });
@@ -1495,12 +1502,13 @@ renderAdZoneSol();
       a.onclick=function(){
         [].forEach.call(nav.querySelectorAll('a'),function(x){x.classList.remove('on')});
         a.classList.add('on');
-        Object.keys(secs).forEach(function(k){secs[k].classList.remove('on')});
-        secs[g[0]].classList.add('on');
+        Object.keys(secs).forEach(function(k){ secs[k].style.display='none'; secs[k].classList.remove('on'); });
+        secs[g[0]].style.display='block';
         window.scrollTo(0,0);
       };
       nav.appendChild(a);
     });
+    Object.keys(secs).forEach(function(k){ secs[k].style.display='none'; });
     var f=nav.querySelector('a'); if(f) f.click();
   }
   if(document.readyState==='complete') setTimeout(build,450);
