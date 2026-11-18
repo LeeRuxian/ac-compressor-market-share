@@ -1,0 +1,1535 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>怠速电磁阀周报面板 202646</title>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+<style>
+:root{--blue:#1F4E79;--blue2:#2E75B6;--bg:#f0f3f7;--card:#ffffff;--red:#C00000;--yellow:#BF8F00;--green:#00B050;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Microsoft YaHei','微软雅黑','SimHei',sans-serif;background:var(--bg);color:#333;padding:20px;}
+.header{background:linear-gradient(135deg,var(--blue),var(--blue2));color:#fff;border-radius:12px;padding:22px 28px;margin-bottom:18px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;}
+.header h1{font-size:22px;font-weight:700;}
+.header .sub{font-size:13px;opacity:.9;margin-top:6px;}
+.tag{background:rgba(255,255,255,.18);border-radius:20px;padding:6px 14px;font-size:12.5px;}
+.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:16px;}
+.kpi{background:var(--card);border-radius:10px;padding:14px 16px;box-shadow:0 2px 6px rgba(0,0,0,.06);border-top:4px solid var(--blue2);}
+.kpi .label{font-size:12px;color:#666;margin-bottom:5px;}
+.kpi .value{font-size:21px;font-weight:700;color:var(--blue);}
+.kpi .value small{font-size:12px;color:#888;font-weight:400;}
+.kpi .chg{font-size:12px;margin-top:4px;}
+.up{color:var(--red);}.down{color:var(--green);}.flat{color:#999;}
+.conclusion{background:#e8f4fd;border:1px solid #a8d4f0;border-left:6px solid var(--blue2);border-radius:8px;padding:14px 18px;margin-bottom:16px;font-size:13px;color:#1a3a5c;line-height:1.9;}
+.conclusion h3{color:var(--blue);margin-bottom:6px;font-size:15px;}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px;}
+.card{background:var(--card);border-radius:10px;padding:14px 16px;box-shadow:0 2px 6px rgba(0,0,0,.06);}
+.card h3{font-size:14px;color:var(--blue);margin-bottom:4px;border-left:4px solid var(--blue2);padding-left:8px;}
+.card .cmp{font-size:11.5px;color:#888;margin-bottom:8px;padding-left:12px;}
+.chart{width:100%;height:290px;}
+.table-card{background:var(--card);border-radius:10px;padding:14px 16px;box-shadow:0 2px 6px rgba(0,0,0,.06);margin-bottom:18px;}
+table{width:100%;border-collapse:collapse;font-size:12.5px;}
+th{background:var(--blue);color:#fff;padding:8px 10px;text-align:right;font-weight:600;}
+th:first-child,td:first-child{text-align:left;}
+td{padding:7px 10px;border-bottom:1px solid #e6e9ef;text-align:right;}
+tr:nth-child(even) td{background:#f7f9fc;}
+.notes{background:var(--card);border-radius:10px;padding:16px 18px;box-shadow:0 2px 6px rgba(0,0,0,.06);font-size:12.5px;line-height:1.9;color:#555;margin-bottom:16px;}
+.notes h3{color:var(--blue);margin-bottom:8px;font-size:14.5px;border-left:4px solid var(--blue2);padding-left:8px;}
+.notes b{color:#333;}
+.newold{border-left:5px solid var(--yellow);}
+.navtab{background:var(--card);border:1px solid #d8d8d8;border-radius:8px 8px 0 0;padding:9px 22px;font-size:13.5px;cursor:pointer;color:#555;font-weight:600;margin-right:4px;}
+.navtab.active{background:var(--blue);border-color:var(--blue);color:#fff;}
+.page{display:block;}
+
+
+/* ===== ASIN/编码列等宽规范化(2026-09-09) ===== */
+table{border-collapse:collapse;}
+table th, table td{padding:5px 8px;border:1px solid #e2e8f0;}
+table th{background:var(--blue);color:#fff;white-space:nowrap;font-size:12px;}
+#warn-table td:first-child, #nm-table td:nth-child(2), #key-table td:first-child, #mv-up td:first-child, #mv-down td:first-child, #dd-table td:nth-child(2){
+  font-family:Consolas,'Courier New',monospace;white-space:nowrap;min-width:104px;letter-spacing:0.3px;font-size:12px;}
+#nm-table td:first-child, #dd-table td:first-child{font-family:Consolas,'Courier New',monospace;white-space:nowrap;font-size:11.5px;}
+
+.inv-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:14px;}
+.inv-card{background:var(--card);border-radius:10px;padding:16px 18px;box-shadow:0 2px 6px rgba(0,0,0,.06);border-top:4px solid var(--blue2);}
+.inv-card .iname{font-size:13.5px;font-weight:700;color:var(--blue);margin-bottom:8px;}
+.inv-card .irow{font-size:12.5px;color:#555;line-height:1.9;}
+.inv-card .irow b{color:var(--blue);font-size:15px;}
+.inv-card .oos{color:var(--red);font-weight:600;}
+.stock-note{background:#f0f7ff;border:1px solid #b8d8f5;border-left:5px solid var(--blue2);border-radius:8px;padding:12px 16px;font-size:12.5px;color:#1a3a5c;line-height:1.9;margin-bottom:14px;}
+.warn-filter{margin-bottom:10px;font-size:13px;color:#333;}
+.warn-filter select{padding:5px 10px;border:1px solid var(--blue2);border-radius:5px;font-family:inherit;font-size:13px;margin-left:6px;}
+.badge{display:inline-block;padding:2px 10px;border-radius:12px;font-size:11.5px;color:#fff;font-weight:600;}
+.b-oos{background:#C00000;}.b-low_inv{background:#E36C09;}.b-spd{background:#BF8F00;}.b-slow{background:#7F7F7F;}.b-ok{background:#00B050;}
+@media(max-width:1100px){.kpis{grid-template-columns:repeat(2,1fr);}.grid{grid-template-columns:1fr;}}
+
+/* ===== 左侧导航 ===== */
+.sidenav{position:fixed;left:0;top:0;bottom:0;width:128px;background:#0f2942;padding:14px 0;overflow-y:auto;z-index:9999}
+.sidenav a{display:block;color:#b8c7d9;text-decoration:none;font-size:12.5px;padding:10px 12px;border-left:3px solid transparent;cursor:pointer;line-height:1.3}
+.sidenav a:hover{background:#16395c;color:#fff}
+.sidenav a.on{background:#1F4E78;color:#fff;border-left-color:#4da3ff;font-weight:700}
+.sidenav .brand{color:#fff;font-size:12.5px;font-weight:700;padding:0 12px 11px;border-bottom:1px solid #1e4266;margin-bottom:8px}
+
+.navsec{display:none !important}
+.navsec.on{display:block !important}
+
+
+body{padding:0 !important}
+[data-sec]{display:none !important}
+[data-sec="明细利润"]{display:block !important}
+.topbar{position:sticky;top:0;z-index:9999;background:#0f2942;padding:8px 14px;display:flex;gap:4px;flex-wrap:wrap;align-items:center;font-family:inherit}
+.topbar a{color:#b8c7d9;text-decoration:none;font-size:12.5px;padding:6px 11px;border-radius:6px;white-space:nowrap}
+.topbar a:hover{background:#16395c;color:#fff}
+.topbar a.on{background:#1F4E78;color:#fff;font-weight:700}
+.topbar .ttl{color:#fff;font-size:12.5px;font-weight:700;margin-right:10px}
+
+</style>
+</head>
+<body>
+<div class="topbar"><span class="ttl">⚙️ 电磁阀 202646</span><a href="电磁阀_1_总览.html">总览</a><a href="电磁阀_2_明细利润.html" class="on">明细利润</a><a href="电磁阀_3_市占.html">市占</a><a href="电磁阀_4_广告.html">广告</a><a href="电磁阀_5_产品.html">产品</a></div>
+<div class="sidenav" id="sidenav"><div class="brand">⚙️ 电磁阀<br><span style="font-size:10px;color:#7f9bb8">202646</span></div></div>
+<div class="header">
+  <div>
+    <h1>⚙️ 怠速电磁阀 周报面板</h1>
+    <div class="sub">202646周（2026-11-01~10-31）｜ 数据源：SmartBI MCP（品类=怠速电磁阀，2026-11-17拉取）｜ 店铺：US19(KAX)/US22(PHILTOP)/US8(ZC纯自然)｜ 2026-11-17更新(BI回刷)</div>
+  </div>
+  <div style="text-align:right">
+    <div class="tag">运营分析口径 · 前台销量</div>
+    <div class="tag" style="margin-top:6px">新品36 ASIN / 老品66 ASIN</div>
+  </div>
+</div>
+
+<div style="display:flex;gap:6px;margin:12px 0 0;flex-wrap:wrap">
+  <button class="navtab active" data-pg="overview" onclick="showCh('overview')">📊 周报总览</button>
+  <button class="navtab" data-pg="inv" onclick="showCh('inv')">📦 库存监控</button>
+</div>
+
+<div class="page page-overview">
+<div class="kpis" data-sec="总览">
+  <div class="kpi" id="k1"></div>
+  <div class="kpi" id="k2"></div>
+  <div class="kpi" id="k3"></div>
+  <div class="kpi" id="k4"></div>
+  <div class="kpi" id="k5"></div>
+  <div class="kpi" id="k6"></div>
+  <div class="kpi" id="k11"></div>
+  <div class="kpi" id="k7"></div>
+  <div class="kpi" id="k8"></div>
+  <div class="kpi" id="k9"></div>
+  <div class="kpi" id="k10"></div>
+</div>
+
+<div class="conclusion" data-sec="总览">
+  <h3>📌 本周整体结论（202646 vs 202645）</h3>
+  <b>① 🟢 强势反弹：</b>销量 <b>279→309（+30单，+10.8%）</b>、销售额 ¥42,440→<b>¥47,119（+11.0%）</b>，扭转上周 -7.6% 的断崖；<br>
+  <b>② 🟢 全靠 US19 拉回来：</b>US19 174→<b>217（+43单，+24.7%）</b>｜上周的黑马 US22 回落 103→<b>91（-12单）</b>｜US8 2→1；<br>
+  <b>③ 🟢 新品复活 + 老品持续走强：</b>新品 79→<b>104（+25单，+31.6%）</b>、老品 95→<b>113（+18单，+18.9%）</b>——<b>这是本周最重要的一正一反</b>；<br>
+  <b>④ 🟢 转化率是真正的引擎：</b>14.88%→<b>16.14%（+1.26pct）</b>，流量只 +2.1%（1,875→1,914）却多做 30 单——<b>不是靠流量堆出来的</b>；<br>
+  <b>⑤ 🟢 广告更省更准：</b>花费 ¥1,439→<b>¥1,274（-11.5%）</b>但广告单 68→<b>70（+2）</b>、ACOS 11.97%→<b>11.60%</b>、广告CVR 14.47%→<b>15.98%</b>；<br>
+  <b>⑥ 毛利 ¥9,814→¥11,686（+19.1%）、毛利率 25.9%→27.1%（+1.2pct）</b>——量价齐升，本周是全品类唯一全面转好的一周。
+</div>
+
+<div class="grid" data-sec="总览">
+  <div class="card"><h3>销量 & 销售额趋势（5周）</h3><div class="cmp" id="cmp1"></div><div class="chart" id="c1"></div></div>
+  <div class="card"><h3>销量构成：自然单 vs 广告单（5周）</h3><div class="cmp" id="cmp2"></div><div class="chart" id="c2"></div></div>
+  <div class="card"><h3>店铺对比 US19(KAX)/US22(PT)/US8(ZC)（3周 · 店铺=品牌）</h3><div class="cmp" id="cmp3"></div><div class="chart" id="c3"></div></div>
+  <div class="card"><h3>🆕 新老品销量对比 & 新品占比（5周 · US19 KAX店铺内）</h3><div class="cmp" id="cmp5"></div><div class="chart" id="c5"></div></div>
+  <div class="card"><h3>ACOS% & 转化率% & 广告转化率%（5周）</h3><div class="cmp" id="cmp6"></div><div class="chart" id="c6"></div></div>
+  <div class="card"><h3>⚠ 退款数量 & 退款率（5周 · 质量监控）</h3><div class="cmp" id="cmp8"></div><div class="chart" id="c8"></div></div>
+</div>
+
+<div class="table-card" data-sec="明细利润">
+  <h3 style="color:var(--blue);font-size:14.5px;margin-bottom:10px;border-left:4px solid var(--blue2);padding-left:8px;">整体明细（怠速电磁阀品类，5周）</h3>
+  <div id="detail"></div>
+  <div class="card" style="border-left:5px solid #16a085">
+    <h3 style="border-left-color:#16a085">💰 利润周维度分析（怠速电磁阀 · BI损益明细）</h3>
+    <div id="pf-kpis" style="display:grid;grid-template-columns:repeat(5,1fr);gap:11px;margin-bottom:14px"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-bottom:15px">
+      <div><div class="chart" id="pf-c1" style="height:270px"></div></div>
+      <div><div class="chart" id="pf-c2" style="height:270px"></div></div>
+    </div>
+    <div style="font-size:13px;font-weight:600;color:#1a3b6d;margin:14px 0 8px">费用结构（占销售额 %）</div>
+    <div class="chart" id="pf-c3" style="height:290px"></div>
+    <div style="font-size:13px;font-weight:600;color:#1a3b6d;margin:16px 0 8px">各项费率 5周明细</div>
+    <div style="overflow-x:auto" id="pf-rates"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-top:16px">
+      <div>
+        <div style="font-size:13px;font-weight:600;color:#1a3b6d;margin-bottom:8px">单均指标</div>
+        <div style="overflow-x:auto" id="pf-per"></div>
+      </div>
+      <div>
+        <div style="font-size:13px;font-weight:600;color:#1a3b6d;margin-bottom:8px">分店铺利润（202646）</div>
+        <div style="overflow-x:auto" id="pf-shops"></div>
+      </div>
+    </div>
+    <div id="pf-diag" style="margin-top:14px"></div>
+    <div class="note">口径：出库口径（BI损益明细·sales_amount_m）｜毛利率=毛利润实际÷出库销售额｜净利率=净利润÷出库销售额｜费率均由金额重算（非各店铺平均）｜数据源：SmartBI bi-getdata-finance</div>
+  </div>
+    <div class="note">口径：月度仓储费=W45（2026-10整月一次性计提）｜单件月成本=月仓储费÷当前可售库存｜年化=月费×12｜占销售额比=月仓储÷同月销售额｜库存=ERP实时可售（FBA+海外仓+本地）</div>
+  </div>
+
+<div class="card" style="border-left:5px solid #8e44ad" data-sec="市占">
+    <h3 style="border-left-color:#8e44ad">📊 市场市占分析（Idle Air Control Valves · 月度）</h3>
+    <div id="ms-kpis" style="display:grid;grid-template-columns:repeat(5,1fr);gap:11px;margin-bottom:14px"></div>
+    <div style="display:grid;grid-template-columns:1.3fr 1fr;gap:15px;margin-bottom:14px">
+      <div><div class="chart" id="ms-c1" style="height:280px"></div></div>
+      <div><div class="chart" id="ms-c2" style="height:280px"></div></div>
+    </div>
+    <div style="font-size:13px;font-weight:600;color:#1a3b6d;margin:14px 0 8px">月度市占明细（含品牌拆分）</div>
+    <div style="overflow-x:auto" id="ms-table"></div>
+    <div id="ms-insight" style="margin-top:12px"></div>
+    <div class="note" id="ms-note"></div>
+  </div>
+
+
+<div style="background:var(--card);border-radius:10px;padding:14px 16px;box-shadow:0 2px 6px rgba(0,0,0,.06);margin-bottom:16px;" data-sec="广告">
+  <h3 style="color:var(--blue);font-size:15px;margin-bottom:8px;border-left:4px solid var(--blue2);padding-left:8px;">📊 广告分析 · 电磁阀（US19+US22 · 领星MCP · 名称:电磁阀/怠速电磁阀）</h3>
+  <div style="font-size:12.5px"><div id="ad-table" style="margin-bottom:8px"></div><div id="ad-chart" style="height:220px"></div></div>
+  <div id="ad-issues" style="margin-top:10px;font-size:12px"></div>
+  <div style="margin-top:16px"><h4 style="margin:0 0 8px;color:#1F4E78">📊 品牌维度广告周环比（KAX / PHILTOP / ZonCar）</h4>
+  <div style="overflow-x:auto" id="tbl-ad-brand"></div></div>
+  <div style="margin-top:16px"><h4 style="margin:0 0 8px;color:#1F4E78">🆕 新老品广告周环比（US19 KAX · 按活动名ASIN归类）</h4>
+  <div style="overflow-x:auto" id="tbl-ad-np"></div></div>
+  <div id="ad-advice" style="margin-top:8px;background:#fff8e6;border-left:4px solid #BF8F00;border-radius:6px;padding:10px 14px;font-size:12.5px;line-height:1.8"></div>
+  <div style="color:#888;font-size:11.5px;margin-top:6px" id="ad-note"></div>
+</div>
+
+</div>
+
+<div class="table-card newold" data-sec="产品">
+  <h3 style="color:var(--blue);font-size:14.5px;margin-bottom:10px;border-left:4px solid var(--yellow);padding-left:8px;">🆕 新老品周环比对比（US19 KAX店铺内：新品36 ASIN vs 老品22 ASIN）</h3>
+  <div id="newold"></div>
+</div>
+
+<div class="table-card" style="border-left:5px solid var(--blue2);" data-sec="产品">
+  <h3 style="color:var(--blue);font-size:15px;margin-bottom:6px;border-left:4px solid var(--blue2);padding-left:8px;">🆕 新品动销 vs 预估DD（US19 KAX · 预估DD=移交表 · 实际DD=近30天BI销量÷30）</h3>
+    <div style="font-size:12px;color:#888;margin-bottom:6px">实际日销 = 202642-637近30天BI销量 ÷ 30天；达成率 = 实际DD ÷ 预估DD</div>
+  <div class="chart" id="dd-chart" style="height:250px"></div>
+    <div style="margin:8px 0 4px;display:flex;gap:12px;align-items:center;font-size:12.5px">状态筛选：
+      <select id="dd-status" onchange="renderDdTable()" style="padding:4px 8px;border-radius:5px;border:1px solid #ccc"><option value="ALL">全部</option><option value="达标">✅ 达标(≥100%)</option><option value="爬坡">🟠 爬坡(60-100%)</option><option value="低">🔴 远低于预期(&lt;60%)</option></select>
+      <span style="color:#888">等级：
+      <select id="dd-grade" onchange="renderDdTable()" style="padding:4px 8px;border-radius:5px;border:1px solid #ccc"><option value="ALL">全部</option><option value="S">S</option><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option></select></span>
+      <span id="dd-count" style="color:#666"></span>
+      <span style="color:#999;font-size:11.5px">｜ 改进措施=资深运营按达成率/库存/等级自动生成</span></div>
+  <div id="dd-table" style="margin-top:6px"></div>
+</div>
+
+<div class="table-card" style="border-left:5px solid var(--blue);" data-sec="产品">
+  <h3 style="color:var(--blue);font-size:15px;margin-bottom:6px;border-left:4px solid var(--blue);padding-left:8px;">📈 新品DD达成率趋势 & 广告依赖度（5周 · 动销新品集合）</h3>
+  <div style="display:flex;gap:14px;flex-wrap:wrap">
+    <div style="flex:1;min-width:330px"><div style="font-size:12.5px;color:#555;margin-bottom:2px">DD达成率趋势（实际日销÷预估DD；红线=S级）</div><div id="nm-chart1" style="height:220px"></div></div>
+    <div style="flex:1;min-width:330px"><div style="font-size:12.5px;color:#555;margin-bottom:2px">广告依赖度（广告单÷总单）</div><div id="nm-chart2" style="height:220px"></div></div>
+  </div>
+  <div style="color:#888;font-size:11.5px;margin-top:4px">达成率=当周动销新品实际日销(周销量÷7)÷预估DD；断货风险联动表在📦库存监控tab</div>
+</div>
+
+<div class="table-card" style="border-left:5px solid var(--red);" data-sec="产品">
+  <h3 style="color:var(--blue);font-size:15px;margin-bottom:6px;border-left:4px solid var(--red);padding-left:8px;">⭐ 重点链接监控（US19/US22 · 高销量高毛利稳定增长）</h3>
+  <div style="display:flex;gap:10px;align-items:center;margin-bottom:8px;flex-wrap:wrap"><span style="font-size:12px;color:#888" id="key-note"></span>
+    <span style="font-size:12px">新老品筛选：<select id="key-type" onchange="renderKeyLinks()" style="padding:3px 6px;border-radius:5px;border:1px solid #ccc"><option value="ALL">全部</option><option value="新品">🆕 新品</option><option value="老品">老品</option></select></span></div>
+  <div id="key-table"></div>
+</div>
+
+<div style="background:var(--card);border-radius:10px;padding:14px 16px;box-shadow:0 2px 6px rgba(0,0,0,.06);margin-bottom:16px;" data-sec="产品">
+  <h3 style="color:var(--blue);font-size:15px;margin-bottom:8px;border-left:4px solid var(--blue2);padding-left:8px;">📈 涨幅明显 TOP10 &nbsp;vs&nbsp; 📉 下滑严重 TOP10（202645→202646 两周对比 · 广告花费/促销占比/推广占比涨幅 · 本周库存）</h3>
+  <div style="display:flex;gap:14px;flex-wrap:wrap">
+    <div style="flex:1;min-width:420px"><div id="mv-up"></div></div>
+    <div style="flex:1;min-width:420px"><div id="mv-down"></div></div>
+  </div>
+</div>
+
+<div class="notes" data-sec="产品">
+  <h3>📊 本周闭环总结（202646 vs 202645）· 定位问题 → 深挖归因 → 解决措施</h3>
+  <b>✅ 已经起效的动作：</b>上周发现的"促销退坡打回原形"（新品 -49单）本周已修正——新品 79→104（+25单），说明促销/Coupon 已回补；<br>
+  <b>🔍 本周新问题：</b>US22 从上周的 +19.8% 回落到 <b>-11.7%（103→91）</b>，与 US19 的 +24.7% 形成跷跷板——<b>两个店铺在抢同一批流量</b>；<br>
+  <b>⚠ 要盯的：</b>新品利润率虽回升（9.32%→回升），但 36 个新品仍全部 0 评论，靠促销拉动的量不稳固；<br>
+  <b>➡ 下周动作：</b>① 保住 US19 +24.7% 的势头（库存 2,265件+在途2,920，够撑）② 查 US22 -12单 是不是被 US19 分走了自然流量 ③ 新品评论计划必须启动。
+</div>
+
+</div>
+</div>
+
+
+<!-- ===== 库存监控 tab ===== -->
+</div>
+
+<div class="page page-inv" style="display:none">
+<div class="card" style="background:var(--card);border-radius:10px;padding:14px 16px;box-shadow:0 2px 6px rgba(0,0,0,.06);margin-bottom:16px;"><h3 style="color:var(--blue);font-size:15px;margin-bottom:8px;border-left:4px solid var(--blue2);padding-left:8px;">📦 FBA库存 & 库销比（KAX/PT/ZC 最新快照）</h3><div class="cmp" id="cmp7"></div><div class="chart" id="c7" style="height:300px"></div></div>
+<div style="background:var(--card);border-radius:10px;padding:16px 18px;box-shadow:0 2px 6px rgba(0,0,0,.06);margin-bottom:16px;">
+  <h3 style="color:var(--blue);font-size:15px;margin-bottom:12px;border-left:4px solid var(--blue2);padding-left:8px;">📦 FBA库存3周趋势（分店铺 · 可售/头程在途）</h3>
+  <div id="inv-trend-chart" style="height:250px;margin-bottom:10px"></div>
+  <div id="inv-trend-table" style="font-size:12.5px"></div>
+  <div style="color:#888;font-size:11.5px;margin-top:6px" id="inv-trend-note"></div>
+  <h3 style="color:var(--blue);font-size:15px;margin-bottom:12px;border-left:4px solid var(--blue2);padding-left:8px;">📦 库存概览（电磁阀仅FBA，分店铺/品牌）</h3>
+  <div class="inv-cards" id="inv-cards"></div>
+  <div class="stock-note" id="stock-note"></div>
+</div>
+
+<div style="background:var(--card);border-radius:10px;padding:16px 18px;box-shadow:0 2px 6px rgba(0,0,0,.06);margin-bottom:16px;">
+  <h3 style="color:var(--blue);font-size:15px;margin-bottom:8px;border-left:4px solid #C00000;padding-left:8px;">🔴 周维度断货追踪（5周状态链 · 断货定义=可售库存0）</h3>
+  <div id="oos-weekly" style="font-size:12.5px"></div>
+  <div style="color:#888;font-size:11.5px;margin-top:6px" id="oos-weekly-note"></div>
+</div>
+<div style="background:var(--card);border-radius:10px;padding:16px 18px;box-shadow:0 2px 6px rgba(0,0,0,.06);margin-bottom:16px;">
+  <h3 style="color:var(--blue);font-size:15px;margin-bottom:8px;border-left:4px solid var(--yellow);padding-left:8px;">⚠️ 即将断货预警（ASIN维度，US19/US22）</h3>
+  <div class="warn-filter" style="display:flex;gap:14px;align-items:center;flex-wrap:wrap">店铺：
+    <select id="warn-shop" onchange="renderWarn()" style="padding:4px 6px;border-radius:5px;border:1px solid #ccc"><option value="ALL">全部</option><option value="US19">US19 (KAX)</option><option value="US22">US22 (PT)</option></select>
+    <span>新老品：
+    <select id="warn-type" onchange="renderWarn()" style="padding:4px 6px;border-radius:5px;border:1px solid #ccc"><option value="ALL">全部</option><option value="新品">新品</option><option value="老品">老品</option></select></span>
+    <span>库存状态：
+    <select id="warn-lk" onchange="renderWarn()" style="padding:4px 6px;border-radius:5px;border:1px solid #ccc"><option value="ALL">全部状态</option><option value="oos">🔴断货(30天内有单)</option><option value="low_inv">🟠可能缺货(&lt;3个月)</option><option value="spd">🟡加速动销(4-5个月)</option><option value="slow">⚪滞销(&gt;5个月)</option><option value="ok">🟢正常(3-4个月)</option></select></span>
+    <button onclick="exportWarn()" style="margin-left:auto;padding:5px 14px;border:none;background:var(--blue);color:#fff;border-radius:6px;cursor:pointer;font-size:12.5px">📥 导出当前筛选(Excel/CSV)</button>
+    <span id="warn-count" style="color:#666;font-size:12px"></span>
+  </div>
+  <div id="warn-table"></div>
+
+  <div style="background:var(--card);border-radius:10px;padding:14px 16px;box-shadow:0 2px 6px rgba(0,0,0,.06);margin-bottom:16px;">
+    <h3 style="color:var(--blue);font-size:15px;margin-bottom:8px;border-left:4px solid var(--blue2);padding-left:8px;">🚨 新品断货风险联动（可售÷实际DD=可用天数；<span style="color:#C00000">🔴&lt;30天</span> <span style="color:#E36C09">🟠30-60天</span> <span style="color:#BF8F00">🟡60-90天</span> <span style="color:#00B050">🟢&gt;90天</span>）</h3>
+    <div style="margin:6px 0 4px;font-size:12.5px">风险筛选：
+      <select id="nm-risk" onchange="renderNewMon()" style="padding:4px 8px;border-radius:5px;border:1px solid #ccc"><option value="ALL">全部</option><option value="h">🔴 高风险(&lt;30天)</option><option value="m">🟠 偏低(30-60天)</option><option value="l">🟡 一般(60-90天)</option><option value="ok">🟢 充足(&gt;90天)</option><option value="no">未动销(无实际DD)</option></select>
+      <span id="nm-count" style="color:#666;margin-left:6px"></span></div>
+    <div id="nm-table"></div>
+  </div>
+
+</div>
+
+<script>
+window.addEventListener('load', function() {
+const P = 
+{"weeks": ["202642", "202643", "202644", "202645", "202646"], "weeks3": ["202644", "202645", "202646"], "overall": {"sales_qty": [286.0, 349.0, 303.0, 279.0, 309.0], "sales_amount": [44217.0, 54497.0, 48343.0, 42440.0, 47119.0], "traffic": [2194.0, 2275.0, 1982.0, 1875.0, 1914.0], "cvr": [13.04, 15.34, 15.29, 14.88, 16.14], "ad_spend": [2080.0, 2096.0, 1602.0, 1439.0, 1274.0], "acos": [11.66, 11.32, 11.87, 11.97, 11.6], "ad_qty": [102.0, 104.0, 80.0, 68.0, 70.0], "natural_qty": [184.0, 245.0, 223.0, 211.0, 239.0], "refund_qty": [30.0, 34.0, 41.0, 35.0, 39.0], "promotion": [1170.0, 1403.0, 1042.0, 602.0, 867.0], "coupon": [474.0, 69.0, 167.0, 53.0, 646.0], "impressions": [53591.0, 50548.0, 41786.0, 43145.0, 49424.0], "clicks": [611.0, 619.0, 488.0, 470.0, 438.0], "page_views": [3192.0, 3443.0, 2986.0, 2817.0, 2898.0], "profit_rate": [23.7, 20.24, 24.02, 25.85, 27.11], "promo_ratio": [2.65, 2.58, 2.15, 1.42, 1.84], "spread_ratio": [8.42, 6.55, 5.82, 4.93, 5.92], "gross_profit": [9925.0, 10354.0, 9263.0, 9814.0, 11686.0], "ad_sales_amount": [20156.0, 17841.0, 18519.0, 12015.0, 10982.0], "refund_rate": [10.49, 9.74, 13.53, 12.54, 12.62], "ad_clicks": [611.1150530000002, 619.3432440000003, 488.4633549999999, 470.01366999999993, 438.0098700000001], "ad_cvr": [16.69, 16.79, 16.38, 14.47, 15.98]}, "shops": {"US19": {"sales_qty": [213.0, 174.0, 217.0], "sales_amount": [35314.0, 27327.0, 34856.0], "ad_spend": [1300.0, 1124.0, 931.0], "acos": [14.17, 13.77, 11.48], "ad_qty": [55.0, 47.0, 49.0], "natural_qty": [158.0, 127.0, 168.0], "refund_qty": [32.0, 27.0, 26.0], "traffic": [1348.0, 1259.0, 1318.0], "sales_amount_full": [35314.23, 27326.62, 34855.81], "ad_clicks": [379.0, 460.2105570000003, 397.31908, 360.0, 326.0], "ad_cvr": [17.41, 14.78, 13.84, 13.06, 15.03]}, "US22": {"sales_qty": [86.0, 103.0, 91.0], "sales_amount": [12472.0, 14745.0, 12170.0], "ad_spend": [302.0, 315.0, 343.0], "acos": [6.99, 8.17, 11.93], "ad_qty": [25.0, 21.0, 21.0], "natural_qty": [61.0, 82.0, 70.0], "refund_qty": [9.0, 6.0, 13.0], "traffic": [603.0, 582.0, 571.0], "sales_amount_full": [12472.39, 14745.23, 12169.81], "ad_clicks": [232.115053, 159.132687, 91.14427500000002, 110.01367, 112.00987], "ad_cvr": [15.51, 22.62, 27.43, 19.09, 18.75]}, "US8": {"sales_qty": [4.0, 2.0, 1.0], "sales_amount": [557.0, 368.0, 94.0], "ad_spend": [0.0, 0.0, 0.0], "acos": [null, null, null], "ad_qty": [0.0, 0.0, 0.0], "natural_qty": [4.0, 2.0, 1.0], "refund_qty": [0.0, 2.0, 0.0], "traffic": [27.0, 27.0, 22.0], "sales_amount_full": [556.5, 368.37, 93.73], "ad_clicks": [0.0, 0.0, 0.0, 0.0, 0.0], "ad_cvr": [null, null, null, null, null]}}, "brands": {"KAX": {"sales_qty": [213.0, 174.0, 217.0], "ad_spend": [1300.0, 1124.0, 931.0], "ad_qty": [55.0, 47.0, 49.0], "natural_qty": [158.0, 127.0, 168.0]}, "PHILTOP": {"sales_qty": [86.0, 103.0, 91.0], "ad_spend": [302.0, 315.0, 343.0], "ad_qty": [25.0, 21.0, 21.0], "natural_qty": [61.0, 82.0, 70.0]}}, "newold": {"new": {"sales_qty": [101.0, 143.0, 128.0, 79.0, 104.0], "sales_amount": [17985.0, 25608.0, 22670.0, 14512.0, 18961.0], "ad_qty": [43.0, 49.0, 30.0, 26.0, 29.0], "natural_qty": [58.0, 94.0, 98.0, 53.0, 75.0], "ad_spend": [961.0, 1193.0, 1011.0, 798.0, 640.0], "acos": [11.81, 13.02, 18.03, 16.34, 12.51], "profit_rate": [4.34, 23.71, 14.27, 15.83, 18.46], "promo_ratio": [4.1, 4.81, 4.07, 2.85, 3.55], "spread_ratio": [11.99, 11.14, 8.86, 8.52, 8.33], "ad_clicks": [283.0, 340.17779200000007, 279.269413, 240.0, 205.0], "ad_cvr": [15.19, 14.4, 10.74, 10.83, 14.15]}, "old": {"sales_qty": [70.0, 65.0, 85.0, 95.0, 113.0], "sales_amount": [10239.0, 9786.0, 12645.0, 12814.0, 15895.0], "ad_qty": [23.0, 19.0, 25.0, 21.0, 20.0], "natural_qty": [47.0, 46.0, 60.0, 74.0, 93.0], "ad_spend": [228.0, 285.0, 289.0, 326.0, 291.0], "acos": [7.29, 9.68, 8.1, 9.94, 9.72], "profit_rate": [32.22, 36.11, 30.92, 35.63, 39.62], "promo_ratio": [0.12, -0.22, 0.36, 0.58, 1.02], "spread_ratio": [1.63, 2.9, 3.45, 3.29, 4.27], "ad_clicks": [328.11505299999993, 279.1654520000001, 209.1939420000001, 230.01367000000002, 233.00987], "ad_cvr": [17.98, 19.7, 23.9, 18.26, 17.6]}, "new_asin": 36, "old_asin": 22, "scope": "US19 KAX店铺内", "new_asin_list": ["B0GHRGFDYR", "B0GHRGFKZP", "B0GHRGH3WW", "B0GHRGTJMJ", "B0GHRMW1R3", "B0GHRR3DSH", "B0GHRSHCNS", "B0GHRSKB5Y", "B0GHRV1BWX", "B0GHRVPVRX", "B0GHRW4MKD", "B0GHRWZ4WG", "B0GHRX27ZB", "B0GHRX56VN", "B0GHRXG7B5", "B0GHRXWS6P", "B0GHRY7C8Z", "B0GHRYHQL1", "B0GHRYM353", "B0GHRYPB9S", "B0GHRYPQ71", "B0GHRZHQN4", "B0GHRZR7Q4", "B0GHS13Q6X", "B0GHS19GJ5", "B0GHS1D7K2", "B0GHS1F3W7", "B0GHS1QXVX", "B0GHS1ZT9H", "B0GHS2LZ6J", "B0GHS3HRJ5", "B0GHS3RKGD", "B0GHS4BTC1", "B0GHS4QCVQ", "B0GHS8CJVQ", "B0GHS8GJG1"], "old_asin_list": ["B0D7GWYLF8", "B0D7GX9PJL", "B0D7GXCLWN", "B0D7GXCYC7", "B0D7H45YRS", "B0D7H4CRYY", "B0D7H7PVM9", "B0D7H8C1QR", "B0D7H9BHBS", "B0D7H9DYSX", "B0D7HF8JXG", "B0D7HPFJYS", "B0D7HQHHJG", "B0G5HYGL22", "B0G5HZQRKS", "B0G5J38RJ6", "B0G5J3JW8J", "B0G5J5YGLW", "B0G5J71K6R", "B0G5JT18N6", "B0G5JY7G7T", "B0G7Y6VMZP"]}, "inventory": {"shops": {"US19": {"brand": "KAX", "sellable": 2265, "onway": 2920, "skus": 53, "oos": 0, "oos_back": 0, "coverage_full": null, "src": "可售=ERP实时 | 头程在途=BI综合数据模型(202646, SKU级)"}, "US22": {"brand": "PHILTOP", "sellable": 1146, "onway": 1550, "skus": 28, "oos": 0, "oos_back": 0, "coverage_full": null, "src": "可售=ERP实时 | 头程在途=BI综合数据模型(202646, SKU级)"}, "US8": {"brand": "ZonCar", "sellable": 52, "onway": 0, "skus": 6, "oos": 0, "oos_back": 0, "coverage_full": null, "src": "可售=ERP实时 | 头程在途=BI综合数据模型(202646, SKU级)"}}, "FBA_total": {"sellable": 3463, "onway": 4470, "oos": 0, "oos_back": 0, "src": "ERP可售 + BI头程在途"}, "sales_30d_note": "近30天销量来自 sol_panel_data.inventory.shops[].sales30", "coverage_formula": "库销比=(可售库存+头程在途)/近30天销量", "oos_definition": "断货=可售=0且头程在途=0(无补给); 缺货在补=可售=0但在途>0", "snapshot": "2026-11-14 (202646末, ERP实时可售 + BI在途)", "source": "BI综合数据模型 stock_onway_qty4_m + ERP sellableQty"}, "oos_weekly": {"weeks": ["202641", "202642", "202643", "202645", "202646"], "rows": [], "def": "断货定义(用户2026-11-17定稿)= 可售库存=0; 其中\"断货归零\"=可售0且上周有单且本周销量0（销售中断）；断货在补=可售0且头程在途>0；临断=可售支撑<30天；周维度=每周库存明细报表快照", "note": "共0个ASIN（本周断货/在补/临断 或 历史曾断货）；销量=BI前台销量"}, "key_links": {"note": "重点链接筛选(放宽): 近3月销量≥10 | 毛利率≥20%(BI字段) | 退款率<10% | 月间平衡≤4 | 涨幅≥0%; 周销量=202645; 质量字段=配件链接质量监控模型MCP(9/4); 库存=BI库存明细9/1", "rows": [{"asin": "B0GHS1D7K2", "sku": "KX1IAC09600", "shop": "US19", "type": "新品", "sell": 72, "onway": 50, "m1": 16, "m2": 25, "m3": 33, "qty": 74, "growth": 32.0, "gm": 39.5, "refund": 5.4, "wk_qty": 10, "promo": 543.0, "traffic": 359, "spend": 363.0, "acos": 8.6, "adq": 29, "promo_ratio": 4.86, "spread_ratio": 8.68, "q_price": 22.99, "rating": 4.0, "reviews": 0.0, "make_word": null, "buybox": 0.0, "cars": ["Buick Roadmaster", "Cadillac Brougham", "Cadillac Fleetwood", "Chevrolet Astro", "Chevrolet Blazer", "Chevrolet C1500", "Chevrolet C1500 Suburban", "Chevrolet C2500", "Chevrolet C2500 Suburban", "Chevrolet C3500", "Chevrolet Camaro", "Chevrolet Caprice", "Chevrolet G10", "Chevrolet G20", "Chevrolet G30", "Chevrolet K1500", "Chevrolet K1500 Suburban", "Chevrolet K2500", "Chevrolet K2500 Suburban", "Chevrolet K3500", "Chevrolet Lumina APV", "Chevrolet P30", "Chevrolet R1500 Suburban", "Chevrolet S10", "Chevrolet S10 Blazer", "Chevrolet Tahoe", "Chevrolet V1500 Suburban", "GMC C1500", "GMC C1500 Suburban", "GMC C2500", "GMC C2500 Suburban", "GMC C3500", "GMC G1500", "GMC G2500", "GMC G3500", "GMC Jimmy", "GMC K1500", "GMC K1500 Suburban", "GMC K2500", "GMC K2500 Suburban", "GMC K3500", "GMC P3500", "GMC R3500", "GMC S15 Jimmy", "GMC Safari", "GMC Sonoma", "GMC V3500", "GMC Yukon", "Isuzu NPR", "Isuzu Pickup", "Isuzu Rodeo", "Oldsmobile Bravada", "Oldsmobile Custom Cruiser", "Oldsmobile Silhouette", "Pontiac Firebird", "Pontiac Trans Sport"], "low_rating": 23.0, "sku_grade": "推新", "sale_status": "推新", "ads_label": null, "oversea_stock": 0.0}, {"asin": "B0D7GXCLWN", "sku": "KX1IAC00100", "shop": "US19", "type": "老品", "sell": 104, "onway": 0, "m1": 15, "m2": 21, "m3": 21, "qty": 57, "growth": 0.0, "gm": 32.9, "refund": 3.5, "wk_qty": 7, "promo": 115.0, "traffic": 395, "spend": 232.0, "acos": 18.5, "adq": 13, "promo_ratio": 2.09, "spread_ratio": 6.79, "q_price": 14.29, "rating": 4.0, "reviews": 0.0, "make_word": null, "buybox": 0.0, "cars": ["Cadillac Escalade", "Chevrolet Astro", "Chevrolet Blazer", "Chevrolet C1500", "Chevrolet C1500 Suburban", "Chevrolet C2500", "Chevrolet C2500 Suburban", "Chevrolet C3500", "Chevrolet C3500HD", "Chevrolet Express 1500", "Chevrolet Express 2500", "Chevrolet Express 3500", "Chevrolet K1500", "Chevrolet K1500 Suburban", "Chevrolet K2500", "Chevrolet K2500 Suburban", "Chevrolet K3500", "Chevrolet P30", "Chevrolet S10", "Chevrolet Silverado 1500", "Chevrolet Silverado 1500 Classic", "Chevrolet Tahoe", "GMC C1500", "GMC C1500 Suburban", "GMC C2500", "GMC C2500 Suburban", "GMC C3500", "GMC C3500HD", "GMC G3500", "GMC Jimmy", "GMC K1500", "GMC K1500 Suburban", "GMC K2500", "GMC K2500 Suburban", "GMC K3500", "GMC P3500", "GMC Safari", "GMC Savana 1500", "GMC Savana 2500", "GMC Savana 3500", "GMC Sierra 1500", "GMC Sierra 1500 Classic", "GMC Sonoma", "GMC W3500 Forward", "GMC Yukon", "Isuzu Hombre", "Isuzu NPR", "Oldsmobile Bravada"], "low_rating": 23.0, "sku_grade": "A", "sale_status": "维稳", "ads_label": "低转化", "oversea_stock": 0.0}, {"asin": "B0C9ZX1T55", "sku": "KX1IAC00100", "shop": "US22", "type": "老品", "sell": 128, "onway": 0, "m1": 12, "m2": 12, "m3": 22, "qty": 46, "growth": 83.0, "gm": 21.9, "refund": 2.2, "wk_qty": 7, "promo": 0, "traffic": 329, "spend": 396.0, "acos": 8.2, "adq": 32, "promo_ratio": 0.0, "spread_ratio": 10.61, "q_price": 12.99, "rating": 4.1, "reviews": 0.0, "make_word": null, "buybox": 0.0, "cars": ["Cadillac Escalade", "Chevrolet Astro", "Chevrolet Blazer", "Chevrolet C1500", "Chevrolet C1500 Suburban", "Chevrolet C2500", "Chevrolet C2500 Suburban", "Chevrolet C3500", "Chevrolet C3500HD", "Chevrolet Express 1500", "Chevrolet Express 2500", "Chevrolet Express 3500", "Chevrolet K1500", "Chevrolet K1500 Suburban", "Chevrolet K2500", "Chevrolet K2500 Suburban", "Chevrolet K3500", "Chevrolet P30", "Chevrolet S10", "Chevrolet Silverado 1500", "Chevrolet Silverado 1500 Classic", "Chevrolet Tahoe", "GMC C1500", "GMC C1500 Suburban", "GMC C2500", "GMC C2500 Suburban", "GMC C3500", "GMC C3500HD", "GMC G3500", "GMC Jimmy", "GMC K1500", "GMC K1500 Suburban", "GMC K2500", "GMC K2500 Suburban", "GMC K3500", "GMC P3500", "GMC Safari", "GMC Savana 1500", "GMC Savana 2500", "GMC Savana 3500", "GMC Sierra 1500", "GMC Sierra 1500 Classic", "GMC Sonoma", "GMC W3500 Forward", "GMC Yukon", "Isuzu Hombre", "Isuzu NPR", "Oldsmobile Bravada"], "low_rating": 24.0, "sku_grade": "A", "sale_status": "维稳", "ads_label": "依赖广告出单", "oversea_stock": 0.0}, {"asin": "B0D7HQHHJG", "sku": "KX1IAC03000", "shop": "US19", "type": "老品", "sell": 30, "onway": 94, "m1": 16, "m2": 13, "m3": 15, "qty": 44, "growth": 15.0, "gm": 23.9, "refund": 6.8, "wk_qty": 6, "promo": 0, "traffic": 606, "spend": 91.0, "acos": 11.8, "adq": 5, "promo_ratio": 0.0, "spread_ratio": 1.82, "q_price": 22.79, "rating": 4.0, "reviews": 0.0, "make_word": null, "buybox": 0.0, "cars": ["Chrysler Sebring", "Dodge Stratus", "Mitsubishi Eclipse", "Mitsubishi Galant", "Mitsubishi Lancer", "Mitsubishi Montero", "Mitsubishi Montero Sport", "Mitsubishi Outlander"], "low_rating": 23.0, "sku_grade": "S", "sale_status": "维稳", "ads_label": null, "oversea_stock": 0.0}, {"asin": "B0GHS8CN74", "sku": "KX1IAC09600", "shop": "US22", "type": "老品", "sell": 45, "onway": 51, "m1": 0, "m2": 9, "m3": 34, "qty": 43, "growth": 278.0, "gm": 24.8, "refund": 9.3, "wk_qty": 5, "promo": 195.0, "traffic": 216, "spend": 529.0, "acos": 15.8, "adq": 25, "promo_ratio": 3.29, "spread_ratio": 12.84, "q_price": 21.59, "rating": 4.1, "reviews": 0.0, "make_word": null, "buybox": 0.0, "cars": ["Buick Roadmaster", "Cadillac Brougham", "Cadillac Fleetwood", "Chevrolet Astro", "Chevrolet Blazer", "Chevrolet C1500", "Chevrolet C1500 Suburban", "Chevrolet C2500", "Chevrolet C2500 Suburban", "Chevrolet C3500", "Chevrolet Camaro", "Chevrolet Caprice", "Chevrolet G10", "Chevrolet G20", "Chevrolet G30", "Chevrolet K1500", "Chevrolet K1500 Suburban", "Chevrolet K2500", "Chevrolet K2500 Suburban", "Chevrolet K3500", "Chevrolet Lumina APV", "Chevrolet P30", "Chevrolet R1500 Suburban", "Chevrolet S10", "Chevrolet S10 Blazer", "Chevrolet Tahoe", "Chevrolet V1500 Suburban", "GMC C1500", "GMC C1500 Suburban", "GMC C2500", "GMC C2500 Suburban", "GMC C3500", "GMC G1500", "GMC G2500", "GMC G3500", "GMC Jimmy", "GMC K1500", "GMC K1500 Suburban", "GMC K2500", "GMC K2500 Suburban", "GMC K3500", "GMC P3500", "GMC R3500", "GMC S15 Jimmy", "GMC Safari", "GMC Sonoma", "GMC V3500", "GMC Yukon", "Isuzu NPR", "Isuzu Pickup", "Isuzu Rodeo", "Oldsmobile Bravada", "Oldsmobile Custom Cruiser", "Oldsmobile Silhouette", "Pontiac Firebird", "Pontiac Trans Sport"], "low_rating": 24.0, "sku_grade": "推新", "sale_status": "推新", "ads_label": "依赖广告出单", "oversea_stock": 0.0}, {"asin": "B0C9ZYMVKZ", "sku": "KX1IAC01300", "shop": "US22", "type": "老品", "sell": 95, "onway": 0, "m1": 7, "m2": 14, "m3": 16, "qty": 37, "growth": 14.0, "gm": 25.9, "refund": 8.1, "wk_qty": 2, "promo": 0, "traffic": 286, "spend": 222.0, "acos": 15.9, "adq": 6, "promo_ratio": 0.0, "spread_ratio": 3.47, "q_price": 29.99, "rating": 4.1, "reviews": 0.0, "make_word": null, "buybox": 0.0, "cars": ["Ford E-250 Econoline", "Ford E-350 Econoline", "Ford E-350 Econoline Club Wagon", "Ford Econoline Super Duty", "Ford Excursion", "Ford Expedition", "Ford Explorer", "Ford F-150", "Ford F-250", "Ford Ranger", "Ford Taurus", "Lincoln Mark VIII", "Mercury Mountaineer", "Mercury Sable"], "low_rating": 24.0, "sku_grade": "S", "sale_status": "维稳", "ads_label": "低转化", "oversea_stock": 0.0}, {"asin": "B0D7GXCYC7", "sku": "KX1IAC01900", "shop": "US19", "type": "老品", "sell": 85, "onway": 0, "m1": 11, "m2": 11, "m3": 13, "qty": 35, "growth": 18.0, "gm": 24.5, "refund": 5.7, "wk_qty": 4, "promo": 237.0, "traffic": 320, "spend": 145.0, "acos": 13.0, "adq": 5, "promo_ratio": 3.02, "spread_ratio": 5.41, "q_price": 32.99, "rating": 4.0, "reviews": 0.0, "make_word": null, "buybox": 0.0, "cars": ["Ford E-150", "Ford E-150 Club Wagon", "Ford E-150 Econoline", "Ford E-150 Econoline Club Wagon", "Ford E-250", "Ford Expedition", "Ford F-150", "Ford F-150 Heritage"], "low_rating": 23.0, "sku_grade": "S", "sale_status": "维稳", "ads_label": null, "oversea_stock": 0.0}, {"asin": "B0C9ZY4X6Y", "sku": "KX1IAC01000", "shop": "US22", "type": "老品", "sell": 35, "onway": 50, "m1": 10, "m2": 11, "m3": 13, "qty": 34, "growth": 18.0, "gm": 21.2, "refund": 0.0, "wk_qty": 3, "promo": 0, "traffic": 262, "spend": 180.0, "acos": 7.8, "adq": 15, "promo_ratio": 0.0, "spread_ratio": 6.2, "q_price": 13.69, "rating": 4.1, "reviews": 0.0, "make_word": null, "buybox": 0.0, "cars": ["Cadillac Escalade", "Cadillac Escalade EXT", "Chevrolet Avalanche 1500", "Chevrolet Camaro", "Chevrolet Corvette", "Chevrolet Silverado 1500", "Chevrolet Silverado 1500 HD", "Chevrolet Silverado 2500", "Chevrolet Silverado 2500 HD", "Chevrolet Silverado 3500", "Chevrolet Suburban 1500", "Chevrolet Suburban 2500", "Chevrolet Tahoe", "GMC Sierra 1500", "GMC Sierra 1500 HD", "GMC Sierra 2500", "GMC Sierra 2500 HD", "GMC Sierra 3500", "GMC Yukon", "GMC Yukon XL 1500", "GMC Yukon XL 2500", "Pontiac Firebird", "Pontiac GTO"], "low_rating": 24.0, "sku_grade": "A", "sale_status": "维稳", "ads_label": "依赖广告出单", "oversea_stock": 0.0}, {"asin": "B0G5L9JXTT", "sku": "KX1IAC02000", "shop": "US22", "type": "老品", "sell": 13, "onway": 50, "m1": 5, "m2": 7, "m3": 18, "qty": 30, "growth": 157.0, "gm": 36.4, "refund": 0.0, "wk_qty": 1, "promo": 30.0, "traffic": 99, "spend": 81.0, "acos": 13.7, "adq": 6, "promo_ratio": 1.11, "spread_ratio": 4.52, "q_price": 13.99, "rating": 4.1, "reviews": 0.0, "make_word": null, "buybox": 0.0, "cars": ["Buick LeSabre", "Buick Park Avenue", "Buick Regal", "Buick Riviera", "Chevrolet Camaro", "Chevrolet Impala", "Chevrolet Lumina", "Chevrolet Monte Carlo", "Oldsmobile 88", "Oldsmobile 98", "Oldsmobile Intrigue", "Oldsmobile LSS", "Oldsmobile Regency", "Pontiac Bonneville", "Pontiac Firebird", "Pontiac Grand Prix"], "low_rating": 24.0, "sku_grade": "A", "sale_status": "维稳", "ads_label": "依赖广告出单", "oversea_stock": 0.0}, {"asin": "B0GHRXWS6P", "sku": "KX1IAC06000", "shop": "US19", "type": "新品", "sell": 11, "onway": 51, "m1": 7, "m2": 6, "m3": 14, "qty": 27, "growth": 133.0, "gm": 21.8, "refund": 7.4, "wk_qty": 2, "promo": 255.0, "traffic": 157, "spend": 207.0, "acos": 6.0, "adq": 18, "promo_ratio": 5.0, "spread_ratio": 9.63, "q_price": 27.99, "rating": 4.0, "reviews": 0.0, "make_word": null, "buybox": 0.0, "cars": ["Ford Bronco II", "Ford Country Squire", "Ford LTD Crown Victoria", "Ford Mustang", "Ford Thunderbird", "Lincoln Continental", "Lincoln Mark VII", "Lincoln Town Car", "Mercury Capri", "Mercury Cougar", "Mercury Grand Marquis"], "low_rating": 23.0, "sku_grade": "推新", "sale_status": "推新", "ads_label": "依赖广告出单", "oversea_stock": 0.0}, {"asin": "B0C9ZYL9B2", "sku": "KX1IAC00800", "shop": "US22", "type": "老品", "sell": 44, "onway": 0, "m1": 9, "m2": 5, "m3": 10, "qty": 24, "growth": 100.0, "gm": 27.1, "refund": 8.3, "wk_qty": 3, "promo": 0, "traffic": 147, "spend": 220.0, "acos": 38.3, "adq": 4, "promo_ratio": 0.0, "spread_ratio": 9.17, "q_price": 15.99, "rating": 4.1, "reviews": 0.0, "make_word": null, "buybox": 0.0, "cars": ["Dodge Dakota", "Jeep Cherokee", "Jeep Grand Cherokee", "Jeep Wrangler"], "low_rating": 24.0, "sku_grade": "B", "sale_status": "维稳", "ads_label": "低转化", "oversea_stock": 0.0}, {"asin": "B0D7H45YRS", "sku": "KX1IAC04600", "shop": "US19", "type": "老品", "sell": 19, "onway": 0, "m1": 2, "m2": 8, "m3": 8, "qty": 18, "growth": 0.0, "gm": 26.3, "refund": 5.6, "wk_qty": 3, "promo": 84.0, "traffic": 121, "spend": 122.0, "acos": 8.1, "adq": 7, "promo_ratio": 1.96, "spread_ratio": 5.29, "q_price": 34.99, "rating": 4.0, "reviews": 0.0, "make_word": null, "buybox": 0.0, "cars": ["Ford Escape", "Ford Taurus", "Mazda MPV", "Mazda Tribute", "Mercury Sable"], "low_rating": 23.0, "sku_grade": "S", "sale_status": "维稳", "ads_label": "依赖广告出单", "oversea_stock": 0.0}, {"asin": "B0G5JT18N6", "sku": "KX1IAC05100", "shop": "US19", "type": "老品", "sell": 0, "onway": 12, "m1": 3, "m2": 5, "m3": 6, "qty": 14, "growth": 20.0, "gm": 34.7, "refund": 0.0, "wk_qty": 2, "promo": 27.0, "traffic": 142, "spend": 66.0, "acos": 23.9, "adq": 2, "promo_ratio": 1.32, "spread_ratio": 5.09, "q_price": 22.69, "rating": 4.0, "reviews": 0.0, "make_word": null, "buybox": 0.0, "cars": ["Suzuki Grand Vitara", "Suzuki XL-7"], "low_rating": 23.0, "sku_grade": "C", "sale_status": "风险", "ads_label": "低转化", "oversea_stock": 0.0}, {"asin": "B0GHRW4MKD", "sku": "KX1IAC09200", "shop": "US19", "type": "新品", "sell": 33, "onway": 0, "m1": 3, "m2": 5, "m3": 5, "qty": 13, "growth": 0.0, "gm": 34.3, "refund": 0.0, "wk_qty": 4, "promo": 58.0, "traffic": 105, "spend": 153.0, "acos": 78.0, "adq": 2, "promo_ratio": 4.59, "spread_ratio": 17.08, "q_price": 14.49, "rating": 4.0, "reviews": 0.0, "make_word": null, "buybox": 0.0, "cars": ["Buick Century", "Buick LaCrosse", "Buick Regal", "Buick Rendezvous", "Buick Skylark", "Cadillac Cimarron", "Chevrolet Beretta", "Chevrolet Camaro", "Chevrolet Cavalier", "Chevrolet Celebrity", "Chevrolet Corsica", "Chevrolet Corvette", "Chevrolet Impala", "Chevrolet Lumina", "Chevrolet Malibu", "Chevrolet Monte Carlo", "Chevrolet Venture", "GMC B6000", "GMC B7", "GMC C6000", "GMC C6000 Topkick", "GMC C7000", "Oldsmobile Achieva", "Oldsmobile Alero", "Oldsmobile Cutlass", "Oldsmobile Cutlass Ciera", "Oldsmobile Cutlass Cruiser", "Oldsmobile Cutlass Supreme", "Oldsmobile Firenza", "Oldsmobile Silhouette", "Pontiac 6000", "Pontiac Aztek", "Pontiac Firebird", "Pontiac Grand Am", "Pontiac Grand Prix", "Pontiac Montana", "Pontiac Sunbird", "Pontiac Trans Sport"], "low_rating": 23.0, "sku_grade": "C", "sale_status": "风险", "ads_label": null, "oversea_stock": 0.0}]}, "movers": [{"asin": "B0G5HZQRKS", "shop": "US19", "sku": "KX1IAC00300", "type": "老品", "qty6": 21, "qty5": 9, "spend6": 9, "spend5": 14, "promo6": 1.2, "promo5": 0.26, "spread6": 1.57, "spread5": 1.6, "sell": 0, "onway": 0, "cars": ["Dodge B150", "Dodge B1500", "Dodge B250", "Dodge B2500"]}, {"asin": "B0GHRYPB9S", "shop": "US19", "sku": "KX1IAC08400", "type": "新品", "qty6": 12, "qty5": 7, "spend6": 29, "spend5": 21, "promo6": 5.8, "promo5": 2.33, "spread6": 6.97, "spread5": 3.77, "sell": 0, "onway": 0, "cars": ["Ford Bronco", "Ford E-150 Econoline", "Ford E-150 Econoline Club Wagon", "Ford E-250 Econoline"]}, {"asin": "B0GHRW4MKD", "shop": "US19", "sku": "KX1IAC09200", "type": "新品", "qty6": 4, "qty5": 0, "spend6": 14, "spend5": 3, "promo6": 5.71, "promo5": null, "spread6": 9.38, "spread5": null, "sell": 0, "onway": 0, "cars": ["Buick Century", "Buick LaCrosse", "Buick Regal", "Buick Rendezvous"]}, {"asin": "B0GHRMW1R3", "shop": "US19", "sku": "KX1IAC06600", "type": "新品", "qty6": 4, "qty5": 0, "spend6": 17, "spend5": 1, "promo6": 0.57, "promo5": null, "spread6": 2.33, "spread5": null, "sell": 0, "onway": 0, "cars": ["Honda Civic"]}, {"asin": "B0GHRVPVRX", "shop": "US19", "sku": "KX1IAC06200", "type": "新品", "qty6": 9, "qty5": 5, "spend6": 53, "spend5": 40, "promo6": 5.74, "promo5": 6.2, "spread6": 8.81, "spread5": 10.32, "sell": 0, "onway": 0, "cars": ["Acura CL", "Acura MDX", "Acura TL", "Honda Accord"]}, {"asin": "B0C9ZX1T55", "shop": "US22", "sku": "KX1IAC00100", "type": "老品", "qty6": 7, "qty5": 3, "spend6": 18, "spend5": 9, "promo6": 0.85, "promo5": 0.1, "spread6": 3.8, "spread5": 3.36, "sell": 0, "onway": 0, "cars": ["Cadillac Escalade", "Chevrolet Astro", "Chevrolet Blazer", "Chevrolet C1500"]}, {"asin": "B0G5J38RJ6", "shop": "US19", "sku": "KX1IAC01600", "type": "老品", "qty6": 5, "qty5": 2, "spend6": 2, "spend5": 14, "promo6": 6.0, "promo5": 0.23, "spread6": 6.2, "spread5": 3.2, "sell": 0, "onway": 0, "cars": ["Ford Aerostar", "Ford Bronco", "Ford Bronco II", "Ford Country Squire"]}, {"asin": "B0D7H9DYSX", "shop": "US19", "sku": "KX1IAC00700", "type": "老品", "qty6": 40, "qty5": 37, "spend6": 57, "spend5": 14, "promo6": 1.43, "promo5": 0.15, "spread6": 2.49, "spread5": 0.45, "sell": 0, "onway": 0, "cars": ["Buick Century", "Buick Electra", "Buick LeSabre", "Buick Regal"]}, {"asin": "B0GHRV1BWX", "shop": "US19", "sku": "KX1IAC08500", "type": "新品", "qty6": 3, "qty5": 0, "spend6": 23, "spend5": 0, "promo6": 4.3, "promo5": null, "spread6": 11.71, "spread5": null, "sell": 0, "onway": 0, "cars": null}, {"asin": "B0GHS1QXVX", "shop": "US19", "sku": "KX1IAC08100", "type": "新品", "qty6": 4, "qty5": 1, "spend6": 22, "spend5": 4, "promo6": 5.91, "promo5": 0.33, "spread6": 8.47, "spread5": 1.99, "sell": 0, "onway": 0, "cars": ["Toyota 4Runner", "Toyota Tacoma"]}, {"asin": "B0GHS1ZT9H", "shop": "US19", "sku": "KX1IAC07000", "type": "新品", "qty6": 5, "qty5": 2, "spend6": 48, "spend5": 73, "promo6": 5.01, "promo5": 2.73, "spread6": 9.37, "spread5": 19.25, "sell": 0, "onway": 0, "cars": ["Ford Explorer", "Ford Ranger", "Mazda B4000"]}, {"asin": "B0G5J5YGLW", "shop": "US19", "sku": "KX1IAC00800", "type": "老品", "qty6": 4, "qty5": 1, "spend6": 7, "spend5": 4, "promo6": 1.11, "promo5": 0.41, "spread6": 2.66, "spread5": 4.53, "sell": 0, "onway": 0, "cars": ["Dodge Dakota", "Jeep Cherokee", "Jeep Grand Cherokee", "Jeep Wrangler"]}, {"asin": "B0GHRR3DSH", "shop": "US19", "sku": "KX1IAC05700", "type": "新品", "qty6": 6, "qty5": 3, "spend6": 29, "spend5": 39, "promo6": 2.65, "promo5": 5.18, "spread6": 5.06, "spread5": 11.63, "sell": 0, "onway": 0, "cars": ["Ford Crown Victoria", "Ford Mustang", "Ford Thunderbird", "Lincoln Town Car"]}, {"asin": "B0GHRYK2MR", "shop": "US22", "sku": "KX1IAC08300", "type": "老品", "qty6": 3, "qty5": 0, "spend6": 23, "spend5": 20, "promo6": 0.54, "promo5": null, "spread6": 7.61, "spread5": null, "sell": 0, "onway": 0, "cars": ["Dodge Dakota", "Dodge Durango", "Dodge Ram 1500", "Jeep Grand Cherokee"]}, {"asin": "B0GHS4BTC1", "shop": "US19", "sku": "KX1IAC08200", "type": "新品", "qty6": 2, "qty5": 0, "spend6": 7, "spend5": 4, "promo6": 6.09, "promo5": null, "spread6": 7.87, "spread5": null, "sell": 0, "onway": 0, "cars": ["Honda Accord", "Honda Element"]}, {"asin": "B0D7HQHHJG", "shop": "US19", "sku": "KX1IAC03000", "type": "老品", "qty6": 6, "qty5": 4, "spend6": 7, "spend5": 3, "promo6": 0.96, "promo5": 0.13, "spread6": 1.7, "spread5": 0.69, "sell": 0, "onway": 0, "cars": ["Chrysler Sebring", "Dodge Stratus", "Mitsubishi Eclipse", "Mitsubishi Galant"]}, {"asin": "B0GHRZHQN4", "shop": "US19", "sku": "KX1IAC08600", "type": "新品", "qty6": 2, "qty5": 0, "spend6": 12, "spend5": 3, "promo6": 5.71, "promo5": null, "spread6": 8.61, "spread5": null, "sell": 0, "onway": 0, "cars": ["Nissan D21", "Nissan Pickup"]}, {"asin": "B0G5JT18N6", "shop": "US19", "sku": "KX1IAC05100", "type": "老品", "qty6": 2, "qty5": 0, "spend6": 14, "spend5": 0, "promo6": 1.08, "promo5": null, "spread6": 5.58, "spread5": null, "sell": 0, "onway": 0, "cars": ["Suzuki Grand Vitara", "Suzuki XL-7"]}, {"asin": "B0GHS2LZ6J", "shop": "US19", "sku": "KX1IAC08300", "type": "新品", "qty6": 4, "qty5": 2, "spend6": 21, "spend5": 25, "promo6": 6.25, "promo5": 2.71, "spread6": 11.7, "spread5": 15.62, "sell": 0, "onway": 0, "cars": ["Dodge Dakota", "Dodge Durango", "Dodge Ram 1500", "Jeep Grand Cherokee"]}, {"asin": "B0D7H45YRS", "shop": "US19", "sku": "KX1IAC04600", "type": "老品", "qty6": 3, "qty5": 1, "spend6": 5, "spend5": 27, "promo6": 0.98, "promo5": 0.27, "spread6": 1.75, "spread5": 11.9, "sell": 0, "onway": 0, "cars": ["Ford Escape", "Ford Taurus", "Mazda MPV", "Mazda Tribute"]}, {"asin": "B0GHRSKB5Y", "shop": "US19", "sku": "KX1IAC09500", "type": "新品", "qty6": 3, "qty5": 1, "spend6": 6, "spend5": 8, "promo6": 6.0, "promo5": -4.74, "spread6": 7.32, "spread5": 0.41, "sell": 0, "onway": 0, "cars": ["Cadillac Escalade", "Cadillac Escalade EXT", "Chevrolet Avalanche 1500", "Chevrolet Camaro"]}, {"asin": "B0GHS8GJG1", "shop": "US19", "sku": "KX1IAC07300", "type": "新品", "qty6": 5, "qty5": 3, "spend6": 58, "spend5": 54, "promo6": 6.18, "promo5": 0.19, "spread6": 11.25, "spread5": 8.08, "sell": 0, "onway": 0, "cars": ["Ford Crown Victoria", "Lincoln Town Car", "Mercury Grand Marquis"]}, {"asin": "B0CB11CTG6", "shop": "US22", "sku": "KX1IAC00200", "type": "老品", "qty6": 7, "qty5": 5, "spend6": 22, "spend5": 12, "promo6": 1.0, "promo5": 0.07, "spread6": 2.98, "spread5": 1.59, "sell": 0, "onway": 0, "cars": ["Chrysler Aspen", "Dodge Dakota", "Dodge Durango", "Dodge Ram 1500"]}, {"asin": "B0C9ZZ1BQG", "shop": "US22", "sku": "KX1IAC05100", "type": "老品", "qty6": 4, "qty5": 2, "spend6": 6, "spend5": 7, "promo6": 0.81, "promo5": 0.08, "spread6": 1.92, "spread5": 2.51, "sell": 0, "onway": 0, "cars": ["Suzuki Grand Vitara", "Suzuki XL-7"]}, {"asin": "B0GHS13Q6X", "shop": "US19", "sku": "KX1IAC08000", "type": "新品", "qty6": 1, "qty5": 0, "spend6": 0, "spend5": 4, "promo6": 5.79, "promo5": null, "spread6": 5.79, "spread5": null, "sell": 0, "onway": 0, "cars": ["Subaru Baja", "Subaru Forester", "Subaru Impreza", "Subaru Legacy"]}, {"asin": "B0GHRYPQ71", "shop": "US19", "sku": "KX1IAC07700", "type": "新品", "qty6": 1, "qty5": 0, "spend6": 35, "spend5": 24, "promo6": 6.45, "promo5": null, "spread6": 23.95, "spread5": null, "sell": 0, "onway": 0, "cars": ["Pontiac Vibe", "Toyota Corolla", "Toyota Matrix"]}, {"asin": "B0GHRGFDYR", "shop": "US19", "sku": "KX1IAC06400", "type": "新品", "qty6": 1, "qty5": 0, "spend6": 6, "spend5": 14, "promo6": 5.72, "promo5": null, "spread6": 8.37, "spread5": null, "sell": 0, "onway": 0, "cars": ["Ford Escape", "Ford Focus", "Mazda Tribute", "Mercury Cougar"]}, {"asin": "B0GHS4QCVQ", "shop": "US19", "sku": "KX1IAC09100", "type": "新品", "qty6": 3, "qty5": 2, "spend6": 9, "spend5": 7, "promo6": 6.93, "promo5": 10.27, "spread6": 9.28, "spread5": 12.82, "sell": 0, "onway": 0, "cars": ["Hyundai Elantra", "Hyundai Santa Fe", "Hyundai Sonata", "Hyundai Tiburon"]}, {"asin": "B0GHS1D7K2", "shop": "US19", "sku": "KX1IAC09600", "type": "新品", "qty6": 10, "qty5": 9, "spend6": 30, "spend5": 48, "promo6": 6.47, "promo5": 5.15, "spread6": 8.61, "spread5": 8.59, "sell": 0, "onway": 0, "cars": ["Buick Roadmaster", "Cadillac Brougham", "Cadillac Fleetwood", "Chevrolet Astro"]}, {"asin": "B0D7GXCLWN", "shop": "US19", "sku": "KX1IAC00100", "type": "老品", "qty6": 7, "qty5": 6, "spend6": 16, "spend5": 12, "promo6": 6.32, "promo5": 3.46, "spread6": 8.73, "spread5": 5.63, "sell": 0, "onway": 0, "cars": ["Cadillac Escalade", "Chevrolet Astro", "Chevrolet Blazer", "Chevrolet C1500"]}, {"asin": "B0G5HYGL22", "shop": "US19", "sku": "KX1IAC03100", "type": "老品", "qty6": 1, "qty5": 0, "spend6": 7, "spend5": 0, "promo6": 1.45, "promo5": null, "spread6": 5.07, "spread5": null, "sell": 0, "onway": 0, "cars": ["Chrysler 300M", "Chrysler Cirrus", "Chrysler Concorde", "Chrysler Pacifica"]}, {"asin": "B0D7HPFJYS", "shop": "US19", "sku": "KX1IAC01300", "type": "老品", "qty6": 2, "qty5": 1, "spend6": 16, "spend5": 22, "promo6": 6.09, "promo5": 5.2, "spread6": 9.63, "spread5": 15.23, "sell": 0, "onway": 0, "cars": ["Ford E-250 Econoline", "Ford E-350 Econoline", "Ford E-350 Econoline Club Wagon", "Ford Econoline Super Duty"]}, {"asin": "B0D7H7PVM9", "shop": "US19", "sku": "KX1IAC00200", "type": "老品", "qty6": 2, "qty5": 1, "spend6": 8, "spend5": 10, "promo6": 1.08, "promo5": 0.2, "spread6": 3.71, "spread5": 6.53, "sell": 0, "onway": 0, "cars": ["Chrysler Aspen", "Dodge Dakota", "Dodge Durango", "Dodge Ram 1500"]}, {"asin": "B0C9ZYL9B2", "shop": "US22", "sku": "KX1IAC00800", "type": "老品", "qty6": 3, "qty5": 2, "spend6": 9, "spend5": 2, "promo6": 0.9, "promo5": 0.07, "spread6": 3.82, "spread5": 0.98, "sell": 0, "onway": 0, "cars": ["Dodge Dakota", "Jeep Cherokee", "Jeep Grand Cherokee", "Jeep Wrangler"]}, {"asin": "B0C9ZYMVKZ", "shop": "US22", "sku": "KX1IAC01300", "type": "老品", "qty6": 2, "qty5": 1, "spend6": 31, "spend5": 10, "promo6": 0.82, "promo5": 0.08, "spread6": 8.49, "spread5": 4.92, "sell": 0, "onway": 0, "cars": ["Ford E-250 Econoline", "Ford E-350 Econoline", "Ford E-350 Econoline Club Wagon", "Ford Econoline Super Duty"]}, {"asin": "B0GSZ3TT5J", "shop": "US22", "sku": "KX1IAC04300", "type": "老品", "qty6": 1, "qty5": 0, "spend6": 5, "spend5": 7, "promo6": 5.54, "promo5": null, "spread6": 10.24, "spread5": null, "sell": 0, "onway": 0, "cars": ["Dodge Dakota", "Jeep Cherokee", "Jeep Comanche", "Jeep Wrangler"]}, {"asin": "B0GHRXS9XK", "shop": "US22", "sku": "KX1IAC06400", "type": "老品", "qty6": 1, "qty5": 0, "spend6": 0, "spend5": 0, "promo6": 0.54, "promo5": null, "spread6": 0.54, "spread5": null, "sell": 0, "onway": 0, "cars": ["Ford Escape", "Ford Focus", "Mazda Tribute", "Mercury Cougar"]}, {"asin": "B0C9ZX1S5P", "shop": "US22", "sku": "KX1IAC00300", "type": "老品", "qty6": 14, "qty5": 13, "spend6": 4, "spend5": 11, "promo6": 0.8, "promo5": 0.45, "spread6": 1.07, "spread5": 1.29, "sell": 0, "onway": 0, "cars": ["Dodge B150", "Dodge B1500", "Dodge B250", "Dodge B2500"]}, {"asin": "B0GHS5RCSB", "shop": "US22", "sku": "KX1IAC09500", "type": "老品", "qty6": 4, "qty5": 3, "spend6": 35, "spend5": 13, "promo6": 0.97, "promo5": -1.53, "spread6": 6.68, "spread5": 1.32, "sell": 0, "onway": 0, "cars": ["Cadillac Escalade", "Cadillac Escalade EXT", "Chevrolet Avalanche 1500", "Chevrolet Camaro"]}, {"asin": "B0G5L9JXTT", "shop": "US22", "sku": "KX1IAC02000", "type": "老品", "qty6": 1, "qty5": 0, "spend6": 13, "spend5": 14, "promo6": 0.54, "promo5": null, "spread6": 14.34, "spread5": null, "sell": 0, "onway": 0, "cars": ["Buick LeSabre", "Buick Park Avenue", "Buick Regal", "Buick Riviera"]}, {"asin": "B0GHS8CJVQ", "shop": "US19", "sku": "KX1IAC07800", "type": "新品", "qty6": 3, "qty5": 3, "spend6": 64, "spend5": 83, "promo6": 6.5, "promo5": 3.47, "spread6": 17.09, "spread5": 17.32, "sell": 0, "onway": 0, "cars": ["Acura RSX", "Honda Civic"]}, {"asin": "B0GHRGFKZP", "shop": "US19", "sku": "KX1IAC09300", "type": "新品", "qty6": 1, "qty5": 1, "spend6": 5, "spend5": 0, "promo6": 1.45, "promo5": 0.13, "spread6": 4.44, "spread5": 0.13, "sell": 0, "onway": 0, "cars": ["Chrysler Sebring", "Dodge Stratus", "Mitsubishi Eclipse", "Mitsubishi Galant"]}, {"asin": "B0D7HF8JXG", "shop": "US19", "sku": "KX1IAC00600", "type": "老品", "qty6": 2, "qty5": 2, "spend6": 2, "spend5": 2, "promo6": 1.5, "promo5": 0.14, "spread6": 1.95, "spread5": 0.59, "sell": 0, "onway": 0, "cars": ["Ford Aerostar", "Ford Explorer", "Ford Mustang", "Ford Ranger"]}, {"asin": "B0GHRGTJMJ", "shop": "US19", "sku": "KX1IAC05600", "type": "新品", "qty6": 2, "qty5": 2, "spend6": 12, "spend5": 7, "promo6": 6.81, "promo5": 5.17, "spread6": 13.7, "spread5": 9.44, "sell": 0, "onway": 0, "cars": ["Buick Commercial Chassis", "Buick Roadmaster", "Cadillac Commercial Chassis", "Cadillac Fleetwood"]}, {"asin": "B0D7H9BHBS", "shop": "US19", "sku": "KX1IAC02500", "type": "老品", "qty6": 1, "qty5": 1, "spend6": 15, "spend5": 10, "promo6": 1.45, "promo5": 0.13, "spread6": 11.63, "spread5": 6.82, "sell": 0, "onway": 0, "cars": ["Hyundai Elantra", "Hyundai Tiburon", "Hyundai Tucson", "Kia Spectra"]}, {"asin": "B0C9ZY4X6Y", "shop": "US22", "sku": "KX1IAC01000", "type": "老品", "qty6": 3, "qty5": 3, "spend6": 18, "spend5": 3, "promo6": 1.08, "promo5": 0.06, "spread6": 7.68, "spread5": 1.3, "sell": 0, "onway": 0, "cars": ["Cadillac Escalade", "Cadillac Escalade EXT", "Chevrolet Avalanche 1500", "Chevrolet Camaro"]}, {"asin": "B0C9ZZ3C2V", "shop": "US22", "sku": "KX1IAC02100", "type": "老品", "qty6": 1, "qty5": 1, "spend6": 3, "spend5": 1, "promo6": 1.08, "promo5": 0.06, "spread6": 3.05, "spread5": 0.65, "sell": 0, "onway": 0, "cars": ["Ford Explorer Sport", "Ford Explorer Sport Trac", "Ford Ranger", "Mazda B4000"]}, {"asin": "B0C9ZZ231N", "shop": "US22", "sku": "KX1IAC04600", "type": "老品", "qty6": 1, "qty5": 1, "spend6": 11, "spend5": 5, "promo6": 1.08, "promo5": 0.06, "spread6": 5.94, "spread5": 2.0, "sell": 0, "onway": 0, "cars": ["Ford Escape", "Ford Taurus", "Mazda MPV", "Mazda Tribute"]}, {"asin": "B0C9ZXDTDS", "shop": "US22", "sku": "KX1IAC02400", "type": "老品", "qty6": 2, "qty5": 2, "spend6": 15, "spend5": 6, "promo6": 1.35, "promo5": 0.07, "spread6": 5.48, "spread5": 1.81, "sell": 0, "onway": 0, "cars": ["Ford E-250 Econoline", "Ford E-350 Econoline", "Ford E-350 Econoline Club Wagon", "Ford Expedition"]}, {"asin": "B0GHRYM353", "shop": "US19", "sku": "KX1IAC06700", "type": "新品", "qty6": 2, "qty5": 3, "spend6": 25, "spend5": 18, "promo6": 4.31, "promo5": 3.44, "spread6": 10.08, "spread5": 6.26, "sell": 0, "onway": 0, "cars": ["Ford E-150", "Ford E-150 Club Wagon", "Ford E-150 Econoline", "Ford E-150 Econoline Club Wagon"]}, {"asin": "B0GHRYHQL1", "shop": "US19", "sku": "KX1IAC06300", "type": "新品", "qty6": 4, "qty5": 5, "spend6": 4, "spend5": 5, "promo6": 1.63, "promo5": 0.12, "spread6": 2.18, "spread5": 0.66, "sell": 0, "onway": 0, "cars": ["Ford Ranger", "Ford Taurus", "Mazda B2300", "Mazda B3000"]}, {"asin": "B0GHS3RKGD", "shop": "US19", "sku": "KX1IAC06100", "type": "新品", "qty6": 0, "qty5": 1, "spend6": 0, "spend5": 19, "promo6": null, "promo5": -4.87, "spread6": null, "spread5": 4.44, "sell": 0, "onway": 0, "cars": ["Ford E-150", "Ford E-150 Club Wagon", "Ford E-150 Econoline", "Ford E-150 Econoline Club Wagon"]}, {"asin": "B0G7Y6VMZP", "shop": "US19", "sku": "KX1IAC04300", "type": "老品", "qty6": 0, "qty5": 1, "spend6": 23, "spend5": 39, "promo6": null, "promo5": 0.07, "spread6": null, "spread5": 36.03, "sell": 0, "onway": 0, "cars": ["Dodge Dakota", "Jeep Cherokee", "Jeep Comanche", "Jeep Wrangler"]}, {"asin": "B0GHRGH3WW", "shop": "US19", "sku": "KX1IAC06500", "type": "新品", "qty6": 0, "qty5": 1, "spend6": 10, "spend5": 19, "promo6": null, "promo5": 5.07, "spread6": null, "spread5": 14.34, "sell": 0, "onway": 0, "cars": ["Kia Sorento", "Mitsubishi Diamante", "Mitsubishi Mirage", "Mitsubishi Montero"]}, {"asin": "B0D7GXCYC7", "shop": "US19", "sku": "KX1IAC01900", "type": "老品", "qty6": 4, "qty5": 5, "spend6": 33, "spend5": 59, "promo6": 5.55, "promo5": 4.13, "spread6": 9.34, "spread5": 9.45, "sell": 0, "onway": 0, "cars": ["Ford E-150", "Ford E-150 Club Wagon", "Ford E-150 Econoline", "Ford E-150 Econoline Club Wagon"]}, {"asin": "B0GHS19GJ5", "shop": "US19", "sku": "KX1IAC07900", "type": "新品", "qty6": 0, "qty5": 1, "spend6": 5, "spend5": 112, "promo6": null, "promo5": 10.14, "spread6": null, "spread5": 67.92, "sell": 0, "onway": 0, "cars": ["Ford Focus", "Ford Ranger", "Mazda B2300", "Mercury Marauder"]}, {"asin": "B0GHRY7C8Z", "shop": "US19", "sku": "KX1IAC09000", "type": "新品", "qty6": 0, "qty5": 1, "spend6": 0, "spend5": 13, "promo6": null, "promo5": 0.07, "spread6": null, "spread5": 13.01, "sell": 0, "onway": 0, "cars": ["Cadillac DeVille", "Cadillac Eldorado", "Cadillac Seville", "Oldsmobile Aurora"]}, {"asin": "B0G5JY7G7T", "shop": "US19", "sku": "KX1IAC02000", "type": "老品", "qty6": 3, "qty5": 4, "spend6": 4, "spend5": 12, "promo6": 1.93, "promo5": 0.13, "spread6": 3.17, "spread5": 3.08, "sell": 0, "onway": 0, "cars": ["Buick LeSabre", "Buick Park Avenue", "Buick Regal", "Buick Riviera"]}, {"asin": "B0GHRWZ4WG", "shop": "US19", "sku": "KX1IAC09400", "type": "新品", "qty6": 1, "qty5": 2, "spend6": 7, "spend5": 12, "promo6": 7.17, "promo5": 5.1, "spread6": 12.22, "spread5": 9.6, "sell": 0, "onway": 0, "cars": ["Hyundai Accent", "Kia Rio", "Kia Rio5"]}, {"asin": "B0G5J3JW8J", "shop": "US19", "sku": "KX1IAC01000", "type": "老品", "qty6": 1, "qty5": 2, "spend6": 2, "spend5": 2, "promo6": 16.92, "promo5": 0.1, "spread6": 19.14, "spread5": 1.23, "sell": 0, "onway": 0, "cars": ["Cadillac Escalade", "Cadillac Escalade EXT", "Chevrolet Avalanche 1500", "Chevrolet Camaro"]}, {"asin": "B0CB13BH9H", "shop": "US22", "sku": "KX1IAC00700", "type": "老品", "qty6": 0, "qty5": 1, "spend6": 0, "spend5": 3, "promo6": null, "promo5": 0.03, "spread6": null, "spread5": 3.88, "sell": 0, "onway": 0, "cars": ["Buick Century", "Buick Electra", "Buick LeSabre", "Buick Regal"]}, {"asin": "B0CB11CL55", "shop": "US22", "sku": "KX1IAC01600", "type": "老品", "qty6": 1, "qty5": 2, "spend6": 14, "spend5": 9, "promo6": 6.61, "promo5": 2.53, "spread6": 12.97, "spread5": 4.48, "sell": 0, "onway": 0, "cars": ["Ford Aerostar", "Ford Bronco", "Ford Bronco II", "Ford Country Squire"]}, {"asin": "B0G5J71K6R", "shop": "US19", "sku": "KX1IAC02100", "type": "老品", "qty6": 0, "qty5": 2, "spend6": 2, "spend5": 2, "promo6": null, "promo5": 0.07, "spread6": null, "spread5": 0.61, "sell": 0, "onway": 0, "cars": ["Ford Explorer Sport", "Ford Explorer Sport Trac", "Ford Ranger", "Mazda B4000"]}, {"asin": "B0GHS1F3W7", "shop": "US19", "sku": "KX1IAC09900", "type": "新品", "qty6": 0, "qty5": 2, "spend6": 0, "spend5": 0, "promo6": null, "promo5": 10.15, "spread6": null, "spread5": 10.15, "sell": 0, "onway": 0, "cars": ["Acura MDX", "Audi Q5", "BMW X3", "Buick Encore"]}, {"asin": "B0C9ZZDXP1", "shop": "US22", "sku": "KX1IAC01400", "type": "老品", "qty6": 10, "qty5": 12, "spend6": 8, "spend5": 27, "promo6": 1.3, "promo5": 0.06, "spread6": 2.16, "spread5": 2.46, "sell": 0, "onway": 0, "cars": ["Jeep Cherokee", "Jeep Comanche", "Jeep Grand Cherokee", "Jeep Wrangler"]}, {"asin": "B0GHS8CN74", "shop": "US22", "sku": "KX1IAC09600", "type": "老品", "qty6": 5, "qty5": 7, "spend6": 54, "spend5": 107, "promo6": 1.31, "promo5": 0.06, "spread6": 8.8, "spread5": 12.34, "sell": 0, "onway": 0, "cars": ["Buick Roadmaster", "Cadillac Brougham", "Cadillac Fleetwood", "Chevrolet Astro"]}, {"asin": "B0GHRJ3B57", "shop": "US22", "sku": "KX1IAC06200", "type": "老品", "qty6": 0, "qty5": 2, "spend6": 0, "spend5": 4, "promo6": null, "promo5": -2.47, "spread6": null, "spread5": -1.47, "sell": 0, "onway": 0, "cars": ["Acura CL", "Acura MDX", "Acura TL", "Honda Accord"]}, {"asin": "B0G5LXF18N", "shop": "US22", "sku": "KX1IAC00900", "type": "老品", "qty6": 7, "qty5": 9, "spend6": 11, "spend5": 5, "promo6": 1.25, "promo5": 0.05, "spread6": 2.3, "spread5": 0.39, "sell": 0, "onway": 0, "cars": ["Ford Aerostar", "Ford Bronco", "Ford Bronco II", "Ford Country Squire"]}, {"asin": "B0C9ZW9FQ3", "shop": "US22", "sku": "KX1IAC04300", "type": "老品", "qty6": 0, "qty5": 2, "spend6": 2, "spend5": 3, "promo6": null, "promo5": 0.03, "spread6": null, "spread5": 1.66, "sell": 0, "onway": 0, "cars": ["Dodge Dakota", "Jeep Cherokee", "Jeep Comanche", "Jeep Wrangler"]}, {"asin": "B0GHRX27ZB", "shop": "US19", "sku": "KX1IAC07200", "type": "新品", "qty6": 6, "qty5": 9, "spend6": 15, "spend5": 29, "promo6": 3.36, "promo5": 4.6, "spread6": 4.51, "spread5": 6.07, "sell": 0, "onway": 0, "cars": ["BMW 323Ci", "BMW 323i", "BMW 323is", "BMW 325Ci"]}, {"asin": "B0D7H4CRYY", "shop": "US19", "sku": "KX1IAC01400", "type": "老品", "qty6": 6, "qty5": 9, "spend6": 39, "spend5": 52, "promo6": 1.93, "promo5": 0.12, "spread6": 7.93, "spread5": 5.49, "sell": 0, "onway": 0, "cars": ["Jeep Cherokee", "Jeep Comanche", "Jeep Grand Cherokee", "Jeep Wrangler"]}, {"asin": "B0GHRXWS6P", "shop": "US19", "sku": "KX1IAC06000", "type": "新品", "qty6": 2, "qty5": 5, "spend6": 6, "spend5": 20, "promo6": 7.53, "promo5": 4.09, "spread6": 9.21, "spread5": 6.27, "sell": 0, "onway": 0, "cars": ["Ford Bronco II", "Ford Country Squire", "Ford LTD Crown Victoria", "Ford Mustang"]}, {"asin": "B0C9ZY7BV3", "shop": "US22", "sku": "KX1IAC00600", "type": "老品", "qty6": 3, "qty5": 6, "spend6": 4, "spend5": 5, "promo6": 3.29, "promo5": 4.21, "spread6": 3.98, "spread5": 4.56, "sell": 0, "onway": 0, "cars": ["Ford Aerostar", "Ford Explorer", "Ford Mustang", "Ford Ranger"]}, {"asin": "B0GHRSHCNS", "shop": "US19", "sku": "KX1IAC07100", "type": "新品", "qty6": 4, "qty5": 8, "spend6": 47, "spend5": 74, "promo6": 1.98, "promo5": 0.09, "spread6": 7.6, "spread5": 4.68, "sell": 0, "onway": 0, "cars": ["Toyota 4Runner", "Toyota T100", "Toyota Tacoma"]}, {"asin": "B0D7GWYLF8", "shop": "US19", "sku": "KX1IAC00900", "type": "老品", "qty6": 3, "qty5": 7, "spend6": 24, "spend5": 28, "promo6": 3.39, "promo5": 0.13, "spread6": 8.01, "spread5": 2.44, "sell": 0, "onway": 0, "cars": ["Ford Aerostar", "Ford Bronco", "Ford Bronco II", "Ford Country Squire"]}, {"asin": "B0GHRSV95C", "shop": "US22", "sku": "KX1IAC07700", "type": "老品", "qty6": 2, "qty5": 6, "spend6": 26, "spend5": 23, "promo6": 2.16, "promo5": -0.79, "spread6": 8.75, "spread5": 1.15, "sell": 0, "onway": 0, "cars": ["Pontiac Vibe", "Toyota Corolla", "Toyota Matrix"]}, {"asin": "B0CB13BHB8", "shop": "US22", "sku": "KX1IAC01900", "type": "老品", "qty6": 2, "qty5": 7, "spend6": 2, "spend5": 8, "promo6": 7.41, "promo5": 5.02, "spread6": 8.0, "spread5": 5.58, "sell": 0, "onway": 0, "cars": ["Ford E-150", "Ford E-150 Club Wagon", "Ford E-150 Econoline", "Ford E-150 Econoline Club Wagon"]}, {"asin": "B0CB113C61", "shop": "US22", "sku": "KX1IAC03000", "type": "老品", "qty6": 7, "qty5": 13, "spend6": 7, "spend5": 2, "promo6": 1.55, "promo5": 0.04, "spread6": 2.22, "spread5": 0.16, "sell": 0, "onway": 0, "cars": ["Chrysler Sebring", "Dodge Stratus", "Mitsubishi Eclipse", "Mitsubishi Galant"]}], "newold3": {"weeks": ["202643", "202645", "202646"], "新品": {"流量": [982.0, 655.0, 677.0], "销量": [143.0, 79.0, 104.0], "销售额": [25608.0, 14512.33, 18960.93], "转化率": [14.56, 12.06, 15.36], "展示量": [19481.27, 13198.0, 11756.0], "点击数": [340.18, 240.0, 205.0], "广告花费": [1193.01, 797.77, 639.78], "CPC": [3.51, 3.32, 3.12], "ACOS": [13.02, 16.34, 12.51], "广告sku销售额": [9161.95, 4881.89, 5115.58], "广告sku销量": [49.0, 26.0, 29.0], "毛利润": [2667.86, 2060.01, 3232.28], "广告转化率": [14.4, 10.83, 14.15]}, "老品": {"流量": [538.0, 604.0, 641.0], "销量": [65.0, 95.0, 113.0], "销售额": [9786.42, 12814.29, 15894.88], "转化率": [12.08, 15.73, 17.63], "展示量": [8838.34, 10515.0, 13416.0], "点击数": [120.03, 120.0, 121.0], "广告花费": [285.18, 326.02, 291.25], "CPC": [2.38, 2.72, 2.41], "ACOS": [9.68, 9.94, 9.72], "广告sku销售额": [2945.74, 3279.58, 2994.9], "广告sku销量": [19.0, 21.0, 20.0], "毛利润": [2801.11, 4114.41, 6057.51], "广告转化率": [15.83, 17.5, 16.53]}, "new_asin": 36, "old_asin": 22}, "dd": [{"sku": "KX1IAC09900", "asin": "B0GHS1F3W7", "pred": 3.33, "ship": 300.0, "grade": "S", "s30": 10, "dd_act": 0.33, "rate": 9.9, "status": "🔴远低于预期", "sell": null, "onway": null}, {"sku": "KX1IAC06200", "asin": "B0GHRVPVRX", "pred": 1.67, "ship": 200.0, "grade": "S", "s30": 34, "dd_act": 1.13, "rate": 67.8, "status": "🟠爬坡", "sell": null, "onway": null}, {"sku": "KX1IAC09500", "asin": "B0GHRSKB5Y", "pred": 1.67, "ship": 150.0, "grade": "S", "s30": 14, "dd_act": 0.47, "rate": 28.2, "status": "🔴远低于预期", "sell": null, "onway": null}, {"sku": "KX1IAC09600", "asin": "B0GHS1D7K2", "pred": 1.67, "ship": 150.0, "grade": "S", "s30": 33, "dd_act": 1.1, "rate": 66.0, "status": "🟠爬坡", "sell": null, "onway": null}, {"sku": "KX1IAC07700", "asin": "B0GHRYPQ71", "pred": 1.33, "ship": 100.0, "grade": "A", "s30": 7, "dd_act": 0.23, "rate": 17.3, "status": "🔴远低于预期", "sell": null, "onway": null}, {"sku": "KX1IAC08300", "asin": "B0GHS2LZ6J", "pred": 1.33, "ship": 100.0, "grade": "A", "s30": 8, "dd_act": 0.27, "rate": 20.3, "status": "🔴远低于预期", "sell": null, "onway": null}, {"sku": "KX1IAC06300", "asin": "B0GHRYHQL1", "pred": 1.0, "ship": 100.0, "grade": "A", "s30": 18, "dd_act": 0.6, "rate": 60.0, "status": "🟠爬坡", "sell": null, "onway": null}, {"sku": "KX1IAC07400", "asin": "B0GHRZR7Q4", "pred": 1.0, "ship": 100.0, "grade": "A", "s30": 1, "dd_act": 0.03, "rate": 3.0, "status": "🔴远低于预期", "sell": null, "onway": null}, {"sku": "KX1IAC08400", "asin": "B0GHRYPB9S", "pred": 1.0, "ship": 100.0, "grade": "A", "s30": 30, "dd_act": 1.0, "rate": 100.0, "status": "✅达标", "sell": null, "onway": null}, {"sku": "KX1IAC09100", "asin": "B0GHS4QCVQ", "pred": 1.0, "ship": 100.0, "grade": "A", "s30": 15, "dd_act": 0.5, "rate": 50.0, "status": "🔴远低于预期", "sell": null, "onway": null}, {"sku": "KX1IAC09400", "asin": "B0GHRWZ4WG", "pred": 1.0, "ship": 100.0, "grade": "A", "s30": 10, "dd_act": 0.33, "rate": 33.0, "status": "🔴远低于预期", "sell": null, "onway": null}, {"sku": "KX1IAC07200", "asin": "B0GHRX27ZB", "pred": 0.67, "ship": 100.0, "grade": "B", "s30": 29, "dd_act": 0.97, "rate": 145.5, "status": "✅达标", "sell": null, "onway": null}, {"sku": "KX1IAC05700", "asin": "B0GHRR3DSH", "pred": 0.5, "ship": 75.0, "grade": "B", "s30": 23, "dd_act": 0.77, "rate": 154.0, "status": "✅达标", "sell": null, "onway": null}, {"sku": "KX1IAC06000", "asin": "B0GHRXWS6P", "pred": 0.5, "ship": 50.0, "grade": "B", "s30": 14, "dd_act": 0.47, "rate": 94.0, "status": "🟠爬坡", "sell": null, "onway": null}, {"sku": "KX1IAC06400", "asin": "B0GHRGFDYR", "pred": 0.5, "ship": 50.0, "grade": "B", "s30": 7, "dd_act": 0.23, "rate": 46.0, "status": "🔴远低于预期", "sell": null, "onway": null}, {"sku": "KX1IAC06600", "asin": "B0GHRMW1R3", "pred": 0.5, "ship": 50.0, "grade": "B", "s30": 7, "dd_act": 0.23, "rate": 46.0, "status": "🔴远低于预期", "sell": null, "onway": null}, {"sku": "KX1IAC06700", "asin": "B0GHRYM353", "pred": 0.5, "ship": 50.0, "grade": "B", "s30": 13, "dd_act": 0.43, "rate": 86.0, "status": "🟠爬坡", "sell": null, "onway": null}, {"sku": "KX1IAC07000", "asin": "B0GHS1ZT9H", "pred": 0.5, "ship": 50.0, "grade": "B", "s30": 12, "dd_act": 0.4, "rate": 80.0, "status": "🟠爬坡", "sell": null, "onway": null}, {"sku": "KX1IAC07300", "asin": "B0GHS8GJG1", "pred": 0.5, "ship": 50.0, "grade": "B", "s30": 23, "dd_act": 0.77, "rate": 154.0, "status": "✅达标", "sell": null, "onway": null}, {"sku": "KX1IAC07800", "asin": "B0GHS8CJVQ", "pred": 0.5, "ship": 50.0, "grade": "B", "s30": 16, "dd_act": 0.53, "rate": 106.0, "status": "✅达标", "sell": null, "onway": null}, {"sku": "KX1IAC07900", "asin": "B0GHS19GJ5", "pred": 0.5, "ship": 50.0, "grade": "B", "s30": 4, "dd_act": 0.13, "rate": 26.0, "status": "🔴远低于预期", "sell": null, "onway": null}, {"sku": "KX1IAC08000", "asin": "B0GHS13Q6X", "pred": 0.5, "ship": 50.0, "grade": "B", "s30": 10, "dd_act": 0.33, "rate": 66.0, "status": "🟠爬坡", "sell": null, "onway": null}, {"sku": "KX1IAC08100", "asin": "B0GHS1QXVX", "pred": 0.5, "ship": 50.0, "grade": "B", "s30": 6, "dd_act": 0.2, "rate": 40.0, "status": "🔴远低于预期", "sell": null, "onway": null}, {"sku": "KX1IAC08200", "asin": "B0GHS4BTC1", "pred": 0.5, "ship": 50.0, "grade": "B", "s30": 2, "dd_act": 0.07, "rate": 14.0, "status": "🔴远低于预期", "sell": null, "onway": null}, {"sku": "KX1IAC08600", "asin": "B0GHRZHQN4", "pred": 0.5, "ship": 50.0, "grade": "B", "s30": 4, "dd_act": 0.13, "rate": 26.0, "status": "🔴远低于预期", "sell": null, "onway": null}, {"sku": "KX1IAC08800", "asin": "B0GHRX56VN", "pred": 0.5, "ship": 50.0, "grade": "B", "s30": 6, "dd_act": 0.2, "rate": 40.0, "status": "🔴远低于预期", "sell": null, "onway": null}, {"sku": "KX1IAC09000", "asin": "B0GHRY7C8Z", "pred": 0.5, "ship": 50.0, "grade": "B", "s30": 2, "dd_act": 0.07, "rate": 14.0, "status": "🔴远低于预期", "sell": null, "onway": null}, {"sku": "KX1IAC09200", "asin": "B0GHRW4MKD", "pred": 0.5, "ship": 50.0, "grade": "B", "s30": 5, "dd_act": 0.17, "rate": 34.0, "status": "🔴远低于预期", "sell": null, "onway": null}, {"sku": "KX1IAC05600", "asin": "B0GHRGTJMJ", "pred": 0.4, "ship": 50.0, "grade": "C", "s30": 13, "dd_act": 0.43, "rate": 107.5, "status": "✅达标", "sell": null, "onway": null}, {"sku": "KX1IAC06500", "asin": "B0GHRGH3WW", "pred": 0.4, "ship": 50.0, "grade": "C", "s30": 6, "dd_act": 0.2, "rate": 50.0, "status": "🔴远低于预期", "sell": null, "onway": null}, {"sku": "KX1IAC07100", "asin": "B0GHRSHCNS", "pred": 0.4, "ship": 50.0, "grade": "C", "s30": 17, "dd_act": 0.57, "rate": 142.5, "status": "✅达标", "sell": null, "onway": null}, {"sku": "KX1IAC07600", "asin": "B0GHS3HRJ5", "pred": 0.4, "ship": 50.0, "grade": "C", "s30": 4, "dd_act": 0.13, "rate": 32.5, "status": "🔴远低于预期", "sell": null, "onway": null}, {"sku": "KX1IAC08700", "asin": "B0GHRXG7B5", "pred": 0.4, "ship": 50.0, "grade": "C", "s30": 3, "dd_act": 0.1, "rate": 25.0, "status": "🔴远低于预期", "sell": null, "onway": null}, {"sku": "KX1IAC09300", "asin": "B0GHRGFKZP", "pred": 0.4, "ship": 50.0, "grade": "C", "s30": 3, "dd_act": 0.1, "rate": 25.0, "status": "🔴远低于预期", "sell": null, "onway": null}, {"sku": "KX1IAC06100", "asin": "B0GHS3RKGD", "pred": 0.33, "ship": 50.0, "grade": "D", "s30": 12, "dd_act": 0.4, "rate": 120.0, "status": "✅达标", "sell": null, "onway": null}, {"sku": "KX1IAC08500", "asin": "B0GHRV1BWX", "pred": 0.33, "ship": 50.0, "grade": "D", "s30": 6, "dd_act": 0.2, "rate": 60.0, "status": "🟠爬坡", "sell": null, "onway": null}], "dd_trend": {"weeks": ["202641", "202642", "202643", "202645", "202646"], "rate_all": [78.9, 61.6, 77.9, 54.3, 72.9], "rate_s": [39.4, 34.3, 54.8, 29.1, 62.7], "ad_dep": [45.7, 42.6, 34.3, 32.9, 27.9]}, "inv_trend": {"weeks": ["202644", "202645", "202646"], "total": {"fba": [4437, 4115, 3956], "onway": [5700, 4300, 4470], "overseas": [108, 109, 109], "local": [3577, 4677, 4838], "sku": [60, 60, 60]}, "note": "BI综合数据模型(SKU级去重)：BI库存为SKU总量，无法按店铺(US19/US22/US8)拆分；FBA可用/海外仓/本地仓为库存快照，头程在途为采购在途(未入仓)"}, "oos_warning": {"summary": {"断货": 17, "缺货在补": 30, "即将断货": 0, "偏低": 0}, "note": "可售=ERP实时 | 在途=BI采购在途(SKU级) | 销量=BI出库近30天(202643-202646)", "rows": [{"sku": "KX1IAC02400", "shop": "US19", "asin": "B0D7H8C1QR", "sellable": 0, "onway": 0, "sales30": 0, "days": null, "level": "断货", "cls": "red"}, {"sku": "KX1IAC08700", "shop": "US19", "asin": "B0GHRXG7B5", "sellable": 0, "onway": 0, "sales30": 0, "days": null, "level": "断货", "cls": "red"}, {"sku": "KX1IAC07600", "shop": "US22", "asin": "B0GHRVTCG8", "sellable": 0, "onway": 0, "sales30": 0, "days": null, "level": "断货", "cls": "red"}, {"sku": "KX1IAC09000", "shop": "US22", "asin": "B0GHS23Z4P", "sellable": 0, "onway": 0, "sales30": 0, "days": null, "level": "断货", "cls": "red"}, {"sku": "KX1IAC09300", "shop": "US22", "asin": "B0GHRTY2GB", "sellable": 0, "onway": 0, "sales30": 0, "days": null, "level": "断货", "cls": "red"}, {"sku": "KX1IAC06300", "shop": "US22", "asin": "B0GHS2W7HY", "sellable": 0, "onway": 0, "sales30": 0, "days": null, "level": "断货", "cls": "red"}, {"sku": "KX1IAC05600", "shop": "US22", "asin": "B0GHS8784S", "sellable": 0, "onway": 0, "sales30": 0, "days": null, "level": "断货", "cls": "red"}, {"sku": "KX1IAC07400", "shop": "US22", "asin": "B0GHRLPTR4", "sellable": 0, "onway": 0, "sales30": 0, "days": null, "level": "断货", "cls": "red"}, {"sku": "KX1IAC08700", "shop": "US22", "asin": "B0GHRKBCKZ", "sellable": 0, "onway": 0, "sales30": 0, "days": null, "level": "断货", "cls": "red"}, {"sku": "KX1IAC08800", "shop": "US22", "asin": "B0GHS123X4", "sellable": 0, "onway": 0, "sales30": 0, "days": null, "level": "断货", "cls": "red"}, {"sku": "KX1IAC09100", "shop": "US22", "asin": "B0GHRVM2H9", "sellable": 0, "onway": 0, "sales30": 0, "days": null, "level": "断货", "cls": "red"}, {"sku": "KX1IAC07900", "shop": "US22", "asin": "B0GHS32C87", "sellable": 0, "onway": 0, "sales30": 0, "days": null, "level": "断货", "cls": "red"}, {"sku": "KX1IAC08100", "shop": "US22", "asin": "B0GHRWS8QF", "sellable": 0, "onway": 0, "sales30": 0, "days": null, "level": "断货", "cls": "red"}, {"sku": "KX1IAC05400", "shop": "US22", "asin": "B0C9ZYR17Q", "sellable": 0, "onway": 0, "sales30": 0, "days": null, "level": "断货", "cls": "red"}, {"sku": "KX1IAC09200", "shop": "US22", "asin": "B0GHSCPRCZ", "sellable": 0, "onway": 0, "sales30": 0, "days": null, "level": "断货", "cls": "red"}, {"sku": "KX1IAC00800", "shop": "US8", "asin": "B0CJYBJPQ6", "sellable": 0, "onway": 0, "sales30": 0, "days": null, "level": "断货", "cls": "red"}, {"sku": "KX1IAC03300", "shop": "US22", "asin": "B0CB115ML2", "sellable": 0, "onway": 0, "sales30": 0, "days": null, "level": "断货", "cls": "red"}, {"sku": "KX1IAC06100", "shop": "US19", "asin": "B0GHS3RKGD", "sellable": 0, "onway": 100, "sales30": 0, "days": null, "level": "缺货在补", "cls": "orange"}, {"sku": "KX1IAC00600", "shop": "US19", "asin": "B0D7HF8JXG", "sellable": 0, "onway": 300, "sales30": 0, "days": null, "level": "缺货在补", "cls": "orange"}, {"sku": "KX1IAC00500", "shop": "US19", "asin": "B0D53JPW35", "sellable": 0, "onway": 100, "sales30": 0, "days": null, "level": "缺货在补", "cls": "orange"}, {"sku": "KX1IAC07200", "shop": "US22", "asin": "B0GHRGL2NX", "sellable": 0, "onway": 110, "sales30": 0, "days": null, "level": "缺货在补", "cls": "orange"}, {"sku": "KX1IAC07000", "shop": "US22", "asin": "B0GHRVCMRH", "sellable": 0, "onway": 50, "sales30": 0, "days": null, "level": "缺货在补", "cls": "orange"}, {"sku": "KX1IAC09400", "shop": "US22", "asin": "B0GHRGSKWV", "sellable": 0, "onway": 50, "sales30": 0, "days": null, "level": "缺货在补", "cls": "orange"}, {"sku": "KX1IAC08200", "shop": "US22", "asin": "B0GHRSYZ18", "sellable": 0, "onway": 60, "sales30": 0, "days": null, "level": "缺货在补", "cls": "orange"}, {"sku": "KX1IAC08000", "shop": "US22", "asin": "B0GHRQWCMJ", "sellable": 0, "onway": 50, "sales30": 0, "days": null, "level": "缺货在补", "cls": "orange"}, {"sku": "KX1IAC08500", "shop": "US22", "asin": "B0GHRXKHYZ", "sellable": 0, "onway": 50, "sales30": 0, "days": null, "level": "缺货在补", "cls": "orange"}, {"sku": "KX1IAC05700", "shop": "US22", "asin": "B0GHS4JYVZ", "sellable": 0, "onway": 50, "sales30": 0, "days": null, "level": "缺货在补", "cls": "orange"}, {"sku": "KX1IAC08400", "shop": "US22", "asin": "B0GHRYNM4F", "sellable": 0, "onway": 50, "sales30": 0, "days": null, "level": "缺货在补", "cls": "orange"}, {"sku": "KX1IAC07300", "shop": "US22", "asin": "B0GHRVJKM5", "sellable": 0, "onway": 50, "sales30": 0, "days": null, "level": "缺货在补", "cls": "orange"}, {"sku": "KX1IAC06700", "shop": "US22", "asin": "B0GHD9DLFR", "sellable": 0, "onway": 50, "sales30": 0, "days": null, "level": "缺货在补", "cls": "orange"}, {"sku": "KX1IAC06100", "shop": "US22", "asin": "B0GHRNRGQ8", "sellable": 0, "onway": 100, "sales30": 0, "days": null, "level": "缺货在补", "cls": "orange"}, {"sku": "KX1IAC02100", "shop": "US8", "asin": "B0CJY6284F", "sellable": 0, "onway": 100, "sales30": 0, "days": null, "level": "缺货在补", "cls": "orange"}, {"sku": "KX1IAC06000", "shop": "US22", "asin": "B0GHDHZ1XT", "sellable": 0, "onway": 50, "sales30": 0, "days": null, "level": "缺货在补", "cls": "orange"}, {"sku": "KX1IAC00900", "shop": "US8", "asin": "B0CJY67R9P", "sellable": 0, "onway": 250, "sales30": 0, "days": null, "level": "缺货在补", "cls": "orange"}, {"sku": "KX1IAC02000", "shop": "US8", "asin": "B0CJY77X3Z", "sellable": 0, "onway": 100, "sales30": 0, "days": null, "level": "缺货在补", "cls": "orange"}, {"sku": "KX1IAC03000", "shop": "US8", "asin": "B0CJY55XYC", "sellable": 0, "onway": 350, "sales30": 0, "days": null, "level": "缺货在补", "cls": "orange"}, {"sku": "KX1IAC05100", "shop": "US8", "asin": "B0CJY5LFZS", "sellable": 0, "onway": 100, "sales30": 0, "days": null, "level": "缺货在补", "cls": "orange"}, {"sku": "KX1IAC04300", "shop": "US8", "asin": "B0CJY5G728", "sellable": 0, "onway": 50, "sales30": 0, "days": null, "level": "缺货在补", "cls": "orange"}, {"sku": "KX1IAC00300", "shop": "US8", "asin": "B0CJY6RVTZ", "sellable": 0, "onway": 300, "sales30": 0, "days": null, "level": "缺货在补", "cls": "orange"}, {"sku": "KX1IAC00500", "shop": "US8", "asin": "B0CJY4XBZ9", "sellable": 0, "onway": 100, "sales30": 0, "days": null, "level": "缺货在补", "cls": "orange"}, {"sku": "KX1IAC01900", "shop": "US8", "asin": "B0CJY5K5N7", "sellable": 0, "onway": 150, "sales30": 0, "days": null, "level": "缺货在补", "cls": "orange"}, {"sku": "KX1IAC07100", "shop": "US22", "asin": "B0GHRN8C8Q", "sellable": 0, "onway": 100, "sales30": 0, "days": null, "level": "缺货在补", "cls": "orange"}, {"sku": "KX1IAC06200", "shop": "US22", "asin": "B0GHRJ3B57", "sellable": 0, "onway": 200, "sales30": 0, "days": null, "level": "缺货在补", "cls": "orange"}, {"sku": "KX1IAC07800", "shop": "US22", "asin": "B0GHS4NB2G", "sellable": 0, "onway": 50, "sales30": 0, "days": null, "level": "缺货在补", "cls": "orange"}, {"sku": "KX1IAC00500", "shop": "US22", "asin": "B0C9ZZZPH5", "sellable": 0, "onway": 100, "sales30": 0, "days": null, "level": "缺货在补", "cls": "orange"}, {"sku": "KX1IAC00700", "shop": "US22", "asin": "B0CB13BH9H", "sellable": 0, "onway": 450, "sales30": 0, "days": null, "level": "缺货在补", "cls": "orange"}, {"sku": "KX1IAC06600", "shop": "US22", "asin": "B0GHS4NYFJ", "sellable": 0, "onway": 50, "sales30": 0, "days": null, "level": "缺货在补", "cls": "orange"}]}, "profit": {"weeks": ["202642", "202643", "202644", "202645", "202646"], "weeks_raw": ["2026-W42", "2026-W43", "2026-W44", "2026-W45", "2026-W46"], "series": {"amt": [47456.97, 54666.37, 48841.66, 44577.78, 11512.54], "qty": [325.0, 369.0, 331.0, 312.0, 80.0], "mat": [13673.66, 15232.74, 13707.07, 11853.53, 3008.63], "fleg": [215.49, 237.94, 205.88, 194.15, 47.33], "lleg": [8855.59, 10721.54, 9000.98, 8307.4, 2105.47], "comm": [5128.31, 5826.99, 5122.15, 4673.99, 1236.62], "pfee": [-349.56, -467.67, -156.98, 347.06, -23.85], "stor": [199.65, 230.75, 244.14, 3370.5, 778.39], "inop": [0.0, 0.0, 0.0, 0.0, 0.0], "adj": [0.0, 0.0, 0.0, 0.0, 0.0], "disp": [0.0, 0.0, 10.25, 0.0, 0.0], "oth": [-0.06, 5.58, 5.2, 34.51, -0.05], "mvl": [0.0, 5.63, 0.0, 0.0, 0.0], "tfl": [0.0, 0.0, 0.0, 0.0, 0.0], "tax": [1640.84, 1827.93, 1644.85, 1422.42, 361.04], "sp": [1707.63, 1997.47, 1535.57, 1375.18, 343.84], "sd": [126.16, 89.23, 64.25, 63.45, 32.7], "sb": [246.1, 11.15, 2.18, 2.72, 1.23], "eval": [0.0, 0.0, 0.0, 0.0, 0.0], "ld": [0.0, 12.42, 0.0, 0.0, 0.0], "erv": [0.0, 0.0, 0.0, 0.0, 0.0], "coup": [473.87, 69.49, 167.4, 49.18, 90.02], "promo": [1169.55, 1403.38, 1041.78, 601.66, 309.27], "rqty": [30.0, 34.0, 41.0, 35.0, 7.0], "ramt": [4075.21, 5539.96, 5928.49, 5830.27, 987.78], "retq": [32.0, 29.0, 35.0, 31.0, 3.0], "retmat": [-485.58, -415.91, -464.46, -383.32, -39.95], "retleg": [-9.16, -6.7, -7.04, -3.75, -0.56], "gp": [10741.51, 12344.45, 10789.94, 6845.47, 2274.63], "gpbr": [10741.51, 12344.45, 10789.94, 6838.83, 2274.63], "np": [5046.68, 5784.48, 4928.94, 1496.13, 893.13], "reb": [0.0, 0.0, 0.0, -6.64, 0.0]}, "rates": {"材料费率": [28.81, 27.86, 28.06, 26.59, 26.13], "头程费率": [0.45, 0.44, 0.42, 0.44, 0.41], "尾程费率": [18.66, 19.61, 18.43, 18.64, 18.29], "佣金费率": [10.81, 10.66, 10.49, 10.49, 10.74], "平台费率": [-0.74, -0.86, -0.32, 0.78, -0.21], "仓储费率": [0.42, 0.42, 0.5, 7.56, 6.76], "库内操作费率": [0.0, 0.0, 0.0, 0.0, 0.0], "店铺其他费率": [-0.0, 0.01, 0.03, 0.08, -0.0], "广告费率": [4.38, 3.84, 3.28, 3.23, 3.28], "站外推广费率": [0.0, 0.02, 0.0, 0.0, 0.0], "推广合计费率": [4.38, 3.86, 3.28, 3.23, 3.28], "促销费率": [3.46, 2.69, 2.48, 1.46, 3.47], "退款费率": [8.59, 10.13, 12.14, 13.08, 8.58], "退换货成本费率": [-1.04, -0.77, -0.97, -0.87, -0.35], "税费率": [3.46, 3.34, 3.37, 3.19, 3.14], "毛利率": [22.63, 22.58, 22.09, 15.36, 19.76], "净利率": [10.63, 10.58, 10.09, 3.36, 7.76]}, "per": {"单均销售额": [146.02, 148.15, 147.56, 142.88, 143.91], "单均毛利": [33.05, 33.45, 32.6, 21.94, 28.43], "单均净利": [15.53, 15.68, 14.89, 4.8, 11.16]}, "shops": [{"shop": "US19", "amt": 8627.59, "qty": 58.0, "gp": 1973.66, "np": 938.35, "gp_rate": 22.88, "np_rate": 10.88, "refund_rate": 5.36, "promo_rate": 4.07, "ad_rate": 3.16, "mat_rate": 25.51}, {"shop": "US22", "amt": 2884.95, "qty": 22.0, "gp": 252.44, "np": -93.75, "gp_rate": 8.75, "np_rate": -3.25, "refund_rate": 18.22, "promo_rate": 1.68, "ad_rate": 3.65, "mat_rate": 28.0}, {"shop": "US8", "amt": 0.0, "qty": 0.0, "gp": 48.54, "np": 48.54, "gp_rate": null, "np_rate": null, "refund_rate": null, "promo_rate": null, "ad_rate": null, "mat_rate": null}]}, "market_share": {"months": ["202601", "202602", "202603", "202604", "202605", "202606", "202607", "202608", "202609", "202610"], "series": [{"month": "202601", "market": 13984, "mine": 678, "share": 4.85, "kax": 241, "philtop": 244, "zoncar": 193}, {"month": "202602", "market": 12778, "mine": 503, "share": 3.94, "kax": 165, "philtop": 218, "zoncar": 120}, {"month": "202603", "market": 14595, "mine": 605, "share": 4.15, "kax": 249, "philtop": 211, "zoncar": 145}, {"month": "202604", "market": 15519, "mine": 675, "share": 4.35, "kax": 331, "philtop": 209, "zoncar": 135}, {"month": "202605", "market": 13214, "mine": 581, "share": 4.4, "kax": 241, "philtop": 302, "zoncar": 38}, {"month": "202606", "market": 13680, "mine": 1043, "share": 7.62, "kax": 405, "philtop": 583, "zoncar": 55}, {"month": "202607", "market": 10671, "mine": 1058, "share": 9.91, "kax": 509, "philtop": 503, "zoncar": 47}, {"month": "202608", "market": 13762, "mine": 1733, "share": 12.59, "kax": 1251, "philtop": 448, "zoncar": 33}, {"month": "202609", "market": 13292, "mine": 1753, "share": 13.19, "kax": 1242, "philtop": 464, "zoncar": 48}, {"month": "202610", "market": 13119, "mine": 1583, "share": 12.06, "kax": 1044, "philtop": 511, "zoncar": 27}], "competitors": [{"brand": "A-Premium", "qty": 2372, "share": 18.08, "ours": false}, {"brand": "KAX", "qty": 1044, "share": 7.96, "ours": true}, {"brand": "NPAUTO", "qty": 527, "share": 4.02, "ours": false}, {"brand": "PHILTOP", "qty": 511, "share": 3.9, "ours": true}, {"brand": "MOTOKU", "qty": 312, "share": 2.38, "ours": false}, {"brand": "Delphi", "qty": 272, "share": 2.07, "ours": false}, {"brand": "FUELHOOD", "qty": 235, "share": 1.79, "ours": false}, {"brand": "HiSport", "qty": 228, "share": 1.74, "ours": false}, {"brand": "DEVMO", "qty": 213, "share": 1.62, "ours": false}, {"brand": "AISIN", "qty": 183, "share": 1.39, "ours": false}, {"brand": "NewYall", "qty": 182, "share": 1.39, "ours": false}, {"brand": "Standard Motor Products", "qty": 179, "share": 1.37, "ours": false}, {"brand": "Walker Products", "qty": 150, "share": 1.14, "ours": false}, {"brand": "X AUTOHAUX", "qty": 145, "share": 1.11, "ours": false}, {"brand": "EZAFIX", "qty": 142, "share": 1.08, "ours": false}], "market_total": 13119, "summary": {"share": 12.06, "share_prev": 13.19, "share_chg": -1.13, "share_first": 4.85, "share_growth": 7.21, "mine_qty": 1583, "market_qty": 13119, "kax_rank": 2, "kax_share": 7.96, "competitor_top": "A-Premium", "competitor_top_share": 18.08}, "note": "口径：市场=Amazon品类节点「Idle Air Control Valves」月度**预测销量**（爬虫估算，非官方实际销量）；我方=KAX/PHILTOP/ZonCar 品牌下所有ASIN预测销量合计；市占=我方÷市场。数据源：SmartBI「市场预测销量分析」模型。预测口径与实际会有偏差，看趋势与排名更可靠。"}, "storage_rank": {"rows": [{"sku": "KX1IAC00700", "asin": "B0CB13BH9H", "shop": "US22", "brand": "PHILTOP", "monthly": 368.89, "w46": 73.32, "qty": 475, "per_unit": 0.777, "annual": 4426.62, "per_unit_annual": 9.32, "sales": 10946.33, "st_pct_sales": 3.37, "score": 0.4, "advice": "🟠 库存大户 → 按库销比降价"}, {"sku": "KX1IAC01300", "asin": "B0C9ZYMVKZ", "shop": "US22", "brand": "PHILTOP", "monthly": 256.59, "w46": 17.12, "qty": 205, "per_unit": 1.252, "annual": 3079.11, "per_unit_annual": 15.02, "sales": 3962.38, "st_pct_sales": 6.48, "score": 0.78, "advice": "🔴 仓储吃掉5%+销售额 → 优先降价清"}, {"sku": "KX1IAC07200", "asin": "B0GHRX27ZB", "shop": "US19", "brand": "KAX", "monthly": 245.33, "w46": 17.43, "qty": 32, "per_unit": 7.667, "annual": 2944.0, "per_unit_annual": 92.0, "sales": 6188.92, "st_pct_sales": 3.96, "score": 0.48, "advice": "🔴 单件成本极高 → 立即弃置/清仓"}, {"sku": "KX1IAC00200", "asin": "B0CB11CTG6", "shop": "US22", "brand": "PHILTOP", "monthly": 235.76, "w46": 17.04, "qty": 137, "per_unit": 1.721, "annual": 2829.12, "per_unit_annual": 20.65, "sales": 4199.16, "st_pct_sales": 5.61, "score": 0.67, "advice": "🔴 仓储吃掉5%+销售额 → 优先降价清"}, {"sku": "KX1IAC00900", "asin": "B0CJY67R9P", "shop": "US8", "brand": "KAX", "monthly": 212.57, "w46": 13.89, "qty": 175, "per_unit": 1.215, "annual": 2550.83, "per_unit_annual": 14.58, "sales": 9042.72, "st_pct_sales": 2.35, "score": 0.28, "advice": "🟡 关注"}, {"sku": "KX1IAC01900", "asin": "B0CB13BHB8", "shop": "US22", "brand": "PHILTOP", "monthly": 169.31, "w46": 32.68, "qty": 196, "per_unit": 0.864, "annual": 2031.71, "per_unit_annual": 10.37, "sales": 5622.04, "st_pct_sales": 3.01, "score": 0.36, "advice": "🟢 正常"}, {"sku": "KX1IAC09600", "asin": "B0GHS1D7K2", "shop": "US19", "brand": "KAX", "monthly": 165.93, "w46": 34.07, "qty": 113, "per_unit": 1.468, "annual": 1991.11, "per_unit_annual": 17.62, "sales": 8086.3, "st_pct_sales": 2.05, "score": 0.25, "advice": "🟡 关注"}, {"sku": "KX1IAC03000", "asin": "B0CB113C61", "shop": "US22", "brand": "PHILTOP", "monthly": 152.09, "w46": 33.19, "qty": 245, "per_unit": 0.621, "annual": 1825.07, "per_unit_annual": 7.45, "sales": 6538.6, "st_pct_sales": 2.33, "score": 0.28, "advice": "🟠 库存大户 → 按库销比降价"}, {"sku": "KX1IAC00300", "asin": "B0C9ZX1S5P", "shop": "US22", "brand": "PHILTOP", "monthly": 150.64, "w46": 46.39, "qty": 338, "per_unit": 0.446, "annual": 1807.69, "per_unit_annual": 5.35, "sales": 5692.05, "st_pct_sales": 2.65, "score": 0.32, "advice": "🟠 库存大户 → 按库销比降价"}, {"sku": "KX1IAC01400", "asin": "B0C9ZZDXP1", "shop": "US22", "brand": "PHILTOP", "monthly": 123.35, "w46": 22.16, "qty": 246, "per_unit": 0.501, "annual": 1480.15, "per_unit_annual": 6.02, "sales": 5413.73, "st_pct_sales": 2.28, "score": 0.27, "advice": "🟠 库存大户 → 按库销比降价"}, {"sku": "KX1IAC06200", "asin": "B0GHRJ3B57", "shop": "US22", "brand": "PHILTOP", "monthly": 99.09, "w46": 14.47, "qty": 98, "per_unit": 1.011, "annual": 1189.04, "per_unit_annual": 12.13, "sales": 8403.14, "st_pct_sales": 1.18, "score": 0.14, "advice": "🟡 关注"}, {"sku": "KX1IAC08400", "asin": "B0GHRYPB9S", "shop": "US19", "brand": "KAX", "monthly": 94.31, "w46": 63.04, "qty": 113, "per_unit": 0.835, "annual": 1131.74, "per_unit_annual": 10.02, "sales": 5029.02, "st_pct_sales": 1.88, "score": 0.23, "advice": "🟢 正常"}, {"sku": "KX1IAC07100", "asin": "B0GHRSHCNS", "shop": "US19", "brand": "KAX", "monthly": 92.84, "w46": 14.95, "qty": 13, "per_unit": 7.142, "annual": 1114.09, "per_unit_annual": 85.7, "sales": 2884.08, "st_pct_sales": 3.22, "score": 0.39, "advice": "🔴 单件成本极高 → 立即弃置/清仓"}, {"sku": "KX1IAC00600", "asin": "B0C9ZY7BV3", "shop": "US22", "brand": "PHILTOP", "monthly": 72.29, "w46": 46.88, "qty": 86, "per_unit": 0.841, "annual": 867.5, "per_unit_annual": 10.09, "sales": 5912.35, "st_pct_sales": 1.22, "score": 0.15, "advice": "🟢 正常"}, {"sku": "KX1IAC06300", "asin": "B0GHRYHQL1", "shop": "US19", "brand": "KAX", "monthly": 71.66, "w46": 0.49, "qty": 99, "per_unit": 0.724, "annual": 859.97, "per_unit_annual": 8.69, "sales": 3126.49, "st_pct_sales": 2.29, "score": 0.28, "advice": "🟢 正常"}, {"sku": "KX1IAC06000", "asin": "B0GHRXWS6P", "shop": "US19", "brand": "KAX", "monthly": 69.19, "w46": 0.48, "qty": 25, "per_unit": 2.768, "annual": 830.31, "per_unit_annual": 33.21, "sales": 2625.46, "st_pct_sales": 2.64, "score": 0.32, "advice": "🟡 关注"}, {"sku": "KX1IAC07700", "asin": "B0GHRSV95C", "shop": "US22", "brand": "PHILTOP", "monthly": 60.54, "w46": 0.44, "qty": 135, "per_unit": 0.448, "annual": 726.51, "per_unit_annual": 5.38, "sales": 3805.67, "st_pct_sales": 1.59, "score": 0.19, "advice": "🟢 正常"}, {"sku": "KX1IAC00100", "asin": "B0C9ZX1T55", "shop": "US22", "brand": "PHILTOP", "monthly": 53.98, "w46": 29.62, "qty": 470, "per_unit": 0.115, "annual": 647.81, "per_unit_annual": 1.38, "sales": 3159.12, "st_pct_sales": 1.71, "score": 0.21, "advice": "🟠 库存大户 → 按库销比降价"}, {"sku": "KX1IAC07300", "asin": "B0GHS8GJG1", "shop": "US19", "brand": "KAX", "monthly": 51.11, "w46": 16.57, "qty": 6, "per_unit": 8.518, "annual": 613.33, "per_unit_annual": 102.22, "sales": 4325.65, "st_pct_sales": 1.18, "score": 0.14, "advice": "🔴 单件成本极高 → 立即弃置/清仓"}, {"sku": "KX1IAC07800", "asin": "B0GHS8CJVQ", "shop": "US19", "brand": "KAX", "monthly": 46.13, "w46": 1.84, "qty": 24, "per_unit": 1.922, "annual": 553.55, "per_unit_annual": 23.06, "sales": 3257.81, "st_pct_sales": 1.42, "score": 0.17, "advice": "🟡 关注"}, {"sku": "KX1IAC05700", "asin": "B0GHRR3DSH", "shop": "US19", "brand": "KAX", "monthly": 45.1, "w46": 14.62, "qty": 55, "per_unit": 0.82, "annual": 541.15, "per_unit_annual": 9.84, "sales": 4018.66, "st_pct_sales": 1.12, "score": 0.13, "advice": "🟢 正常"}, {"sku": "KX1IAC01600", "asin": "B0CB11CL55", "shop": "US22", "brand": "PHILTOP", "monthly": 40.32, "w46": 27.65, "qty": 177, "per_unit": 0.228, "annual": 483.88, "per_unit_annual": 2.73, "sales": 3213.72, "st_pct_sales": 1.25, "score": 0.15, "advice": "🟢 正常"}, {"sku": "KX1IAC09100", "asin": "B0GHS4QCVQ", "shop": "US19", "brand": "KAX", "monthly": 39.53, "w46": 0.27, "qty": 90, "per_unit": 0.439, "annual": 474.39, "per_unit_annual": 5.27, "sales": 3077.78, "st_pct_sales": 1.28, "score": 0.15, "advice": "🟢 正常"}, {"sku": "KX1IAC09500", "asin": "B0GHRSKB5Y", "shop": "US19", "brand": "KAX", "monthly": 37.87, "w46": 18.41, "qty": 100, "per_unit": 0.379, "annual": 454.41, "per_unit_annual": 4.54, "sales": 4807.12, "st_pct_sales": 0.79, "score": 0.09, "advice": "🟢 正常"}, {"sku": "KX1IAC06700", "asin": "B0GHRYM353", "shop": "US19", "brand": "KAX", "monthly": 32.89, "w46": 15.78, "qty": 23, "per_unit": 1.43, "annual": 394.71, "per_unit_annual": 17.16, "sales": 3954.61, "st_pct_sales": 0.83, "score": 0.1, "advice": "🟡 关注"}, {"sku": "KX1IAC07000", "asin": "B0GHS1ZT9H", "shop": "US19", "brand": "KAX", "monthly": 32.62, "w46": 0.22, "qty": 60, "per_unit": 0.544, "annual": 391.45, "per_unit_annual": 6.52, "sales": 663.1, "st_pct_sales": 4.92, "score": 0.59, "advice": "🟢 正常"}, {"sku": "KX1IAC05100", "asin": "B0C9ZZ1BQG", "shop": "US22", "brand": "PHILTOP", "monthly": 31.62, "w46": 6.78, "qty": 118, "per_unit": 0.268, "annual": 379.4, "per_unit_annual": 3.22, "sales": 1133.37, "st_pct_sales": 2.79, "score": 0.33, "advice": "🟢 正常"}, {"sku": "KX1IAC02000", "asin": "B0CJY77X3Z", "shop": "US8", "brand": "KAX", "monthly": 31.31, "w46": 12.24, "qty": 101, "per_unit": 0.31, "annual": 375.66, "per_unit_annual": 3.72, "sales": 2544.26, "st_pct_sales": 1.23, "score": 0.15, "advice": "🟢 正常"}, {"sku": "KX1IAC07900", "asin": "B0GHS19GJ5", "shop": "US19", "brand": "KAX", "monthly": 30.11, "w46": 0.21, "qty": 54, "per_unit": 0.558, "annual": 361.37, "per_unit_annual": 6.69, "sales": 796.56, "st_pct_sales": 3.78, "score": 0.45, "advice": "🟢 正常"}, {"sku": "KX1IAC00800", "asin": "B0C9ZYL9B2", "shop": "US22", "brand": "PHILTOP", "monthly": 27.93, "w46": 7.83, "qty": 159, "per_unit": 0.176, "annual": 335.18, "per_unit_annual": 2.11, "sales": 1305.7, "st_pct_sales": 2.14, "score": 0.26, "advice": "🟢 正常"}, {"sku": "KX1IAC02400", "asin": "B0C9ZXDTDS", "shop": "US22", "brand": "PHILTOP", "monthly": 27.24, "w46": 0.2, "qty": 158, "per_unit": 0.172, "annual": 326.92, "per_unit_annual": 2.07, "sales": 1983.13, "st_pct_sales": 1.37, "score": 0.16, "advice": "🟢 正常"}, {"sku": "KX1IAC02100", "asin": "B0C9ZZ3C2V", "shop": "US22", "brand": "PHILTOP", "monthly": 22.97, "w46": 7.33, "qty": 62, "per_unit": 0.371, "annual": 275.7, "per_unit_annual": 4.45, "sales": 906.11, "st_pct_sales": 2.54, "score": 0.3, "advice": "🟢 正常"}, {"sku": "KX1IAC08300", "asin": "B0GHRYK2MR", "shop": "US22", "brand": "PHILTOP", "monthly": 21.79, "w46": 7.06, "qty": 197, "per_unit": 0.111, "annual": 261.46, "per_unit_annual": 1.33, "sales": 898.34, "st_pct_sales": 2.43, "score": 0.29, "advice": "🟢 正常"}, {"sku": "KX1IAC09400", "asin": "B0GHRWZ4WG", "shop": "US19", "brand": "KAX", "monthly": 19.77, "w46": 0.14, "qty": 130, "per_unit": 0.152, "annual": 237.2, "per_unit_annual": 1.82, "sales": 814.65, "st_pct_sales": 2.43, "score": 0.29, "advice": "🟢 正常"}, {"sku": "KX1IAC04300", "asin": "B0C9ZW9FQ3", "shop": "US22", "brand": "PHILTOP", "monthly": 18.7, "w46": 0.13, "qty": 83, "per_unit": 0.225, "annual": 224.46, "per_unit_annual": 2.7, "sales": 1281.84, "st_pct_sales": 1.46, "score": 0.18, "advice": "🟢 正常"}, {"sku": "KX1IAC06500", "asin": "B0GHRGH3WW", "shop": "US19", "brand": "KAX", "monthly": 15.39, "w46": 1.64, "qty": 51, "per_unit": 0.302, "annual": 184.65, "per_unit_annual": 3.62, "sales": 1461.61, "st_pct_sales": 1.05, "score": 0.13, "advice": "🟢 正常"}, {"sku": "KX1IAC09900", "asin": "B0GHRWXSJP", "shop": "US22", "brand": "PHILTOP", "monthly": 15.27, "w46": 0.1, "qty": 537, "per_unit": 0.028, "annual": 183.18, "per_unit_annual": 0.34, "sales": 1542.21, "st_pct_sales": 0.99, "score": 0.12, "advice": "🟠 库存大户 → 按库销比降价"}, {"sku": "KX1IAC04600", "asin": "B0C9ZZ231N", "shop": "US22", "brand": "PHILTOP", "monthly": 14.54, "w46": 33.5, "qty": 94, "per_unit": 0.155, "annual": 174.43, "per_unit_annual": 1.86, "sales": 3079.59, "st_pct_sales": 0.47, "score": 0.06, "advice": "🟢 正常"}, {"sku": "KX1IAC03100", "asin": "B0C9ZZYS4X", "shop": "US22", "brand": "PHILTOP", "monthly": 14.33, "w46": 0.1, "qty": 86, "per_unit": 0.167, "annual": 171.99, "per_unit_annual": 2.0, "sales": 573.32, "st_pct_sales": 2.5, "score": 0.3, "advice": "🟢 正常"}, {"sku": "KX1IAC05600", "asin": "B0GHRGTJMJ", "shop": "US19", "brand": "KAX", "monthly": 12.84, "w46": 0.09, "qty": 47, "per_unit": 0.273, "annual": 154.14, "per_unit_annual": 3.28, "sales": 522.2, "st_pct_sales": 2.46, "score": 0.3, "advice": "🟢 正常"}, {"sku": "KX1IAC09300", "asin": "B0GHRGFKZP", "shop": "US19", "brand": "KAX", "monthly": 11.68, "w46": 10.91, "qty": 67, "per_unit": 0.174, "annual": 140.19, "per_unit_annual": 2.09, "sales": 1216.18, "st_pct_sales": 0.96, "score": 0.12, "advice": "🟢 正常"}, {"sku": "KX1IAC02500", "asin": "B0C9ZX8TT8", "shop": "US22", "brand": "PHILTOP", "monthly": 10.87, "w46": 0.07, "qty": 48, "per_unit": 0.227, "annual": 130.46, "per_unit_annual": 2.72, "sales": 746.18, "st_pct_sales": 1.46, "score": 0.17, "advice": "🟢 正常"}, {"sku": "KX1IAC01000", "asin": "B0C9ZY4X6Y", "shop": "US22", "brand": "PHILTOP", "monthly": 9.67, "w46": 11.66, "qty": 65, "per_unit": 0.149, "annual": 116.02, "per_unit_annual": 1.78, "sales": 1397.95, "st_pct_sales": 0.69, "score": 0.08, "advice": "🟢 正常"}, {"sku": "KX1IAC09000", "asin": "B0GHRY7C8Z", "shop": "US19", "brand": "KAX", "monthly": 7.41, "w46": 0.05, "qty": 28, "per_unit": 0.265, "annual": 88.93, "per_unit_annual": 3.18, "sales": 301.3, "st_pct_sales": 2.46, "score": 0.3, "advice": "🟢 正常"}, {"sku": "KX1IAC06600", "asin": "B0GHRMW1R3", "shop": "US19", "brand": "KAX", "monthly": 2.6, "w46": 0.02, "qty": 3, "per_unit": 0.865, "annual": 31.15, "per_unit_annual": 10.38, "sales": 325.75, "st_pct_sales": 0.8, "score": 0.1, "advice": "🟢 正常"}, {"sku": "KX1IAC08100", "asin": "B0GHS1QXVX", "shop": "US19", "brand": "KAX", "monthly": 1.31, "w46": 30.54, "qty": 72, "per_unit": 0.018, "annual": 15.72, "per_unit_annual": 0.22, "sales": 857.33, "st_pct_sales": 0.15, "score": 0.02, "advice": "🟢 正常"}, {"sku": "KX1IAC08600", "asin": "B0GHRZHQN4", "shop": "US19", "brand": "KAX", "monthly": 1.27, "w46": 29.49, "qty": 93, "per_unit": 0.014, "annual": 15.18, "per_unit_annual": 0.16, "sales": 1241.78, "st_pct_sales": 0.1, "score": 0.01, "advice": "🟢 正常"}], "summary": {"total_monthly": 3368.55, "total_qty": 5989, "avg_per_unit": 0.562, "total_annual": 40422.64, "n_sku": 47, "w45_note": "W45仓储费=10月整月计提（月度一次性入账）"}}, "ad_zones": {"电磁阀": {"weeks": [{"week": "202642", "spend": 320, "orders": 105, "clicks": 618, "imps": 55408, "sales": 2660, "ad_units": 105, "acos": 12.01, "cvr": 16.99, "ctr": 1.12, "cpc": 0.52}, {"week": "202643", "spend": 320, "orders": 102, "clicks": 625, "imps": 51397, "sales": 2810, "ad_units": 102, "acos": 11.38, "cvr": 16.32, "ctr": 1.22, "cpc": 0.51}, {"week": "202644", "spend": 246, "orders": 80, "clicks": 496, "imps": 42153, "sales": 2008, "ad_units": 80, "acos": 12.27, "cvr": 16.13, "ctr": 1.18, "cpc": 0.5}, {"week": "202645", "spend": 223, "orders": 71, "clicks": 477, "imps": 45100, "sales": 1919, "ad_units": 71, "acos": 11.63, "cvr": 14.88, "ctr": 1.06, "cpc": 0.47}, {"week": "202646", "spend": 198, "orders": 71, "clicks": 443, "imps": 51245, "sales": 1655, "ad_units": 71, "acos": 11.96, "cvr": 16.03, "ctr": 0.86, "cpc": 0.45}], "issues": [{"name": "SP-AUTO-CL-李汝娴-怠速电磁阀-B0GHS8CJVQ-批量:26070701", "spend": 13, "orders": 1, "clicks": 25, "imps": 1489, "acos": 44.0, "cvr": 4.0, "ctr": 1.68, "cpc": 0.53, "prev_spend": 0, "prev_orders": 0, "prev_clicks": 0, "prev_imps": 0, "prev_acos": null, "prev_cvr": null, "prev_ctr": null, "prev_cpc": null, "flags": ["🔴ACOS高44%"], "advice": "降bid 20-30% + 收紧匹配(宽泛→词组/紧密)。"}, {"name": "SP-KW-BR-李汝娴-怠速电磁阀-B0GHS19GJ5-车型词-批量:26072001", "spend": 11, "orders": 0, "clicks": 13, "imps": 586, "acos": null, "cvr": null, "ctr": 2.22, "cpc": 0.85, "prev_spend": 0, "prev_orders": 0, "prev_clicks": 0, "prev_imps": 0, "prev_acos": null, "prev_cvr": null, "prev_ctr": null, "prev_cpc": null, "flags": ["🔴烧钱无单"], "advice": "降bid 30-40%或暂停；先查链接购物车/断货/价格/评论，正常则词相关性差换词。"}], "top": [{"name": "汇总", "spend": 198, "orders": 71, "clicks": 443, "acos": 12.0}, {"name": "SD-PT-怠速电磁阀-CA-CAT-李悦榕-VCPM", "spend": 24, "orders": 16, "clicks": 33, "acos": 5.2}, {"name": "SP-AUTO-LS-李汝娴-怠速电磁阀-B0GHS8CN74", "spend": 16, "orders": 4, "clicks": 31, "acos": 24.9}, {"name": "SP-KW-BR-李汝娴-怠速电磁阀-B0GHS1ZT9H-车型词-批量:26072003", "spend": 15, "orders": 3, "clicks": 20, "acos": 15.5}, {"name": "SP-AUTO-CL-李汝娴-怠速电磁阀-B0GHS8CJVQ-批量:26070701", "spend": 13, "orders": 1, "clicks": 25, "acos": 44.0}, {"name": "SP-KW-BR-李汝娴-怠速电磁阀-26KAX大词", "spend": 13, "orders": 5, "clicks": 40, "acos": 11.2}, {"name": "SP-KW-BR-怠速电磁阀-李汝娴-B0D7GXCYC7", "spend": 11, "orders": 2, "clicks": 21, "acos": 17.2}, {"name": "SP-AUTO-CL-李汝娴-怠速电磁阀-B0GHRSHCNS-批量:26070701", "spend": 11, "orders": 4, "clicks": 20, "acos": 9.3}], "shops": "US19+US22"}}, "ad_brand_np": {"weeks": ["202642", "202643", "202644", "202645", "202646"], "brand": {"KAX": {"202642": {"imps": 22157, "clicks": 379, "spend": 1189.45, "acos": 10.55, "cvr": 17.41, "ctr": 1.71, "cpc": 3.14, "ad_qty": 66, "qty": 171, "ad_ratio": 38.6, "orders": 66, "sales": 11273.08, "units": 66}, "202643": {"imps": 28320, "clicks": 460, "spend": 1478.19, "acos": 12.21, "cvr": 14.78, "ctr": 1.63, "cpc": 3.21, "ad_qty": 68, "qty": 208, "ad_ratio": 32.7, "orders": 68, "sales": 12107.68, "units": 68}, "202644": {"imps": 25931, "clicks": 397, "spend": 1299.99, "acos": 14.17, "cvr": 13.84, "ctr": 1.53, "cpc": 3.27, "ad_qty": 55, "qty": 213, "ad_ratio": 25.8, "orders": 55, "sales": 9174.35, "units": 55}, "202645": {"imps": 23713, "clicks": 360, "spend": 1123.79, "acos": 13.77, "cvr": 13.06, "ctr": 1.52, "cpc": 3.12, "ad_qty": 47, "qty": 174, "ad_ratio": 27.0, "orders": 47, "sales": 8161.47, "units": 47}, "202646": {"imps": 25172, "clicks": 326, "spend": 931.03, "acos": 11.48, "cvr": 15.03, "ctr": 1.3, "cpc": 2.86, "ad_qty": 49, "qty": 217, "ad_ratio": 22.6, "orders": 49, "sales": 8110.48, "units": 49}}, "PHILTOP": {"202642": {"imps": 31434, "clicks": 232, "spend": 890.44, "acos": 13.56, "cvr": 15.51, "ctr": 0.74, "cpc": 3.84, "ad_qty": 36, "qty": 114, "ad_ratio": 31.6, "orders": 36, "sales": 6567.91, "units": 36}, "202643": {"imps": 22229, "clicks": 159, "spend": 617.74, "acos": 9.63, "cvr": 22.62, "ctr": 0.72, "cpc": 3.88, "ad_qty": 36, "qty": 135, "ad_ratio": 26.7, "orders": 36, "sales": 6411.8, "units": 36}, "202644": {"imps": 15855, "clicks": 91, "spend": 302.02, "acos": 6.99, "cvr": 27.43, "ctr": 0.57, "cpc": 3.31, "ad_qty": 25, "qty": 86, "ad_ratio": 29.1, "orders": 25, "sales": 4321.89, "units": 25}, "202645": {"imps": 19432, "clicks": 110, "spend": 314.89, "acos": 8.17, "cvr": 19.09, "ctr": 0.57, "cpc": 2.86, "ad_qty": 21, "qty": 103, "ad_ratio": 20.4, "orders": 21, "sales": 3854.01, "units": 21}, "202646": {"imps": 24252, "clicks": 112, "spend": 342.75, "acos": 11.93, "cvr": 18.75, "ctr": 0.46, "cpc": 3.06, "ad_qty": 21, "qty": 91, "ad_ratio": 23.1, "orders": 21, "sales": 2871.82, "units": 21}}}, "shop_map": {"KAX": "US19/VC1", "PHILTOP": "US22", "ZonCar": "US8"}, "newold": {"新品": {"202646": {"spend": 50.79, "orders": 8, "clicks": 78, "imps": 4066, "sales": 249.92, "units": 8, "acos": 20.32, "cvr": 10.26, "ctr": 1.92, "cpc": 0.65}}, "老品": {"202646": {"spend": 11.36, "orders": 2, "clicks": 21, "imps": 1697, "sales": 65.98, "units": 2, "acos": 17.22, "cvr": 9.52, "ctr": 1.24, "cpc": 0.54}}, "未归类": {"202646": {"spend": 53.2, "orders": 25, "clicks": 104, "imps": 29062, "sales": 641.12, "units": 25, "acos": 8.3, "cvr": 24.04, "ctr": 0.36, "cpc": 0.51}}}, "note": "BI损益/综合口径（非领星）。展示=impressions_m 点击=clicks_m 花费=spend_m 广告销售额=ad_sales_amount_m 广告单=ad_sales_qty_m，ACOS=花费/广告销售额，CVR=广告单/点击，CTR=点击/展示"}};
+window.__P__ = P;
+// ===== 广告分析·电磁阀(领星MCP, 202646) =====
+function renderAdZoneSol(){
+  const AZ = P.ad_zones || null;
+  const Z = AZ ? (AZ['电磁阀'] || (AZ.weeks ? AZ : null)) : null;
+  const money = v => '¥'+Number(v).toLocaleString();
+  const pct = v => (v===null||v===undefined)?'-':(Number(v).toFixed(2)+'%');
+  if(!Z){ const o=document.getElementById('ad-table'); if(o) o.innerText='(广告数据未采集)'; return; }
+  const rows = Z.weeks;
+  let h = '<table><tr><th>周</th><th>曝光</th><th>点击</th><th>CTR</th><th>CPC</th><th>广告花费</th><th>ACOS</th><th>广告CVR<br><small>广告SKU销量/点击</small></th><th>广告单</th></tr>';
+  for(const r of rows){
+    h += `<tr><td>${r.week}</td><td>${r.imps.toLocaleString()}</td><td>${r.clicks.toLocaleString()}</td><td>${pct(r.ctr)}</td><td>$${r.cpc}</td><td>${money(r.spend)}</td><td>${pct(r.acos)}</td><td>${pct(r.cvr)}</td><td>${r.orders}</td></tr>`;
+  }
+  const c = rows[rows.length-1], p = rows[rows.length-2];
+  const chgTxt = (cur,prev,inv,dec) => { const d=cur-prev; const pc = prev>0?Math.abs(d/prev*100):0;
+    const col = d===0?'#666':(inv?(d<0?'var(--green)':'var(--red)'):(d>0?'var(--green)':'var(--red)'));
+    return `<span style="color:${col}">${d>0?'▲+':d<0?'▼':''}${Math.abs(d).toFixed(dec)} (${d>0?'+':''}${pc.toFixed(1)}%)</span>`; };
+  h += `<tr style="background:#fff4e6;font-weight:700"><td>环比(${p.week}→${c.week})</td>
+    <td>${chgTxt(c.imps,p.imps,false,0)}</td><td>${chgTxt(c.clicks,p.clicks,false,0)}</td>
+    <td>${chgTxt(c.ctr,p.ctr,false,2)}</td><td>${chgTxt(c.cpc,p.cpc,false,2)}</td>
+    <td>${chgTxt(c.spend,p.spend,true,0)}</td><td>${chgTxt(c.acos,p.acos,true,2)}</td>
+    <td>${chgTxt(c.cvr,p.cvr,true,2)}</td><td>${chgTxt(c.orders,p.orders,false,0)}</td></tr>`;
+  document.getElementById('ad-table').innerHTML = h;
+  const ch = echarts.init(document.getElementById('ad-chart'));
+  ch.setOption({
+    tooltip:{trigger:'axis'},legend:{top:0,textStyle:{fontSize:11}},
+    grid:{left:45,right:45,top:34,bottom:26},
+    xAxis:{type:'category',data:rows.map(r=>r.week),axisLabel:{fontSize:11}},
+    yAxis:[{type:'value',axisLabel:{fontSize:10}},{type:'value',axisLabel:{fontSize:10}}],
+    series:[
+      {name:'CTR%',type:'line',data:rows.map(r=>r.ctr),itemStyle:{color:'#2E75B6'},lineStyle:{width:2},label:{show:true,fontSize:10,color:'#2E75B6',formatter:p=>p.value+'%'}},
+      {name:'CPC$',type:'line',data:rows.map(r=>r.cpc),itemStyle:{color:'#70AD47'},lineStyle:{width:2},label:{show:true,fontSize:10,color:'#70AD47',formatter:p=>'¥'+p.value}},
+      {name:'广告CVR%',type:'line',data:rows.map(r=>r.cvr),itemStyle:{color:'#BF8F00'},lineStyle:{width:2},label:{show:true,fontSize:10,color:'#BF8F00',formatter:p=>p.value+'%'}},
+      {name:'ACOS%',type:'line',yAxisIndex:1,data:rows.map(r=>r.acos),itemStyle:{color:'#C00000'},lineStyle:{width:3},label:{show:true,fontSize:10,color:'#C00000',formatter:p=>p.value+'%'}},
+    ]
+  });
+  const PANEL = 'sol';
+  const LSKEY = 'ad_measures_sol_v1';
+  const API = 'http://127.0.0.1:8787';
+  let CLOUD = {};   // 云端措施 {name: {v,t}}
+  let measureInputs = {}; // 活动名→当前input值(临时)
+  // ---- 读取本地pending(待同步) ----
+  function lsRead(){ try { return JSON.parse(localStorage.getItem(LSKEY) || '{}'); } catch(e){ return {}; } }
+  function lsWrite(o){ try { localStorage.setItem(LSKEY, JSON.stringify(o)); } catch(e){} }
+  function lsPending(){ const o = lsRead(); const r = {}; for(const k of Object.keys(o)){ const it = o[k]; if(typeof it === 'string') r[k] = {v: it, t: null}; else r[k] = it; } return r; }
+  // ---- 有效值: 本地pending优先(用户最新编辑), 否则云 ----
+  function effVal(name){ const p = lsPending(); return (p[name] && p[name].v) ? p[name].v : (CLOUD[name] ? CLOUD[name].v : ''); }
+  function effAll(){ const all = {}; const p = lsPending(); for(const k of Object.keys(CLOUD)) all[k] = CLOUD[k]; for(const k of Object.keys(p)) if(p[k].v) all[k] = p[k]; return all; }
+  // ---- 渲染主体 ----
+  function renderIssueTable(){
+    const Zc = Z; const curNames = new Set(Zc.issues.map(x=>x.name));
+    let ih = '<b style="color:#C00000">⚠ 问题活动（快速定位 · 按花费排序）<span style="color:#888;font-weight:400">｜ 措施实时同步云端(组长/其他浏览器可见)</span></b><div style="overflow-x:auto"><table style="margin-top:6px;text-align:center">'+
+      '<tr><th>广告活动</th><th>CPC</th><th>ACOS</th><th>广告花费</th><th>广告CVR</th><th>广告单</th><th>问题</th><th>建议优化</th><th>措施(记录)</th></tr>';
+    for(const it of Zc.issues.slice(0,12)){
+      const saved = effVal(it.name);
+      const esc = (saved||'').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+      ih += `<tr><td style="text-align:left;max-width:240px">${it.name}</td><td>${it.cpc===null?'-':'¥'+it.cpc}</td><td>${it.acos===null?'-':it.acos+'%'}</td><td>$${it.spend}</td><td>${it.cvr===null?'-':it.cvr+'%'}</td><td>${it.orders}</td><td style="text-align:left;white-space:nowrap">${it.flags.join('<br>')}</td><td style="text-align:left;max-width:280px;color:#7a5c00">${it.advice||'-'}</td><td style="min-width:190px"><input data-adname="${encodeURIComponent(it.name)}" type="text" value="${esc}" placeholder="输入本周实际调整..." style="width:100%;padding:5px 8px;border:1px solid #ccc;border-radius:5px;font-size:12px;box-sizing:border-box"></td></tr>`;
+    }
+    ih += '</table></div><div id="ad-save-tip" style="color:#2E75B6;font-size:11.5px;margin-top:4px"></div>';
+    ih += '<div id="ad-sync-warn" style="display:none;background:#fff3cd;color:#7a5c00;font-size:11.5px;border-radius:5px;padding:5px 10px;margin-top:6px">⚠ 本机同步服务未运行：保存仅存本机浏览器。启动桌面 <b>sync_server.py</b> 后可同步到云端(组长可见)。</div>';
+    document.getElementById('ad-issues').innerHTML = ih;
+    // ---- 历史折叠区(云端+本地合并) ----
+    const entries = Object.keys(effAll()).map(nm => ({nm, ...effAll()[nm]}));
+    if(entries.length){
+      entries.sort((a,b)=>((b.t||'')<(a.t||''))?-1:1);
+      let hh = '<details style="margin-top:10px;font-size:12px"><summary style="cursor:pointer;color:#2E75B6;font-weight:600">📋 措施历史（' + entries.length + '条 · 云端共享 · 点击展开）</summary><div style="overflow-x:auto"><table style="margin-top:6px;text-align:center"><tr><th>广告活动</th><th>我的措施</th><th>保存时间</th><th>本周状态</th></tr>';
+      for(const e of entries){
+        const inCur = curNames.has(e.nm);
+        const tm = e.t ? new Date(e.t).toLocaleString('zh-CN',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}) : '(早期)';
+        const stTxt = inCur ? '<span style="color:#C00000;font-weight:600">⚠ 仍异常(本周在榜)</span>' : '<span style="color:#70AD47">已出榜(好转/暂停/停投)</span>';
+        hh += `<tr><td style="text-align:left;max-width:260px">${e.nm}</td><td style="text-align:left;max-width:360px;color:#7a5c00">${String(e.v||'').replace(/</g,'&lt;')}</td><td style="white-space:nowrap">${tm}</td><td>${stTxt}</td></tr>`;
+      }
+      hh += '</table></div></details>';
+      const dh = document.createElement('div'); dh.innerHTML = hh;
+      document.getElementById('ad-issues').appendChild(dh.firstChild);
+    }
+    // ---- 输入事件 ----
+    function bindMeasureInputs(){
+      document.querySelectorAll('input[data-adname]').forEach(inp=>{
+        if(inp.dataset.bound) return; inp.dataset.bound='1';
+      inp.addEventListener('change', function(){
+        const nm = decodeURIComponent(this.dataset.adname);
+        const text = this.value.trim();
+        // 1) 立即本机暂存
+        const p = lsRead(); if(text) p[nm] = {v: text, t: new Date().toISOString()}; else delete p[nm]; lsWrite(p);
+        // 2) 推云端(本机服务)
+        fetch(API + '/save', {method:'POST', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({panel: PANEL, name: nm, text: text, ts: new Date().toISOString()})})
+          .then(r => r.json()).then(d => {
+            if(d && d.ok){ CLOUD[nm] = {v: text, t: new Date().toISOString()};
+              const tip = document.getElementById('ad-save-tip') || document.getElementById('mv-save-tip'); if(tip) tip.innerHTML = '✓ <b>已同步云端</b>(组长/其他浏览器可见): ' + nm.slice(0,32) + ' — ' + new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'});
+              document.getElementById('ad-sync-warn').style.display = 'none'; }
+            else throw 0; }).catch(()=>{
+            const tip2 = document.getElementById('ad-save-tip') || document.getElementById('mv-save-tip'); if(tip2) tip2.innerHTML = '✓ 已存本机（未同步云端）';
+            const sw = document.getElementById('ad-sync-warn'); if(sw) sw.style.display = 'block';
+          });
+      });
+      });
+    }
+  }
+  // ---- 初始化: fetch云端合并后渲染 ----
+  renderIssueTable();
+  fetch('measures.json?ts=' + Date.now(), {cache:'no-store'})
+    .then(r => { if(!r.ok) throw 0; return r.json(); })
+    .then(d => { const m = (d && d[PANEL]) || {}; for(const k of Object.keys(m)) if(m[k]) CLOUD[k] = m[k]; renderIssueTable(); })
+    .catch(() => { /* 本地file://或无measures.json时忽略 */ });
+
+  const iss = Z.issues || [];
+  let adv = '<b>🔧 资深运营诊断与优化建议（电磁阀 · 领星口径）</b><br>';
+  if(iss.length){
+    const burn = iss.filter(x=>x.flags.some(f=>f.includes('烧钱无单')));
+    if(burn.length) adv += `1. <b>止损烧钱活动</b>：${burn.length}个活动花费≥$10零出单——检查投放链接<b>页面是否正常(购物车/断货/价格)、星级评论</b>；正常则多为<b>词/ASIN相关性差</b>，降bid 30-40%或暂停。<br>`;
+    const acosBad = iss.filter(x=>x.flags.some(f=>f.includes('ACOS高')||f.includes('ACOS恶化')));
+    if(acosBad.length) adv += `2. <b>ACOS恶化活动(朱鹏锃26新活动为主)</b>：${acosBad.length}个——'26怠速电磁阀提高'ACOS 51%(+42pct)、新品/老品宽泛自动ACOS 27-47%——查<b>搜索词报告</b>否定无转化词；宽泛匹配在淡季易烧钱，改<b>紧密匹配或降bid</b>；新品B0GHS1F3W7注意<b>库存</b>(离岸0.55个月将断)慎放量。<br>`;
+  }
+  adv += `3. <b>大盘信号</b>：花费+27%但单量-17%、ACOS 7.5→12.8%连续恶化——结合<b>US22断货12 SKU/新品库存告急</b>：钱加了但无货可卖+淡季转化弱。建议：放缓加码、把预算集中到<b>ACOS<15%的活动</b>(如26KAX大词10.07%)，断货链接活动降bid保位。<br>
+  4. <b>CTR持续向好</b>(0.98→1.51%)说明点击吸引力在提升，转化崩在淡季+价格/评论竞争——检查差评新增(重点链接质量数据)与竞品价格。`;
+  document.getElementById('ad-advice').innerHTML = adv;
+  document.getElementById('ad-note').innerText = '数据源=领星MCP ad_campaign_report按活动名(电磁阀/怠速电磁阀)过滤, US19+US22店铺合计, 2026-11-17拉取。ACOS=花费÷广告销售额; 与BI ASIN口径差异=领星仅SP活动且不含部分老链接活动';
+}
+
+const W = P.weeks, W3 = P.weeks3;
+const F = (v,d=0)=> (v===null||v===undefined||v==='')? d : v;
+const money = v => '¥'+Number(v).toLocaleString();
+const num = v => Number(v).toLocaleString();
+const chg = (cur,prev) => prev>0 ? (cur-prev)/prev*100 : null;
+function kpiChg(cur,prev,inv=false){
+  if(prev===null||prev===undefined||prev===0) return '<span class="flat">—</span>';
+  const c = chg(cur,prev); const good = inv ? c<0 : c>0;
+  const cls = c>0.5 ? (good?'up':'down') : (c<-0.5?(good?'down':'up'):'flat');
+  const arrow = c>0?'▲':(c<0?'▼':'—');
+  return `<span class="${cls}">${arrow} ${Math.abs(c).toFixed(1)}%</span>`;
+}
+const o = P.overall, i=W.length-1, j=W.length-2;
+const kpis = [
+  ['k1','本周销量(自然+广告)', num(o.sales_qty[i])+' 单', `周环比 ${kpiChg(o.sales_qty[i],o.sales_qty[j])} ｜ 自然${num(o.natural_qty[i])} + 广告${num(o.ad_qty[i])}`],
+  ['k2','本周销售额', money(F(o.sales_amount[i])), `周环比 ${kpiChg(o.sales_amount[i],o.sales_amount[j])}`],
+  ['k3','利润率(毛利/销售额)', F(o.profit_rate[i],'-')+'%', `上周 ${F(o.profit_rate[j],'-')}%`],
+  ['k4','转化率(销量/流量)', o.cvr[i]+'%', `周环比 ${kpiChg(o.cvr[i],o.cvr[j])}`],
+  ['k5','广告ACOS(加权)', F(o.acos[i],'-')+'%', `上周 ${F(o.acos[j],'-')}%`],
+  ['k6','广告花费', money(o.ad_spend[i]), `周环比 ${kpiChg(o.ad_spend[i],o.ad_spend[j],true)} ｜ 广告单${num(o.ad_qty[i])}`],
+  ['k11','广告转化率<small style=color:#999>(广告SKU销量/点击)</small>', (o.ad_cvr&&o.ad_cvr[i]!=null?o.ad_cvr[i]+'%':'-'), `周环比 ${kpiChg(o.ad_cvr?o.ad_cvr[i]:null,o.ad_cvr?o.ad_cvr[j]:null)} ｜ 点击${num(o.ad_clicks?o.ad_clicks[i]:null)}`],
+  ['k7','促销占比', F(o.promo_ratio[i],'-')+'%', `上周 ${F(o.promo_ratio[j],'-')}%`],
+  ['k8','推广占比', F(o.spread_ratio[i],'-')+'%', `上周 ${F(o.spread_ratio[j],'-')}%`],
+  ['k9','本周流量 / CVR', num(o.traffic[i])+'', `流量周环比 ${kpiChg(o.traffic[i],o.traffic[j])}`],
+  ['k10','退款数量', o.refund_qty[i]+' 单', `周环比 ${kpiChg(o.refund_qty[i],o.refund_qty[j],true)}`],
+];
+kpis.forEach(k=>{document.getElementById(k[0]).innerHTML=`<div class="label">${k[1]}</div><div class="value">${k[2]}</div><div class="chg">${k[3]}</div>`;});
+
+const axis = (name,data)=> ({name:name,type:'category',data:data,axisLabel:{fontSize:11},axisLine:{lineStyle:{color:'#2E75B6'}}});
+const baseOpt = (series,legend,dual)=> ({
+  tooltip:{trigger:'axis',valueFormatter:v=> v===null||v===undefined?'-':Number(v).toLocaleString()},
+  legend:legend||{top:0,textStyle:{fontSize:11}},
+  grid:{left:60,right:60,top:38,bottom:28},
+  xAxis:axis('',W), yAxis: dual ? [{type:'value',axisLabel:{fontSize:10}},{type:'value',axisLabel:{fontSize:10}}] : {type:'value',axisLabel:{fontSize:10}},
+  series
+});
+const LABEL_TOP = {show:true,position:'top',fontSize:10,color:'#444'};
+const LABEL_IN = {show:true,position:'inside',fontSize:10,color:'#fff'};
+const cmpTxt = (name,arr,unit='',ii=i,jj=j)=>{
+  const c = chg(arr[ii],arr[jj]);
+  const s = c===null? '' : (c>=0?'▲+':'▼')+Math.abs(c).toFixed(1)+'%';
+  return `${name}：本周 ${num(arr[ii])}${unit} ${s}`;
+};
+document.getElementById('cmp1').innerHTML = cmpTxt('销量',o.sales_qty,'单')+' ｜ '+cmpTxt('销售额',o.sales_amount,'¥');
+document.getElementById('cmp2').innerHTML = cmpTxt('自然单',o.natural_qty,'单')+' ｜ '+cmpTxt('广告单',o.ad_qty,'单');
+document.getElementById('cmp3').innerHTML = cmpTxt('US19',P.shops.US19.sales_qty,'单',2,1)+' ｜ '+cmpTxt('US22',P.shops.US22.sales_qty,'单',2,1)+' ｜ '+cmpTxt('US8',P.shops.US8.sales_qty,'单',2,1);
+document.getElementById('cmp5').innerHTML = cmpTxt('新品',P.newold.new.sales_qty,'单')+' ｜ '+cmpTxt('老品',P.newold.old.sales_qty,'单')+' ｜ 新品占比'+(P.newold.new.sales_qty[i]/(P.newold.new.sales_qty[i]+P.newold.old.sales_qty[i])*100).toFixed(1)+'%';
+document.getElementById('cmp6').innerHTML = cmpTxt('ACOS',o.acos,'%')+' ｜ '+cmpTxt('CVR',o.cvr,'%')+' ｜ '+cmpTxt('广告转化率',o.ad_cvr||[],'%');
+
+try {
+echarts.init(document.getElementById('c1')).setOption({
+  tooltip:{trigger:'axis'},legend:{top:0,textStyle:{fontSize:11}},
+  grid:{left:50,right:80,top:34,bottom:26},
+  xAxis:{type:'category',data:W,axisLabel:{fontSize:11}},
+  yAxis:[
+    {type:'value',name:'销量',axisLabel:{fontSize:10}},
+    {type:'value',name:'金额¥',axisLabel:{fontSize:10,formatter:v=>v>=1000?(v/1000)+'k':v}},
+    {type:'value',name:'毛利率%',min:0,max:50,axisLabel:{fontSize:10,formatter:'{value}%'}},
+  ],
+  series:[
+    {name:'销量',type:'bar',data:o.sales_qty,itemStyle:{color:'#2E75B6'},barWidth:18,label:LABEL_TOP},
+    {name:'销售额',type:'line',yAxisIndex:1,data:o.sales_amount.map(v=>F(v)),itemStyle:{color:'#C00000'},lineStyle:{width:3},label:{show:true,fontSize:10,color:'#C00000',formatter:p=> p.value? '¥'+(p.value/1000).toFixed(1)+'k':'-'}},
+    {name:'毛利润',type:'line',yAxisIndex:1,data:(o.gross_profit||[]).map(v=>F(v)),itemStyle:{color:'#70AD47'},lineStyle:{width:2,type:'dashed'},label:{show:true,fontSize:10,color:'#70AD47',formatter:p=> p.value? '¥'+(p.value/1000).toFixed(1)+'k':'-'}},
+    {name:'毛利率%',type:'line',yAxisIndex:2,data:o.profit_rate,itemStyle:{color:'#BF8F00'},lineStyle:{width:2,type:'dotted'},label:{show:true,fontSize:10,color:'#BF8F00',formatter:p=>p.value+'%'}},
+  ]
+});
+echarts.init(document.getElementById('c2')).setOption(baseOpt([
+  {name:'自然单',type:'bar',stack:'t',data:o.natural_qty,itemStyle:{color:'#2E75B6'},label:LABEL_IN},
+  {name:'广告单',type:'bar',stack:'t',data:o.ad_qty,itemStyle:{color:'#FFC000'},label:LABEL_IN},
+]));
+(function(){
+  const s=P.shops; const ch=echarts.init(document.getElementById('c3'));
+  ch.setOption({
+    tooltip:{trigger:'axis'},legend:{top:0,textStyle:{fontSize:11}},
+    grid:{left:50,right:50,top:38,bottom:28},
+    xAxis:{type:'category',data:W3,axisLabel:{fontSize:11}},
+    yAxis:{type:'value',axisLabel:{fontSize:10}},
+    series:['US19','US22','US8'].map((k,idx)=>({name:k,type:'bar',data:s[k].sales_qty,itemStyle:{color:['#2E75B6','#C00000','#70AD47'][idx]},label:LABEL_TOP}))
+  });
+})();
+// 新老品对比
+(function(){
+  const n=P.newold; const ch=echarts.init(document.getElementById('c5'));
+  const total = W.map((_,idx)=> n.new.sales_qty[idx]+n.old.sales_qty[idx]);
+  const share = W.map((_,idx)=> (n.new.sales_qty[idx]/total[idx]*100).toFixed(1));
+  ch.setOption({
+    tooltip:{trigger:'axis'},legend:{top:0,textStyle:{fontSize:11}},
+    grid:{left:50,right:70,top:38,bottom:28},
+    xAxis:{type:'category',data:W,axisLabel:{fontSize:11}},
+    yAxis:[{type:'value',name:'销量',axisLabel:{fontSize:10}},{type:'value',name:'新品占比%',min:0,max:100,axisLabel:{fontSize:10}}],
+    series:[
+      {name:'新品',type:'bar',stack:'n',data:n.new.sales_qty,itemStyle:{color:'#2E75B6'},label:LABEL_IN},
+      {name:'老品',type:'bar',stack:'n',data:n.old.sales_qty,itemStyle:{color:'#BDD7EE'},label:LABEL_IN},
+      {name:'新品占比%',type:'line',yAxisIndex:1,data:share,itemStyle:{color:'#C00000'},lineStyle:{width:2},label:{show:true,fontSize:9,color:'#C00000',formatter:p=>p.value+'%'}},
+    ]
+  });
+})();
+echarts.init(document.getElementById('c6')).setOption(baseOpt([
+  {name:'ACOS%',type:'line',data:o.acos,itemStyle:{color:'#C00000'},lineStyle:{width:3},label:{show:true,fontSize:10,color:'#C00000',formatter:p=>p.value+'%'}},
+  {name:'CVR%',type:'line',data:o.cvr,itemStyle:{color:'#00B050'},lineStyle:{width:2},label:{show:true,fontSize:10,color:'#00B050',formatter:p=>p.value+'%'}},
+  {name:'广告转化率%',type:'line',data:o.ad_cvr||[],itemStyle:{color:'#7030A0'},lineStyle:{width:2,type:'dashed'},label:{show:true,fontSize:10,color:'#7030A0',formatter:p=>p.value===null||p.value===undefined?'-':p.value+'%'}},
+]));
+document.getElementById('cmp8').innerHTML = cmpTxt('退款数',o.refund_qty,'单')+' ｜ '+cmpTxt('退款率',o.refund_rate,'%');
+echarts.init(document.getElementById('c8')).setOption(baseOpt([
+  {name:'退款数量',type:'bar',data:o.refund_qty,itemStyle:{color:'#C00000'},barWidth:26,label:LABEL_TOP},
+  {name:'退款率%',type:'line',yAxisIndex:1,data:o.refund_rate,itemStyle:{color:'#BF8F00'},lineStyle:{width:2},label:{show:true,fontSize:10,color:'#BF8F00',formatter:p=>p.value+'%'}},
+],null,true));
+// 新老品周环比对比表 (仿用户Excel: 组块×3周+周环比, 13指标列)
+(function(){
+  const N = P.newold3 || {weeks:['202643','202645','202646'],'新品':{},'老品':{}};
+  const W3 = N.weeks;
+  const M = ['流量','销量','销售额','转化率','展示量','点击数','广告花费','CPC','ACOS','广告转化率','广告sku销售额','广告sku销量','毛利润'];
+  const isM = m => m==='销售额'||m==='毛利润'||m==='广告sku销售额'||m==='广告花费';
+  const isP = m => m==='转化率'||m==='ACOS'||m==='广告转化率';
+  const fmt = (m,v)=> v===null||v===undefined?'-':(isM(m)?'¥'+Number(v).toLocaleString(undefined,{maximumFractionDigits:0})
+      :(isP(m)?Number(v).toFixed(1)+'%':(m==='CPC'?'¥'+Number(v).toFixed(2):Number(v).toLocaleString(undefined,{maximumFractionDigits:0}))));
+  const rel = (c,p)=> (p>0&&c!==null&&c!==undefined)?(((c-p)/p*100)):null;
+  const isUpGood = m => !(m==='ACOS'||m==='CPC');
+  let h = '<div style="overflow-x:auto"><table><tr><th style="min-width:56px">新老品</th><th style="min-width:56px">周</th>'+M.map(m=>'<th>'+m+'</th>').join('')+'</tr>';
+  for(const grp of ['新品','老品']){
+    const d = N[grp]; if(!d || !d['销量']) continue;
+    const bg = grp==='新品' ? '#EFF5FC' : '#F7F7F7';
+    const gname = grp==='新品' ? ('🆕 新品 ('+ (N.new_asin||36) +' ASIN)') : ('老品 ('+ (N.old_asin||22) +' ASIN)');
+    const gcol = grp==='新品' ? '#1F4E79' : '#555';
+    // 组名rowspan=4, 与首周行同tr
+    const w0 = W3[0];
+    h += `<tr><td rowspan="4" style="background:${bg};font-weight:700;color:${gcol};vertical-align:middle">${gname}</td>`+
+      `<td style="background:${bg}">${w0}</td>` + M.map(m=>`<td style="background:${bg}">${fmt(m,d[m]?d[m][0]:null)}</td>`).join('') + '</tr>';
+    for(let k=1;k<3;k++){
+      const w = W3[k];
+      h += `<tr><td style="background:${bg}">${w}</td>` + M.map(m=>`<td style="background:${bg}">${fmt(m,d[m]?d[m][k]:null)}</td>`).join('') + '</tr>';
+    }
+    h += `<tr style=""><td style="background:#FFF3D6;color:#8a6d1a;font-weight:700">周环比</td>` +
+      M.map(m=>{ const v=rel(d[m]?d[m][2]:null, d[m]?d[m][1]:null); if(v===null) return '<td>-</td>';
+        const col = v>0?(isUpGood(m)?'#00B050':'#C00000'):(isUpGood(m)?'#C00000':'#00B050');
+        return `<td style="color:${col};font-weight:700">${v>0?'+':''}${v.toFixed(1)}%</td>`; }).join('') + '</tr>';
+  }
+  h += '</table></div>';
+  document.getElementById('newold').innerHTML = h;
+})();
+
+// c7: FBA库存&库销比 (可售+头程在途 / 近30天销量) —— 惰性(进库存tab才渲染)
+let c7Done = false;
+function renderInvTrend(){
+  const T = P.inv_trend;
+  if(!T){return;}
+  const el = document.getElementById('inv-trend-chart');
+  if(el && !el._ic){ el._ic = echarts.init(el); }
+  const wk = T.weeks.map(w=>w.slice(2));
+  const SH = ['US19','US22','US8'];
+  const COL = {'US19':'#4472C4','US22':'#ED7D31','US8':'#70AD47'};
+  const series = [];
+  SH.forEach(s=>{ const d=T.shops[s]; if(!d) return;
+    series.push({name:s+' 可售', type:'line', data:d.sellable, itemStyle:{color:COL[s]}, lineStyle:{width:3,color:COL[s]}, symbolSize:7, label:{show:true,fontSize:10,color:COL[s]}});
+    series.push({name:s+' 在途', type:'line', data:d.onway, itemStyle:{color:COL[s]}, lineStyle:{width:2,type:'dashed',color:COL[s]}, symbolSize:5, symbol:'rect', label:{show:true,fontSize:9,color:COL[s]}});
+  });
+  if(el && el._ic){ el._ic.setOption({
+    tooltip:{trigger:'axis'}, legend:{top:0,textStyle:{fontSize:11}}, grid:{left:50,right:30,top:36,bottom:24},
+    xAxis:{type:'category',data:wk}, yAxis:{type:'value'}, series:series }, true); }
+  let h = '<table><tr><th>店铺</th><th>指标</th><th>'+wk.join('</th><th>')+'</th><th>环比('+wk[wk.length-2]+'→'+wk[wk.length-1]+')</th></tr>';
+  SH.forEach(s=>{ const d=T.shops[s]; if(!d) return;
+    const dS = d.sellable[d.sellable.length-1]-d.sellable[d.sellable.length-2];
+    const dO = d.onway[d.onway.length-1]-d.onway[d.onway.length-2];
+    h += `<tr><td rowspan="2"><b>${s}</b></td><td>可售</td>`+d.sellable.map(v=>`<td>${v.toLocaleString()}</td>`).join('')+`<td style="color:${dS<0?'var(--red)':'var(--green)'}">${dS>0?'▲+':''}${dS.toLocaleString()}</td></tr>`;
+    h += `<tr><td>头程在途</td>`+d.onway.map(v=>`<td>${v.toLocaleString()}</td>`).join('')+`<td style="color:${dO<0?'var(--red)':'var(--green)'}">${dO>0?'▲+':''}${dO.toLocaleString()}</td></tr>`;
+  });
+  const tt = T.total || {};
+  if(tt.sellable){ const dS=tt.sellable[2]-tt.sellable[1], dO=tt.onway[2]-tt.onway[1];
+    h += `<tr style="font-weight:700;background:#eef4fa"><td>合计</td><td>可售</td>`+tt.sellable.map(v=>`<td>${v.toLocaleString()}</td>`).join('')+`<td>${dS>0?'▲+':''}${dS.toLocaleString()}</td></tr>`;
+    h += `<tr style="font-weight:700;background:#eef4fa"><td>合计</td><td>头程在途</td>`+tt.onway.map(v=>`<td>${v.toLocaleString()}</td>`).join('')+`<td>${dO>0?'▲+':''}${dO.toLocaleString()}</td></tr>`;
+  }
+  h += '</table>';
+  const tb = document.getElementById('inv-trend-table'); if(tb) tb.innerHTML = h;
+  const nt = document.getElementById('inv-trend-note'); if(nt) nt.innerText = T.note || '';
+}
+window.renderInvTrend = renderInvTrend;
+function renderC7Inv(){
+  c7Done = true;
+  const iv = P.inventory;
+  const colors = {US19:'#2E75B6',US22:'#C00000',US8:'#70AD47'};
+  const names = {US19:'KAX(US19)',US22:'PT(US22)',US8:'ZC(US8)'};
+  const ch = echarts.init(document.getElementById('c7'));
+  ch.setOption({
+    tooltip:{trigger:'axis',valueFormatter:v=> v===null||v===undefined?'-':Number(v).toLocaleString()},
+    legend:{top:0,textStyle:{fontSize:11}},
+    grid:{left:55,right:55,top:38,bottom:28},
+    xAxis:{type:'category',data:['US19','US22','US8'].map(s=>names[s]),axisLabel:{fontSize:11}},
+    yAxis:[{type:'value',name:'库存(件)',axisLabel:{fontSize:10}},{type:'value',name:'库销比(月)',axisLabel:{fontSize:10}}],
+    series:[
+      {name:'可售库存',type:'bar',stack:'inv',data:['US19','US22','US8'].map(s=>iv.shops[s].sellable),itemStyle:{color:'#2E75B6'},barWidth:36,
+       label:{show:true,position:'inside',fontSize:10,color:'#fff',formatter:p=> p.value? Number(p.value).toLocaleString():''}},
+      {name:'头程在途',type:'bar',stack:'inv',data:['US19','US22','US8'].map(s=>iv.shops[s].onway),itemStyle:{color:'#BDD7EE'},
+       label:{show:true,position:'inside',fontSize:10,color:'#1F4E79',formatter:p=> p.value? Number(p.value).toLocaleString():''}},
+      {name:'在售库销比(月)',type:'line',yAxisIndex:1,data:['US19','US22','US8'].map(s=>iv.shops[s].coverage_sale),
+       itemStyle:{color:'#BF8F00'},lineStyle:{width:2,type:'dashed'},
+       label:{show:true,position:'bottom',fontSize:10,color:'#BF8F00',formatter:p=>p.value+'个月'}},
+      {name:'离岸库销比(月)',type:'line',yAxisIndex:1,data:['US19','US22','US8'].map(s=>iv.shops[s].coverage_full),
+       itemStyle:{color:'#C00000'},lineStyle:{width:3},
+       label:{show:true,position:'top',fontSize:10,color:'#C00000',formatter:p=>p.value+'个月'}},
+    ]
+  });
+  const s3 = ['US19','US22','US8'].map(s=>iv.shops[s]);
+  const cv = s=>`在售<b>${s.coverage_sale}</b> ｜ 离岸<b>${s.coverage_full}个月</b>`;
+  document.getElementById('cmp7').innerHTML =
+    `KAX: 可售${s3[0].sellable.toLocaleString()}+在途${s3[0].onway}｜${cv(s3[0])} &nbsp; `+
+    `PT: 可售${s3[1].sellable.toLocaleString()}+在途${s3[1].onway}｜${cv(s3[1])} (断货${s3[1].oos}/缺补${s3[1].oos_back}) &nbsp; `+
+    `ZC: 可售${s3[2].sellable.toLocaleString()}｜${cv(s3[2])}`;
+}
+// ===== 即将断货预警表 =====
+
+let nmDone = false;
+function renderTrendCharts(){
+  const T = P.dd_trend || {weeks:[],rate_all:[],rate_s:[],ad_dep:[]};
+  const e1 = document.getElementById('nm-chart1'); if(!e1) return;
+  const baseOpt2 = {
+    tooltip:{trigger:'axis'},legend:{top:0,textStyle:{fontSize:11}},
+    grid:{left:42,right:42,top:32,bottom:24},
+    xAxis:{type:'category',data:T.weeks,axisLabel:{fontSize:10}},
+    yAxis:{type:'value',axisLabel:{fontSize:10}},
+  };
+  const ch1 = echarts.init(e1);
+  ch1.setOption(Object.assign({}, baseOpt2, {yAxis:{type:'value',axisLabel:{fontSize:10,formatter:'{value}%'}},
+    series:[
+      {name:'全部新品达成率%',type:'line',data:T.rate_all,itemStyle:{color:'#2E75B6'},lineStyle:{width:2},label:{show:true,fontSize:10,color:'#2E75B6',formatter:p=>p.value+'%'}},
+      {name:'S级达成率%',type:'line',data:T.rate_s,itemStyle:{color:'#C00000'},lineStyle:{width:2,type:'dashed'},label:{show:true,fontSize:10,color:'#C00000',formatter:p=>p.value+'%'}},
+      {name:'达标线100%',type:'line',data:T.weeks.map(()=>100),itemStyle:{color:'#00B050'},lineStyle:{width:1,type:'dotted'},label:{show:false}},
+    ]}));
+  const ch2 = echarts.init(document.getElementById('nm-chart2'));
+  ch2.setOption(Object.assign({}, baseOpt2, {yAxis:{type:'value',max:100,axisLabel:{fontSize:10,formatter:'{value}%'}},
+    series:[
+      {name:'广告依赖度%',type:'line',data:T.ad_dep,itemStyle:{color:'#BF8F00'},lineStyle:{width:2},areaStyle:{color:'rgba(191,143,0,.08)'},label:{show:true,fontSize:10,color:'#BF8F00',formatter:p=>p.value+'%'}},
+    ]}));
+}
+function renderNewMon(){
+  nmDone = true;
+  const frisk = (document.getElementById('nm-risk')||{}).value || 'ALL';
+  // 断货风险联动表(所有新品按可用天数排序)
+  let rows = (P.dd||[]).map(r=>({...r, days: r.sell!==null && r.sell!==undefined && r.dd_act>0 ? Math.round(r.sell/r.dd_act) : null}))
+    .sort((a,b)=> (a.days===null?9999:a.days)-(b.days===null?9999:b.days));
+  rows = rows.filter(r=> frisk==='ALL' || (frisk==='no' ? r.days===null : (r.days!==null && (frisk==='h'?r.days<30 : frisk==='m'?r.days<60 : frisk==='l'?r.days<90 : r.days>=90))));
+  const cnt = document.getElementById('nm-count'); if(cnt) cnt.innerText = '共'+rows.length+'个新品';
+  const dayCol = d=> d===null?'-':(d<30?'color:#C00000;font-weight:700':(d<60?'color:#E36C09;font-weight:600':(d<90?'color:#BF8F00':'color:#00B050')));
+  const gcol = {'S':'#C00000','A':'#E36C09','B':'#BF8F00','C':'#2E75B6','D':'#888'};
+  let h='<table><tr><th>SKU</th><th>ASIN</th><th>等级</th><th>预估DD</th><th>实际DD</th><th>达成率</th><th>可售/在途</th><th>可用天数<br>(可售÷实际DD)</th><th>风险</th></tr>';
+  for(const r of rows){
+    const risk = r.days===null?'-':(r.days<30?'🔴高风险(将断货)':(r.days<60?'🟠偏低':(r.days<90?'🟡一般':'🟢充足')));
+    h+=`<tr><td style="text-align:left">${r.sku}</td><td style="text-align:left">${r.asin}</td>
+      <td style="color:${gcol[r.grade]||'#333'};font-weight:700">${r.grade||'-'}</td>
+      <td>${r.pred}</td><td>${r.dd_act}</td>
+      <td style="${r.rate>=100?'color:#00B050;font-weight:700':(r.rate>=60?'color:#BF8F00':'color:#C00000')}">${r.rate===null?'-':r.rate+'%'}</td>
+      <td>${r.sell===null?'-':r.sell}/${r.onway===null?'-':r.onway}</td>
+      <td style="${dayCol(r.days)}">${r.days===null?'-':r.days+'天'}</td><td>${risk}</td></tr>`;
+  }
+  h+='</table>';
+  document.getElementById('nm-table').innerHTML = h + '<div style="padding:6px 2px;font-size:11.5px;color:#999">实际DD=近30天销量÷30；可用天数=可售÷实际DD：可达标新品(达成率≥100%)但可用天数低 = 补货优先级最高。风险联动口径=可售÷实际DD（非预估DD）。</div>';
+}
+window.renderNewMon = renderNewMon;  // 供nm-risk筛选下拉onchange调用
+renderTrendCharts();
+
+window.showCh = function(t){
+  document.querySelectorAll('.page-overview').forEach(d=>d.style.display = (t==='overview')?'':'none');
+  document.querySelectorAll('.page-inv').forEach(d=>d.style.display = (t==='inv')?'':'none');
+  document.querySelectorAll('.navtab').forEach(b=>b.classList.toggle('active', b.dataset.pg===t));
+  if(t==='inv' && typeof renderInvTrend==='function') renderInvTrend();
+  if(t==='inv' && !c7Done && typeof renderC7Inv==='function') renderC7Inv();
+  if(t==='inv' && !nmDone && typeof renderNewMon==='function') renderNewMon();
+};
+function warnRows(){
+  const W = P.oos_warning;
+  const shop = document.getElementById('warn-shop').value;
+  const typ = document.getElementById('warn-type').value;
+  const lk = document.getElementById('warn-lk').value;
+  return W.rows.filter(r=> (shop==='ALL' || r.shop===shop) && (typ==='ALL' || r.type===typ) && (lk==='ALL' || r.lk===lk));
+}
+function renderWarn(){
+  const W = P.oos_warning;
+  const rows = warnRows();
+  const cnt = document.getElementById('warn-count');
+  if(cnt) cnt.innerText = '共 ' + rows.length + ' 条' + (rows.length ? '（可导出）' : '');
+  if(!rows.length){ document.getElementById('warn-table').innerHTML='<div style="padding:14px;color:#888;font-size:13px">✅ 该筛选条件下无ASIN</div>'; return; }
+  const cls = {oos:'b-oos',low_inv:'b-low_inv',spd:'b-spd',slow:'b-slow',ok:'b-ok'};
+  const tcol = r=> r.type==='新品' ? '<span style="color:#2E75B6;font-weight:600">新品</span>' : '<span style="color:#888">老品</span>';
+  let h = '<table><tr><th>ASIN</th><th>SKU(商品编码)</th><th>新老品</th><th>店铺</th><th>可售</th><th>头程在途</th><th>近30天销量</th><th>在售/离岸库销比</th><th>预警</th></tr>';
+  for(const r of rows){
+    h += `<tr><td>${r.asin}</td><td>${r.sku}</td><td>${tcol(r)}</td><td>${r.shop}</td><td>${r.sell}</td><td>${r.onway}</td><td>${r.s30}</td>
+      <td>${r.coverage===null?'-':(r.coverage_sale===null||r.coverage_sale===undefined?'-':r.coverage_sale+'')} / ${r.coverage===null?'-':r.coverage+'个月'}</td>
+      <td>${r.lk==='ok'?'<span style="color:#00B050;font-weight:600">正常</span>':'<span class="badge '+cls[r.lk]+'">'+r.level+'</span>'}</td></tr>`;
+  }
+  document.getElementById('warn-table').innerHTML = h + '<div style="padding:6px 2px;font-size:11.5px;color:#999">' + W.note + '</div>';
+}
+window.exportWarn = function(){
+  const rows = warnRows();
+  if(!rows.length){ alert('当前筛选无数据可导出'); return; }
+  const head = ['ASIN','SKU(商品编码)','新老品','店铺','可售','头程在途','近30天销量','在售库销比(月)','离岸库销比(月)','状态'];
+  const lines = rows.map(r=> [r.asin, r.sku, r.type, r.shop, r.sell, r.onway, r.s30,
+    (r.coverage_sale===null||r.coverage_sale===undefined?'':r.coverage_sale), (r.coverage===null?'':r.coverage), r.level]
+    .map(v=> { const s = String(v===undefined?'':v); const _NL=String.fromCharCode(10); return (s.indexOf('"')>=0||s.indexOf(',')>=0||s.indexOf(_NL)>=0) ? '"'+s.split('"').join('""')+'"' : s; }).join(','));
+  const csv = String.fromCharCode(65279) + head.join(',') + String.fromCharCode(10) + lines.join(String.fromCharCode(10));
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = '电磁阀断货预警_' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click();
+};
+window.renderWarn = renderWarn;  // 供下拉onchange调用
+
+// ===== 周维度断货追踪 =====
+function renderOosWeekly(){
+  const W = P.oos_weekly, box = document.getElementById('oos-weekly');
+  if(!box) return;
+  if(!W || !W.rows || !W.rows.length){ box.innerHTML = '<div style="color:#999">(无数据)</div>'; return; }
+  const wk = W.weeks;
+  const ICON = {'断货归零':'⛔','断货':'🔴','断货在补':'🟠','临断':'🟡','正常':'🟢'};
+  const TXT  = {'断货归零':'断货·销售已归零(可售0+上周有单+本周0单)','断货':'断货(可售0·在途0)','断货在补':'断货(可售0·在途补货中)','临断':'临断(<30天)','正常':'正常'};
+  const isCur = r => ['断货归零','断货','断货在补','临断'].indexOf(r.st[wk[wk.length-1]]) >= 0;
+  const list = W.rows.filter(isCur);
+  let h = '<div style="margin-bottom:6px;color:#666">本周处于断货/在补/临断的 <b style="color:#C00000">'+list.length+'</b> 个ASIN（另有 '+ (W.rows.length-list.length) +' 个历史曾断货已恢复/停滞）</div>';
+  h += '<div style="overflow-x:auto"><table><tr><th>ASIN</th><th>店铺</th><th>新老</th>' + wk.map(w=>'<th style="min-width:52px">'+w.slice(2)+'</th>').join('') + '<th>可售</th><th>在途</th><th>近30天</th><th>本周/上周</th><th>断货起始</th></tr>';
+  for(const r of list){
+    const cur = r.st[wk[wk.length-1]];
+    h += '<tr><td class="asin" style="font-family:Consolas,monospace">'+r.asin+'</td><td>'+r.shop+'</td><td>'+r.type+'</td>';
+    for(const w of wk){
+      const v = r.st[w];
+      const ic = v ? (ICON[v]||'—') : '·';
+      h += '<td style="text-align:center" title="'+(w+' '+(TXT[v]||'无记录'))+'">'+ic+'</td>';
+    }
+    const newOos = r.first_oos === wk[wk.length-1];
+    h += '<td style="text-align:right">'+ (r.sell==null?'-':r.sell) +'</td><td style="text-align:right">'+ (r.onway==null?'-':r.onway) +'</td>'
+       + '<td style="text-align:right">'+r.s30+'</td>'
+       + '<td style="text-align:right">'+r.q_prev+'→<b>'+r.q_cur+'</b></td>'
+       + '<td>'+(r.first_oos||'—')+(newOos?' <b style="color:#C00000">★本周新断</b>':'')+'</td></tr>';
+  }
+  h += '</table></div>';
+  box.innerHTML = h;
+  document.getElementById('oos-weekly-note').innerText = W.def + ' ｜ ●状态含义：🔴断货(可售0且在途0) 🟠断货在补(可售0但在途>0) 🟡临断(可售支撑<30天) 🟢正常 ·无记录';
+}
+renderOosWeekly();
+
+// ===== 亚马逊官方流量(US19 Business Report) =====
+(function(){
+  const O = P.official_sessions;
+  const box = document.getElementById('os-table');
+  if(!box || !O) return;
+  // 若官方数据不含本周(未导出Business Report), 隐藏整个卡片(避免展示旧周数据)
+  const _curWk = (P.weeks||[]).slice(-1)[0];
+  if(!O.weeks || O.weeks.indexOf(_curWk) < 0){
+    const card = box.closest('.card');
+    if(card){ card.style.display = 'none'; }
+    return;
+  }
+  const t = O.total || {};
+  const up = (v) => v===null||v===undefined ? '-' : (v>0?'color:var(--red);font-weight:700':(v<0?'color:var(--green)':''));
+  const pctf = v => v===null||v===undefined ? '-' : (v>0?'+':'') + Number(v).toFixed(1) + '%';
+  const cmp = document.getElementById('os-cmp');
+  if(cmp){
+    const dp = t.sess0 ? ((t.sess1-t.sess0)/t.sess0*100) : 0;
+    cmp.innerHTML = 'US19 官方会话：<b>' + (t.sess0||0) + ' → ' + (t.sess1||0) + '</b>（' + (dp>0?'<b style="color:var(--red)">+'+dp.toFixed(1)+'%</b>':'<b style="color:var(--green)">'+dp.toFixed(1)+'%</b>') + '）'
+      + ' ｜ 有流量ASIN：' + (t.asin0||0) + '→' + (t.asin1||0) + ' ｜ 页面浏览：' + (t.pv0||0) + '→' + (t.pv1||0);
+  }
+  let h = '<div style="overflow-x:auto"><table><tr><th>ASIN</th><th>SKU</th><th>标题</th>'
+        + '<th>会话 ' + O.weeks[0].slice(2) + '→' + O.weeks[1].slice(2) + '</th><th>变化</th><th>变化%</th>'
+        + '<th>页面浏览</th><th>官方转化率%</th></tr>';
+  const list = O.rows.slice();
+  for(const r of list){
+    h += '<tr><td style="font-family:Consolas,monospace">' + r.asin + '</td><td style="font-size:11px;color:#888">' + (r.sku||'') + '</td>'
+      + '<td style="text-align:left;max-width:220px;font-size:11.5px">' + (r.title||'') + '</td>'
+      + '<td>' + (r.sess0===null?'-':r.sess0) + '→<b>' + (r.sess1===null?'-':r.sess1) + '</b></td>'
+      + '<td style="' + up(r.d_sess) + '">' + (r.d_sess===null?'-':(r.d_sess>0?'+':'')+r.d_sess) + '</td>'
+      + '<td style="' + up(r.pct) + '">' + pctf(r.pct) + '</td>'
+      + '<td>' + (r.pv0===null?'-':r.pv0) + '→' + (r.pv1===null?'-':r.pv1) + '</td>'
+      + '<td>' + (r.cvr0===null?'-':r.cvr0+'%') + '→<b>' + (r.cvr1===null?'-':r.cvr1+'%') + '</b></td></tr>';
+  }
+  h += '</table></div>';
+  box.innerHTML = h;
+  const nt = document.getElementById('os-note');
+  if(nt) nt.innerText = O.note + ' ｜ 数据源：' + O.source;
+})();
+renderWarn();
+// ===== 库存区(FBA, 分店铺) =====
+(function(){
+  const iv = P.inventory;
+  const colors = {US19:'#2E75B6',US22:'#C00000',US8:'#70AD47'};
+  let h = '';
+  for(const s of ['US19','US22','US8']){
+    const d = iv.shops[s];
+    h += `<div class="inv-card" style="border-top-color:${colors[s]}">
+      <div class="iname">${s} · ${d.brand}品牌</div>
+      <div class="irow">可售库存：<b>${d.sellable.toLocaleString()}</b> ＋头程在途 ${d.onway.toLocaleString()}（近30天销量 ${d.sales_30d}）</div>
+      <div class="irow">在售库销比(可售÷近30天)：<b style="color:#BF8F00">${d.coverage_sale}个月</b> ｜ 离岸库销比((可售+在途)÷近30天)：<b style="color:#C00000">${d.coverage_full}个月</b></div>
+      <div class="irow">SKU数：${d.skus} ｜ <span class="oos">断货：${d.oos}</span> ｜ <span style="color:#BF8F00">缺货在补：${d.oos_back}</span></div>
+    </div>`;
+  }
+  h += `<div class="inv-card" style="border-top-color:#BF8F00">
+    <div class="iname">FBA合计</div>
+    <div class="irow">可售库存：<b>${iv.FBA_total.sellable.toLocaleString()}</b></div>
+    <div class="irow">SKU数：${iv.FBA_total.skus} ｜ <span class="oos">断货(无在途)：${iv.FBA_total.oos}</span> ｜ <span style="color:#BF8F00">缺货在补：${iv.FBA_total.oos_back}</span></div>
+    <div class="irow" style="font-size:11.5px;color:#888">数据源：${iv.FBA_total.src}</div>
+  </div>`;
+  document.getElementById('inv-cards').innerHTML = h;
+  document.getElementById('stock-note').innerHTML =
+    `<b>📦 库存说明：</b>电磁阀仅FBA渠道（202646库存明细报表 11/03快照，桌面"电磁阀/头程在途数据更新"）。<b>双库销比口径：</b>在售库销比=可售÷近30天（橙色，<1个月=按现可售将断货）；离岸库销比=(可售+头程在途)÷近30天（红色，含在途补货后的覆盖水平）。<b>断货两级口径：</b>断货=可售=0且无头程在途(真断供)；缺货在补=可售=0但头程在途>0(路上在补)。US22缺货在补12个SKU(可售=0)全部有在途在补；US19无断货。近30天销量=202641-636四周(US19 1042/US22 371/US8 22)。`;
+})();
+// ===== 重点链接监控表 (车型+新老品筛选) =====
+function renderKeyLinks(){
+  const K = P.key_links;
+  const ft = (document.getElementById('key-type')||{}).value || 'ALL';
+  const rows = K.rows.filter(r=> ft==='ALL' || r.type===ft);
+  document.getElementById('key-note').innerText = K.note + (ft==='ALL'? '':' ｜ 当前筛选: '+ft);
+  const tcol = r=> r.type==='新品' ? '<span style="color:#2E75B6;font-weight:600">新品</span>' : '<span style="color:#888">老品</span>';
+  const num = v=>Number(v).toLocaleString();
+  const dash = v=> (v===null||v===undefined?'<span style="color:#bbb">待补</span>':v);
+  const carsTxt = r=> r.cars && r.cars.length ? r.cars.slice(0,3).join('<br>') + (r.cars.length>3?'<br><span style="color:#999">+'+ (r.cars.length-3) +' 车型</span>':'') : '<span style="color:#bbb">-</span>';
+  let h = '<table><tr><th>ASIN</th><th>SKU(商品编码)</th><th>新老品</th><th>店铺</th><th>可售库存</th><th>头程在途</th><th>销量涨幅</th><th>毛利率</th><th>退款率</th><th>周销量(2026456)</th><th>页面价格¥</th><th>促销活动</th><th>星级/评论数</th><th>🚗车型(make model)</th><th>购物车异常</th></tr>';
+  for(const r of rows){
+    const up = r.growth>=30?'color:var(--red);font-weight:700':(r.growth>=10?'color:#BF8F00;font-weight:600':'color:#333');
+    const promo = r.promo>0 ? `<span style="color:#C00000;font-weight:600">促销$${num(r.promo)}</span>` : '无';
+    const bb = r.buybox===0 ? '<span style="color:var(--green)">正常</span>' : (r.buybox===1?'<span style="color:var(--red);font-weight:700">异常!</span>':'<span style="color:#bbb">-</span>');
+    h += `<tr><td>${r.asin}</td><td>${r.sku}</td><td>${tcol(r)}</td><td>${r.shop}</td>
+      <td>${r.sell}</td><td>${r.onway}</td>
+      <td style="${up}">+${r.growth}%</td>
+      <td>${r.gm}%</td><td>${r.refund}%</td>
+      <td>${r.wk_qty}</td>
+      <td>${r.q_price===null||r.q_price===undefined?'<span style="color:#bbb">-</span>':'¥'+r.q_price}</td>
+      <td>${promo}</td>
+      <td>${(r.rating===null&&r.reviews===null)?'<span style="color:#bbb">-</span>':(r.rating!==null?r.rating:'-')+'/'+(r.reviews!==null?r.reviews:'-')}</td>
+      <td style="text-align:left;font-size:11.5px;color:#555">${carsTxt(r)}</td>
+      <td>${bb}</td></tr>`;
+  }
+  document.getElementById('key-table').innerHTML = h;
+}
+window.renderKeyLinks = renderKeyLinks;
+renderKeyLinks();
+// ===== 新品动销 vs 预估DD =====
+(function(){
+  const rows0 = P.dd || [];
+
+  if(!rows0.length){ const el=document.getElementById('dd-table'); if(el) el.innerText='(无新品DD数据)'; return; }
+  const L = rows0.length;
+  const x = rows0.map(r=> r.sku.replace(/^.*IAC/,'IAC').replace(/00$/,''));
+  const ch = echarts.init(document.getElementById('dd-chart'));
+  ch.setOption({
+    tooltip:{trigger:'axis',formatter: ps=>{ let hh=ps[0].name+'<br>'; for(const p of ps){ hh+=p.marker+p.seriesName+': <b>'+p.value+'</b>'+(p.seriesName==='达成率%'?'%':'')+'<br>'; } return hh; }},
+    legend:{top:0,textStyle:{fontSize:11}},
+    grid:{left:48,right:60,top:34,bottom:26},
+    xAxis:{type:'category',data:x,axisLabel:{fontSize:9,rotate:40}},
+    yAxis:[{type:'value',name:'DD(日销)',axisLabel:{fontSize:10}},{type:'value',name:'达成率%',min:0,axisLabel:{fontSize:10,formatter:'{value}%'}}],
+    series:[
+      {name:'预估DD',type:'line',data:rows0.map(r=>r.pred),itemStyle:{color:'#2E75B6'},lineStyle:{width:2},symbolSize:5,label:{show:true,fontSize:9,color:'#2E75B6',position:'top',formatter:p=>p.value===undefined?'':p.value}},
+      {name:'实际DD',type:'line',data:rows0.map(r=>r.dd_act),itemStyle:{color:'#C00000'},lineStyle:{width:2,type:'dashed'},symbolSize:5,label:{show:true,fontSize:9,color:'#C00000',position:'top',formatter:p=>p.value===undefined?'':p.value}},
+      {name:'达成率%',type:'line',yAxisIndex:1,data:rows0.map(r=>r.rate),itemStyle:{color:'#70AD47'},lineStyle:{width:1,type:'dotted'},label:{show:true,fontSize:8.5,color:'#70AD47',formatter:p=>p.value===undefined?'':p.value+'%'}},
+    ]
+  });
+  // 🔧 资深运营改进措施(按等级/达成率/库存分型生成)
+  function ddAdvice(r){
+    const rate = r.rate, days = r.sell!==null&&r.sell!==undefined&&r.dd_act>0 ? Math.round(r.sell/r.dd_act) : null;
+    const g = r.grade||'';
+    const highPot = (g==='S'||g==='A');
+    const onwayTxt = (r.onway||0)>0 ? ('(在途'+r.onway+'，到货续投)'):('(无在途!立即安排补货)');
+    let a = '';
+    if((r.sell===null||r.sell===0) && (r.onway||0)>0) a = '🔴断货中，在途'+r.onway+'件——到货立即补投广告+抢回排名，恢复期可加预算10-20%';
+    else if((r.sell===null||r.sell===0)) a = '🔴断货且无在途——排名流失风险，马上锁货/生产，预估DD'+r.pred+'需'+(r.pred*60).toFixed(0)+'件覆盖60天';
+    else if(rate===null || rate<60){
+      if(!r.s30 || r.s30<=2) a = '基本无动销：先查购物车/是否断货未恢复/广告是否在投；页面正常则'+(highPot?'高潜S/A品——':'')+'检查竞品价格与评论(评论<10条转化天然弱)，建议加大自动紧密+大词测款2周，无效则重估选品/降价清货';
+      else a = '低于预期'+(rate===null?'':'('+rate+'%)')+'：'+(highPot?'高潜品重视——':'')+'对比竞品主图/价格/评分修复转化要素；广告加码精准大词+顶部加成，盯2周达成率，<60%则收紧投入保本';
+    }
+    else if(rate<100){
+      a = '爬坡中('+rate+'%)：趋势向上可加码——大词/精准词bid+10-15%、开品牌词防守；'+(days!==null&&days<45?'⚠库存仅够'+days+'天，同步补货防断崖':'库存健康')+'；评论/星级同步补强助排名';
+    }
+    else {
+      a = '✅达标超预期('+rate+'%)'+(highPot?'(高潜S/A品跑出)':'')+'：'+(days!==null&&days<30?'🔥爆了!可售仅够'+days+'天——补货最高优先级，按实际DD×60天下单，加码广告抢断货前的窗口':'稳定放量：广告预算可+20%，扩词+SB品牌广告，冲BSR；盯库存');
+    }
+    if(days!==null && days<90 && rate>=100 && a) {} // 已并入
+    return a;
+  }
+  window.renderDdTable = function(){
+    const st = (document.getElementById('dd-status')||{}).value || 'ALL';
+    const gd = (document.getElementById('dd-grade')||{}).value || 'ALL';
+    let rows = rows0.filter(r=> (gd==='ALL'||r.grade===gd) && (st==='ALL' || (st==='达标'?r.rate>=100 : st==='爬坡'?(r.rate>=60&&r.rate<100):(r.rate!==null&&r.rate<60))));
+    const cnt = document.getElementById('dd-count'); if(cnt) cnt.innerText = '共'+rows.length+'个';
+    const gradeC = {'S':'#C00000','A':'#E36C09','B':'#BF8F00','C':'#2E75B6','D':'#888888'};
+    let h='<div style="overflow-x:auto"><table><tr><th>SKU</th><th>ASIN</th><th>等级</th><th>预估DD</th><th>实际DD</th><th>达成率</th><th>近30天销量</th><th>可售/在途</th><th>状态</th><th style="min-width:260px">🔧 改进措施(运营建议)</th></tr>';
+    for(const r of rows){
+      h+=`<tr><td style="text-align:left">${r.sku}</td><td style="text-align:left">${r.asin}</td>
+        <td style="color:${gradeC[r.grade]||'#333'};font-weight:700">${r.grade||'-'}</td>
+        <td>${r.pred}</td><td>${r.dd_act}</td>
+        <td style="${r.rate>=100?'color:#00B050;font-weight:700':(r.rate>=60?'color:#BF8F00':'color:#C00000')}">${r.rate===null?'-':r.rate+'%'}</td>
+        <td>${r.s30}</td><td>${r.sell===null?'-':r.sell}/${r.onway===null?'-':r.onway}</td>
+        <td style="${r.status.includes('达标')?'color:#00B050;font-weight:700':(r.status.includes('爬坡')?'color:#BF8F00':'color:#C00000;font-weight:700')}">${r.status}</td>
+        <td style="text-align:left;font-size:11.5px;color:#555">${ddAdvice(r)}</td></tr>`;
+    }
+    h+='</table></div>';
+    document.getElementById('dd-table').innerHTML = h;
+  };
+  renderDdTable();
+})();
+
+// ===== 涨跌TOP10双栏 =====
+(function(){
+  const mv = P.movers || [];
+  const tcol = r=> r.type==='新品' ? '<span style="color:#2E75B6;font-weight:600">新品</span>' : '<span style="color:#888">老品</span>';
+  const delta = r=> { const d=(r.qty6||0)-(r.qty5||0); return (d>0?'+':d<0?'':'-') + Math.abs(d); };
+  const pct = (c,p)=> (p>0&&c!==null&&c!==undefined)?(((c-p)/p*100).toFixed(0)+'%'):'-';
+  const money = v=>'¥'+Number(v).toLocaleString();
+  const up10 = mv.filter(r=>(r.qty6||0)>(r.qty5||0)).sort((a,b)=>((b.qty6||0)-(b.qty5||0))-((a.qty6||0)-(a.qty5||0))).slice(0,10);
+  const down10 = mv.filter(r=>(r.qty6||0)<(r.qty5||0)).sort((a,b)=>((a.qty6||0)-(a.qty5||0))-((b.qty6||0)-(b.qty5||0))).slice(0,10);
+  function tbl(rows,up){
+    if(!rows.length) return '<div style="color:#888;font-size:12px;padding:8px">无数据</div>';
+    const _wk = (P.weeks||[]).slice(-2).map(w=>String(w).slice(2)).join('→') || '41→42';
+    let h='<table><tr><th>ASIN</th><th>新老</th><th>店铺</th><th>销量<br>'+_wk+'周</th><th>广告花费<br>'+_wk+'周</th><th>促销占比<br>'+_wk+'周</th><th>推广占比<br>'+_wk+'周</th><th>库存<br>(可售/在途)</th>'+(up?'<th>措施(记录)</th>':'<th>措施(记录)<br><small>下周回看是否改善</small></th>')+'</tr>';
+    for(const r of rows){
+      const sd = (r.spend6||0)-(r.spend5||0);
+      const pdd = pct(r.promo6,r.promo5), spdd = pct(r.spread6,r.spread5);
+      const qd = (r.qty6||0)-(r.qty5||0);
+      const qcol = up ? (qd>=3?'color:var(--red);font-weight:700':(qd>0?'color:#BF8F00':'color:#333')) : (qd<=-3?'color:var(--green);font-weight:700':(qd<0?'color:#BF8F00':'color:#333'));
+      const mcell = up ? '<td style="color:#bbb;font-size:11px">—</td>'
+        : (function(){ var pk='mv_'+r.asin; var pv=(typeof effVal==='function'?effVal(pk):'').replace(/"/g,'&quot;');
+            return '<td style="min-width:190px"><input data-adname="'+encodeURIComponent(pk)+'" type="text" value="'+pv+'" placeholder="填写本周措施(如:加bid/恢复预算/改Coupon)" style="width:100%;padding:5px 8px;border:1px solid #ccc;border-radius:5px;font-size:12px;box-sizing:border-box"></td>'; })();
+      h += '<tr><td style="text-align:left">'+r.asin+'<br><span style="color:#999;font-size:11px">'+r.sku+'</span></td><td>'+tcol(r)+'</td><td>'+r.shop+'</td>'
+        + '<td style="'+qcol+'">'+r.qty5+'→'+r.qty6+' ('+delta(r)+')</td>'
+        + '<td>'+money(r.spend5)+'→'+money(r.spend6)+'<br><span style="color:'+(sd>0?'#C00000':'#00B050')+';font-size:11px">'+(sd>0?'▲+':sd<0?'▼':'')+Math.abs(sd)+' ('+pct(r.spend6,r.spend5)+')</span></td>'
+        + '<td>'+(r.promo5===null||r.promo5===undefined?'-':r.promo5+'%')+'→'+(r.promo6===null||r.promo6===undefined?'-':r.promo6+'%')+'<br><span style="color:#666;font-size:11px">'+pdd+'</span></td>'
+        + '<td>'+(r.spread5===null||r.spread5===undefined?'-':r.spread5+'%')+'→'+(r.spread6===null||r.spread6===undefined?'-':r.spread6+'%')+'<br><span style="color:#666;font-size:11px">'+spdd+'</span></td>'
+        + '<td>'+r.sell+'/'+r.onway+'</td>' + mcell + '</tr>';
+    }
+    h+='</table>';
+    return h;
+  }
+  document.getElementById('mv-up').innerHTML = '<b style="color:var(--red)">📈 涨幅明显 TOP10</b><span style="font-size:11.5px;color:#888;font-weight:400;margin-left:12px">口径：' + (P.weeks||[]).slice(-2).join(' → ') + ' 两周对比（上周→本周）｜按销量增量排序</span>' + tbl(up10,true);
+  document.getElementById('mv-down').innerHTML = '<b style="color:var(--green)">📉 下滑严重 TOP10</b><span style="font-size:11.5px;color:#888;font-weight:400;margin-left:12px">口径：' + (P.weeks||[]).slice(-2).join(' → ') + ' 两周对比（上周→本周）｜按销量降幅排序｜仅列库存未断货的品</span>' + tbl(down10,false) + '<div id="mv-save-tip" style="font-size:11.5px;color:#888;margin-top:6px">措施填写后自动保存（本机+云端同步，下周换周后仍可回看）</div>';
+  // 内联绑定措施输入(复用全局保存方法, 无则只存本地)
+  document.querySelectorAll('#mv-down input[data-adname]').forEach(function(inp){
+    inp.addEventListener('change', function(){
+      var nm = decodeURIComponent(this.dataset.adname), text = this.value.trim();
+      try {
+        var LS='sol_measures_v1';
+        var o = JSON.parse(localStorage.getItem(LS)||'{}');
+        if(text) o[nm]={v:text,t:new Date().toISOString()}; else delete o[nm];
+        localStorage.setItem(LS, JSON.stringify(o));
+      } catch(e){}
+      var tip = document.getElementById('mv-save-tip');
+      try {
+        fetch((window.SYNC_API||'http://127.0.0.1:8787')+'/save', {method:'POST', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({panel:'电磁阀', name:nm, text:text, ts:new Date().toISOString()})})
+          .then(function(r){return r.json()}).then(function(d){
+            if(d&&d.ok){ if(tip) tip.innerHTML='✓ <b>已同步云端</b>（组长/其他浏览器可见）— '+new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'}); }
+            else throw 0;
+          }).catch(function(){ if(tip) tip.innerHTML='✓ 已存本机（云端未连接，启动"启动措施同步服务.bat"即可同步）'; });
+      } catch(e){ if(tip) tip.innerHTML='✓ 已存本机'; }
+    });
+  });
+})();
+
+// 明细表 (仿BI运营分析导出: 行=周+周环比, 列=指标)
+(function(){
+  const o = P.overall;
+  const W5 = P.weeks;
+  const money = v=>'¥'+Number(v).toLocaleString();
+  const fmtC = (v,ty)=> v===null||v===undefined?'-':(ty==='¥'?money(v):(ty==='%'?Number(v).toFixed(1)+'%':(ty==='cpc'?'¥'+Number(v).toFixed(2):Number(v).toLocaleString())));
+  const cols = [
+    ['流量',o.traffic,'n'],['销量',o.sales_qty,'n'],['销售额',o.sales_amount,'¥'],['转化率',o.cvr,'%'],
+    ['展示量',o.impressions,'n'],['点击数',o.clicks,'n'],['广告花费',o.ad_spend,'¥'],
+    ['CPC',o.clicks.map((c,i)=> c? +(o.ad_spend[i]/c).toFixed(2):null),'cpc'],
+    ['ACOS',o.acos,'%'],['广告转化率',o.ad_cvr||[],'%'],['广告sku销售额',o.ad_sales_amount||[],'¥'],['广告sku销量',o.ad_qty,'n'],
+    ['毛利润',o.gross_profit||[],'¥'],['毛利率',o.profit_rate,'%'],
+    ['页面浏览量',o.page_views,'n'],['退款数量',o.refund_qty,'n'],['退款率',o.refund_rate,'%'],
+    ['促销折扣',o.promotion,'¥'],['促销占比',o.promo_ratio,'%'],['推广占比',o.spread_ratio,'%'],['coupon使用费',o.coupon,'¥'],
+  ];
+  const rel = (c,p)=> (p>0&&c!==null&&c!==undefined)?(((c-p)/p*100)):null;
+  const upGood = m => !(m==='ACOS'||m==='CPC'||m==='退款数量'||m==='退款率');
+  let h = '<div style="overflow-x:auto"><table><tr><th style="min-width:56px">周</th>'+cols.map(c=>'<th>'+c[0]+'</th>').join('')+'</tr>';
+  for(let k=0;k<W5.length;k++){
+    h += `<tr><td style="font-weight:600">${W5[k]}</td>` + cols.map(c=>`<td>${fmtC(c[1][k],c[2])}</td>`).join('') + '</tr>';
+  }
+  h += '<tr style="background:#FFF3D6"><td style="font-weight:700;color:#8a6d1a">周环比</td>';
+  for(const c of cols){
+    const v = rel(c[1][W5.length-1], c[1][W5.length-2]);
+    if(v===null){ h+='<td>-</td>'; continue; }
+    const col = v>0?(upGood(c[0])?'#00B050':'#C00000'):(upGood(c[0])?'#C00000':'#00B050');
+    h += `<td style="color:${col};font-weight:700">${v>0?'+':''}${v.toFixed(1)}%</td>`;
+  }
+  h += '</tr></table></div>';
+  document.getElementById('detail').innerHTML = h + '<div style="padding:6px 2px;font-size:11.5px;color:#999">布局仿BI"运营分析"导出；数据=BI MCP拉取(2026-11-17)；毛利润/毛利率=BI毛利率字段×销售额(与运营分析导出口径可能微差)；广告花费=SP+SD+SB合计(未拆分)</div>';
+})();
+
+
+/* ===== 仓储费×库存排行榜 ===== */
+
+
+
+/* ===== 市场市占分析 ===== */
+(function(){
+  const MS = P.market_share;
+  if(!MS) return;
+  function msMk(id, opt){
+    const el = document.getElementById(id);
+    if(!el) return null;
+    const c = echarts.init(el);
+    c.setOption(opt);
+    window.addEventListener('resize', function(){ try{c.resize()}catch(e){} });
+    return c;
+  }
+  const S = MS.series, SM = MS.summary, WE = MS.months;
+  const L = S.length-1;
+
+  document.getElementById('ms-kpis').innerHTML = [
+    ['合计市占率', SM.share.toFixed(2)+'%', (SM.share_chg>=0?'+':'')+SM.share_chg+'pct vs 上月'],
+    ['KAX 市占', (S[L].kax/S[L].market*100).toFixed(2)+'%', '第 '+SM.kax_rank+' 名 · '+S[L].kax+' 件'],
+    ['PHILTOP 市占', (S[L].philtop/S[L].market*100).toFixed(2)+'%', S[L].philtop+' 件 · '+S[0].philtop+'→'+S[L].philtop],
+    ['年内市占提升', (SM.share_growth>=0?'+':'')+SM.share_growth+'pct', S[0].month.slice(4)+'月 '+SM.share_first+'%'],
+    ['市场第一', SM.competitor_top, SM.competitor_top_share.toFixed(2)+'%']
+  ].map(x=>'<div class="kpi" style="border-left-color:#8e44ad"><div class="kl">'+x[0]+'</div>'
+    +'<div class="kv" style="color:#8e44ad">'+x[1]+'</div><div class="ks">'+x[2]+'</div></div>').join('');
+
+  const WL = WE.map(w=>w.slice(4)+'月');
+  msMk('ms-c1', {
+    tooltip:{trigger:'axis'}, legend:{bottom:0,textStyle:{fontSize:11}},
+    grid:{left:56,right:52,top:26,bottom:36},
+    xAxis:{type:'category',data:WL,axisLabel:{fontSize:10}},
+    yAxis:[{type:'value',name:'件',axisLabel:{fontSize:10}},
+           {type:'value',name:'市占%',max:16,axisLabel:{fontSize:10},splitLine:{show:false}}],
+    series:[
+      {name:'市场总量',type:'bar',data:S.map(x=>x.market),itemStyle:{color:'#d5dbe3'},
+       label:{show:true,fontSize:9,position:'top',formatter:p=>Math.round(p.value/1000)+'k'}},
+      {name:'我方销量',type:'bar',data:S.map(x=>x.mine),itemStyle:{color:'#8e44ad'},
+       label:{show:true,fontSize:9,position:'top'}},
+      {name:'KAX 市占%',type:'line',yAxisIndex:1,smooth:true,
+       data:S.map(x=>+(x.kax/x.market*100).toFixed(2)),
+       itemStyle:{color:'#8e44ad'},lineStyle:{width:3},
+       label:{show:true,fontSize:10,fontWeight:'bold',color:'#8e44ad',formatter:p=>p.value+'%'}},
+      {name:'PHILTOP 市占%',type:'line',yAxisIndex:1,smooth:true,
+       data:S.map(x=>+(x.philtop/x.market*100).toFixed(2)),
+       itemStyle:{color:'#2980b9'},lineStyle:{width:3},
+       label:{show:true,fontSize:10,fontWeight:'bold',color:'#2980b9',formatter:p=>p.value+'%'}},
+      {name:'合计市占%',type:'line',yAxisIndex:1,smooth:true,data:S.map(x=>x.share),
+       itemStyle:{color:'#e67e22'},lineStyle:{width:2,type:'dashed'},
+       label:{show:true,fontSize:9,color:'#e67e22',formatter:p=>p.value+'%'}}
+    ]
+  });
+
+  const C = MS.competitors.slice(0,10).slice().reverse();
+  msMk('ms-c2', {
+    tooltip:{trigger:'axis'}, grid:{left:110,right:56,top:16,bottom:24},
+    xAxis:{type:'value',name:'市占%',axisLabel:{fontSize:10}},
+    yAxis:{type:'category',data:C.map(c=>c.brand),axisLabel:{
+      fontSize:10, formatter:v=>v.length>13?v.slice(0,13)+'…':v}},
+    series:[{type:'bar',data:C.map(c=>({value:c.share,
+        itemStyle:{color:c.ours?'#8e44ad':'#b0b8c4'}})),
+      label:{show:true,position:'right',fontSize:10,
+        formatter:p=>p.value+'%'}}]
+  });
+
+  let h = '<table><thead><tr><th>月份</th><th>市场总量</th><th>KAX 销量</th><th>KAX 市占</th>'
+        + '<th>PHILTOP 销量</th><th>PHILTOP 市占</th><th>合计销量</th><th>合计市占</th><th>市占环比</th></tr></thead><tbody>';
+  S.forEach((x,i)=>{
+    const d = i>0 ? (x.share - S[i-1].share) : null;
+    const dCol = d===null?'#888':(d>=0?'#00A050':'#C00000');
+    const ks = (x.kax/x.market*100), ps = (x.philtop/x.market*100);
+    h += '<tr><td>'+x.month+'</td><td>'+x.market.toLocaleString()+'</td>'
+      + '<td>'+x.kax+'</td>'
+      + '<td style="color:#8e44ad;font-weight:700">'+ks.toFixed(2)+'%</td>'
+      + '<td>'+x.philtop+'</td>'
+      + '<td style="color:#2980b9;font-weight:700">'+ps.toFixed(2)+'%</td>'
+      + '<td><b>'+x.mine.toLocaleString()+'</b></td>'
+      + '<td style="color:#e67e22;font-weight:700">'+x.share+'%</td>'
+      + '<td style="color:'+dCol+';font-weight:600">'
+      + (d===null?'-':(d>=0?'+':'')+d.toFixed(2)+'pct')+'</td></tr>';
+  });
+  h += '</tbody></table>';
+  document.getElementById('ms-table').innerHTML = h;
+
+  const top = MS.competitors[0], kax = MS.competitors.find(c=>c.brand.toUpperCase()==='KAX');
+  let ins = '<div style="background:#faf5ff;border-left:4px solid #8e44ad;border-radius:8px;'
+    + 'padding:12px 15px;font-size:12.8px;line-height:1.95">'
+    + '<b>市占诊断：</b><br>'
+    + '① 我方市占 <b>'+SM.share+'%</b>（'+(SM.share_chg>=0?'环比+':'环比')+SM.share_chg+'pct，'
+    + '年内从 '+SM.share_first+'% 提升到 '+SM.share+'%，<b>+' + SM.share_growth + 'pct</b>）；<br>';
+  if(kax){
+    ins += '② <b>KAX 以 '+kax.share+'% 排名市场第 '+SM.kax_rank+'</b>'
+      + (top && top.brand.toUpperCase()!=='KAX' ? '，与第一名 '+top.brand+'（'+top.share+'%）差 '
+        + (top.share-kax.share).toFixed(2)+'pct' : '')+'；<br>';
+  }
+  const ks = S[L].kax/S[L].market*100, ps = S[L].philtop/S[L].market*100;
+  const ks0 = S[0].kax/S[0].market*100, ps0 = S[0].philtop/S[0].market*100;
+  ins += '③ KAX 市占 '+ks0.toFixed(2)+'% → <b>'+ks.toFixed(2)+'%</b>（'+((ks-ks0)>=0?'+':'')+(ks-ks0).toFixed(2)+'pct），'
+    + 'PHILTOP '+ps0.toFixed(2)+'% → <b>'+ps.toFixed(2)+'%</b>（'+((ps-ps0)>=0?'+':'')+(ps-ps0).toFixed(2)+'pct）；<br>'
+    + '④ 市场总量近几月稳定在 1.1~1.5 万件，<b>市占提升主要来自抢份额，不是市场变大</b>。'
+    + '</div>';
+  document.getElementById('ms-insight').innerHTML = ins;
+
+  document.getElementById('ms-note').innerText = MS.note;
+})();
+
+renderAdZoneSol();
+
+/* ===== 品牌维度 & 新老品维度 广告周环比 ===== */
+(function(){
+  const ABN = (window.__P__||{}).ad_brand_np;
+  if(!ABN) return;
+  const $ = id=>document.getElementById(id);
+  const fmt = v=>v===null||v===undefined?'—':(typeof v==='number'?v.toLocaleString():v);
+  const pct = v=>v===null||v===undefined?'—':v.toFixed(2)+'%';
+  const wk = ABN.weeks||[];
+
+  function delta(cur,prev,inv){
+    if(cur===null||prev===null||prev===undefined||cur===undefined||!prev) return '—';
+    const d=(cur-prev)/Math.abs(prev)*100;
+    const c = inv ? (d>0?'#C00000':'#008000') : (d>0?'#008000':'#C00000');
+    return '<span style="color:'+c+'">'+(d>=0?'+':'')+d.toFixed(1)+'%</span>';
+  }
+
+  // 品牌表
+  const bEl = $('tbl-ad-brand');
+  if(bEl){
+    const brands = Object.keys(ABN.brand||{}).filter(b=>Object.keys(ABN.brand[b]||{}).length);
+    let h='<table style="width:100%;border-collapse:collapse;font-size:11px">';
+    h+='<tr style="background:#1F4E78;color:#fff"><th style="padding:6px">品牌/店铺</th><th>周</th><th>花费</th><th>订单</th><th>点击</th><th>展示</th><th>ACOS</th><th>CVR</th><th>CTR</th><th>CPC</th><th>花费环比</th><th>订单环比</th></tr>';
+    brands.forEach(b=>{
+      const m=ABN.brand[b], ws=wk.filter(w=>m[w]);
+      if(!ws.length) return;
+      ws.forEach((w,i)=>{
+        const v=m[w], pv=i>0?m[ws[i-1]]:null;
+        h+='<tr style="border-bottom:1px solid #eee">';
+        if(i===0) h+='<td rowspan="'+ws.length+'" style="padding:6px;font-weight:700;background:#f7f9fc;text-align:center">'+b+'</td>';
+        h+='<td style="text-align:center">'+w+'</td>';
+        h+='<td style="text-align:right">¥'+fmt(v.spend)+'</td>';
+        h+='<td style="text-align:center">'+fmt(v.orders)+'</td>';
+        h+='<td style="text-align:right">'+fmt(v.clicks)+'</td>';
+        h+='<td style="text-align:right">'+fmt(v.imps)+'</td>';
+        h+='<td style="text-align:center">'+pct(v.acos)+'</td>';
+        h+='<td style="text-align:center">'+pct(v.cvr)+'</td>';
+        h+='<td style="text-align:center">'+pct(v.ctr)+'</td>';
+        h+='<td style="text-align:right">'+(v.cpc===null?'—':'¥'+v.cpc)+'</td>';
+        h+='<td style="text-align:center">'+(pv?delta(v.spend,pv.spend,true):'—')+'</td>';
+        h+='<td style="text-align:center">'+(pv?delta(v.orders,pv.orders,false):'—')+'</td>';
+        h+='</tr>';
+      });
+    });
+    h+='</table>';
+    h+='<div class="note" style="margin-top:6px">口径：领星活动明细逐条加总（不含_AGG汇总行）；品牌按店铺归属 US19=KAX / US22=PHILTOP / US8=ZonCar。<b>PHILTOP 202646 活动数=0（本周广告全停）</b>——这是 US22 销量 103→91 的直接原因。</div>';
+    bEl.innerHTML=h;
+  }
+
+  // 新老品表
+  const nEl = $('tbl-ad-np');
+  if(nEl){
+    const grps = ['新品','老品','未归类'];
+    let h='<table style="width:100%;border-collapse:collapse;font-size:11px">';
+    h+='<tr style="background:#1F4E78;color:#fff"><th style="padding:6px">分类</th><th>周</th><th>花费</th><th>订单</th><th>点击</th><th>ACOS</th><th>CVR</th><th>广告销售额</th><th>花费环比</th></tr>';
+    grps.forEach(g=>{
+      const m=(ABN.newold||{})[g]||{}, ws=wk.filter(w=>m[w]);
+      if(!ws.length) return;
+      ws.forEach((w,i)=>{
+        const v=m[w], pv=i>0?m[ws[i-1]]:null;
+        h+='<tr style="border-bottom:1px solid #eee">';
+        if(i===0) h+='<td rowspan="'+ws.length+'" style="padding:6px;font-weight:700;background:#f7f9fc;text-align:center">'+g+'</td>';
+        h+='<td style="text-align:center">'+w+'</td>';
+        h+='<td style="text-align:right">¥'+fmt(v.spend)+'</td>';
+        h+='<td style="text-align:center">'+fmt(v.orders)+'</td>';
+        h+='<td style="text-align:right">'+fmt(v.clicks)+'</td>';
+        h+='<td style="text-align:center">'+pct(v.acos)+'</td>';
+        h+='<td style="text-align:center">'+pct(v.cvr)+'</td>';
+        h+='<td style="text-align:right">¥'+fmt(v.sales)+'</td>';
+        h+='<td style="text-align:center">'+(pv?delta(v.spend,pv.spend,true):'—')+'</td>';
+        h+='</tr>';
+      });
+    });
+    h+='</table>';
+    h+='<div class="note" style="margin-top:6px">口径：按活动名中的 ASIN 归类（新品36个/老品22个，均属 US19 KAX 店铺）；名称中无 ASIN 的活动归"未归类"（多为自动/多ASIN混合活动）。</div>';
+    nEl.innerHTML=h;
+  }
+})();
+
+/* ===== 利润周维度分析 ===== */
+(function(){
+  const PF = (window.__P__ || {}).profit;
+  if(!PF) return;
+  function pfMk(id, opt){
+    const el = document.getElementById(id);
+    if(!el) return null;
+    const c = echarts.init(el);
+    c.setOption(opt);
+    if(window.CHARTS && window.CHARTS.push) window.CHARTS.push(c);
+    window.addEventListener('resize', function(){ try{c.resize()}catch(e){} });
+    return c;
+  }
+  const WE = PF.weeks, N = WE.length, L = N-1, L0 = N-2;
+  const S = PF.series, R = PF.rates;
+  const money = v => (v===null||v===undefined) ? '-' : '¥'+Math.round(v).toLocaleString();
+  const pct = v => (v===null||v===undefined) ? '-' : v.toFixed(2)+'%';
+
+  function chg(cur, prev){
+    if(cur===null||cur===undefined||prev===null||prev===undefined||!prev) return null;
+    return (cur-prev)/Math.abs(prev)*100;
+  }
+  function pctDiff(cur, prev){
+    if(cur===null||cur===undefined||prev===null||prev===undefined) return null;
+    return cur-prev;
+  }
+
+  // KPI
+  const kd = [
+    ['销售额', money(S.amt[L]), chg(S.amt[L], S.amt[L0]), 'amt'],
+    ['毛利润', money(S.gp[L]), chg(S.gp[L], S.gp[L0]), 'money'],
+    ['净利润', money(S.np[L]), chg(S.np[L], S.np[L0]), 'money'],
+    ['毛利率', pct(R['毛利率'][L]), pctDiff(R['毛利率'][L], R['毛利率'][L0]), 'pct'],
+    ['净利率', pct(R['净利率'][L]), pctDiff(R['净利率'][L], R['净利率'][L0]), 'pct']
+  ];
+  document.getElementById('pf-kpis').innerHTML = kd.map(x=>{
+    let cTxt = '', cCol = '#888';
+    if(x[2]!==null && x[2]!==undefined){
+      if(x[3]==='pct'){ cTxt = (x[2]>=0?'+':'')+x[2].toFixed(2)+'pct'; }
+      else { cTxt = (x[2]>=0?'+':'')+x[2].toFixed(1)+'%'; }
+      cCol = x[2]>=0 ? '#C00000' : '#00A050';
+    }
+    const isNeg = (typeof x[1]==='string' && x[1].indexOf('-')===0);
+    return '<div class="kpi" style="border-left-color:'+(isNeg?'#c0392b':'#16a085')+'">'
+      + '<div class="kl">'+x[0]+'</div>'
+      + '<div class="kv" style="color:'+(isNeg?'#c0392b':'#1a3b6d')+'">'+x[1]+'</div>'
+      + '<div class="ks"><span style="color:'+cCol+';font-weight:600">'+cTxt+'</span></div></div>';
+  }).join('');
+
+  // 图1：毛利/净利柱 + 毛利率/净利率线
+  pfMk('pf-c1', {
+    tooltip:{trigger:'axis'}, legend:{bottom:0,textStyle:{fontSize:11}},
+    grid:{left:56,right:52,top:28,bottom:36},
+    xAxis:{type:'category',data:WE,axisLabel:{fontSize:10}},
+    yAxis:[{type:'value',name:'¥',axisLabel:{fontSize:10}},
+           {type:'value',name:'%',axisLabel:{fontSize:10},splitLine:{show:false}}],
+    series:[
+      {name:'毛利润',type:'bar',data:S.gp.map(v=>Math.round(v)),itemStyle:{color:'#16a085'},
+       label:{show:true,fontSize:9,position:'top',formatter:p=>'¥'+Math.round(p.value)}},
+      {name:'净利润',type:'bar',data:S.np.map(v=>Math.round(v)),
+       itemStyle:{color:p=>p.value<0?'#c0392b':'#2b6cb0'},
+       label:{show:true,fontSize:9,position:'top',formatter:p=>'¥'+Math.round(p.value)}},
+      {name:'毛利率%',type:'line',yAxisIndex:1,smooth:true,data:R['毛利率'],itemStyle:{color:'#e67e22'},
+       label:{show:true,fontSize:9,formatter:p=>p.value===null?'':p.value+'%'}},
+      {name:'净利率%',type:'line',yAxisIndex:1,smooth:true,data:R['净利率'],itemStyle:{color:'#8e44ad'},
+       lineStyle:{type:'dashed'},label:{show:true,fontSize:9,formatter:p=>p.value===null?'':p.value+'%'}}
+    ]
+  });
+
+  // 图2：单均利润
+  pfMk('pf-c2', {
+    tooltip:{trigger:'axis'}, legend:{bottom:0,textStyle:{fontSize:11}},
+    grid:{left:52,right:30,top:28,bottom:36},
+    xAxis:{type:'category',data:WE,axisLabel:{fontSize:10}},
+    yAxis:{type:'value',name:'¥/单',axisLabel:{fontSize:10}},
+    series:[
+      {name:'单均销售额',type:'line',smooth:true,data:PF.per['单均销售额'],itemStyle:{color:'#95a5a6'},
+       label:{show:true,fontSize:9,formatter:p=>p.value===null?'':'¥'+p.value}},
+      {name:'单均毛利',type:'line',smooth:true,data:PF.per['单均毛利'],itemStyle:{color:'#16a085'},
+       label:{show:true,fontSize:9,formatter:p=>p.value===null?'':'¥'+p.value}},
+      {name:'单均净利',type:'bar',data:PF.per['单均净利'],
+       itemStyle:{color:p=>p.value<0?'#c0392b':'#2b6cb0'},
+       label:{show:true,fontSize:9,position:'top',formatter:p=>p.value===null?'':'¥'+p.value}}
+    ]
+  });
+
+  // 图3：费用结构堆叠（占销售额%）
+  const items = [
+    ['材料成本','材料费率','#34495e'],
+    ['头程','头程费率','#5d6d7e'],
+    ['尾程','尾程费率','#85929e'],
+    ['佣金','佣金费率','#aeb6bf'],
+    ['广告','广告费率','#e67e22'],
+    ['站外推广','站外推广费率','#f39c12'],
+    ['促销/Coupon','促销费率','#e74c3c'],
+    ['退款','退款费率','#8e44ad'],
+    ['仓储+其他','仓储费率','#16a085']
+  ];
+  pfMk('pf-c3', {
+    tooltip:{trigger:'axis',valueFormatter:v=>v+'%'}, legend:{bottom:0,textStyle:{fontSize:10}},
+    grid:{left:52,right:26,top:24,bottom:52},
+    xAxis:{type:'category',data:WE,axisLabel:{fontSize:10}},
+    yAxis:{type:'value',name:'占销售额%',axisLabel:{fontSize:10}},
+    series:items.map(it=>({
+      name:it[0], type:'bar', stack:'cost', data:R[it[1]] || [],
+      itemStyle:{color:it[2]},
+      label:{show:false}
+    }))
+  });
+
+  // 费率明细表
+  const order = ['材料费率','头程费率','尾程费率','佣金费率','平台费率','仓储费率','库内操作费率',
+                 '店铺其他费率','广告费率','站外推广费率','推广合计费率','促销费率',
+                 '退款费率','退换货成本费率','税费率','毛利率','净利率'];
+  let h = '<table><thead><tr><th style="text-align:left">费率项</th>'
+        + WE.map(w=>'<th>'+w+'</th>').join('')
+        + '<th>环比</th></tr></thead><tbody>';
+  order.forEach(k=>{
+    const arr = R[k];
+    if(!arr) return;
+    const cur = arr[L], prv = arr[L0];
+    const d = pctDiff(cur, prv);
+    const inv = (k==='毛利率'||k==='净利率');
+    let dTxt = '-', dCol = '#888';
+    if(d!==null && d!==undefined){
+      dTxt = (d>=0?'+':'')+d.toFixed(2)+'pct';
+      if(inv) dCol = d>=0 ? '#00A050' : '#C00000';
+      else dCol = d>=0 ? '#C00000' : '#00A050';
+    }
+    const isKey = (k==='毛利率'||k==='净利率');
+    h += '<tr'+(isKey?' style="background:#f0f9f6;font-weight:700"':'')+'>'
+       + '<td style="text-align:left;'+(isKey?'color:#16a085':'')+'">'+k+'</td>'
+       + arr.map(v=>'<td>'+(v===null?'-':v.toFixed(2)+'%')+'</td>').join('')
+       + '<td style="color:'+dCol+';font-weight:600">'+dTxt+'</td></tr>';
+  });
+  h += '</tbody></table>';
+  document.getElementById('pf-rates').innerHTML = h;
+
+  // 单均指标
+  let p = '<table><thead><tr><th>指标</th>'+WE.map(w=>'<th>'+w+'</th>').join('')+'</tr></thead><tbody>';
+  ['单均销售额','单均毛利','单均净利'].forEach(k=>{
+    p += '<tr><td style="text-align:left">'+k+'</td>'
+       + PF.per[k].map(v=>'<td style="color:'+(v!==null&&v<0?'#c0392b':'inherit')+'">'+(v===null?'-':'¥'+v)+'</td>').join('')
+       + '</tr>';
+  });
+  p += '</tbody></table>';
+  document.getElementById('pf-per').innerHTML = p;
+
+  // 分店铺
+  let sp = '<table><thead><tr><th>店铺</th><th>销售额</th><th>销量</th><th>毛利润</th><th>净利润</th>'
+         + '<th>毛利率</th><th>净利率</th><th>材料率</th><th>广告率</th><th>促销率</th><th>退款率</th></tr></thead><tbody>';
+  (PF.shops||[]).forEach(s=>{
+    const npCol = s.np < 0 ? '#c0392b' : '#1a3b6d';
+    sp += '<tr><td><b>'+s.shop+'</b></td><td>'+money(s.amt)+'</td><td>'+Math.round(s.qty)+'</td>'
+        + '<td style="color:'+(s.gp<0?'#c0392b':'inherit')+'">'+money(s.gp)+'</td>'
+        + '<td style="color:'+npCol+';font-weight:700">'+money(s.np)+'</td>'
+        + '<td>'+(s.gp_rate===null?'-':s.gp_rate+'%')+'</td>'
+        + '<td style="color:'+npCol+';font-weight:600">'+(s.np_rate===null?'-':s.np_rate+'%')+'</td>'
+        + '<td>'+(s.mat_rate===null?'-':s.mat_rate+'%')+'</td>'
+        + '<td>'+(s.ad_rate===null?'-':s.ad_rate+'%')+'</td>'
+        + '<td>'+(s.promo_rate===null?'-':s.promo_rate+'%')+'</td>'
+        + '<td style="color:'+(s.refund_rate>10?'#c0392b':'inherit')+'">'+(s.refund_rate===null?'-':s.refund_rate+'%')+'</td></tr>';
+  });
+  if(!(PF.shops||[]).length) sp += '<tr><td colspan="11" style="color:#999">无数据</td></tr>';
+  sp += '</tbody></table>';
+  document.getElementById('pf-shops').innerHTML = sp;
+
+  // 诊断：找恶化最大的费用项
+  const watch = ['材料费率','头程费率','尾程费率','佣金费率','广告费率','促销费率','退款费率','仓储费率','店铺其他费率'];
+  let worst = null;
+  watch.forEach(k=>{
+    const d = pctDiff(R[k][L], R[k][L0]);
+    if(d!==null && d!==undefined && (worst===null || d>worst.d)) worst = {k:k, d:d, cur:R[k][L], prv:R[k][L0]};
+  });
+  const gpD = pctDiff(R['毛利率'][L], R['毛利率'][L0]);
+  const npD = pctDiff(R['净利率'][L], R['净利率'][L0]);
+  let dg = '<div style="background:'+(npD<0?'#fff5f5':'#f0f9f6')+';border-left:4px solid '+(npD<0?'#e53e3e':'#16a085')
+    + ';border-radius:8px;padding:12px 15px;font-size:12.8px;line-height:1.9">'
+    + '<b>利润诊断（'+WE[L0]+' → '+WE[L]+'）：</b><br>'
+    + '① <b>净利润 '+money(S.np[L0])+' → '+money(S.np[L])+'</b>（净利率 '+pct(R['净利率'][L0])+' → '+pct(R['净利率'][L])
+    + (npD!==null?'，<b style="color:'+(npD<0?'#c0392b':'#00A050')+'">'+(npD>=0?'+':'')+npD.toFixed(2)+'pct</b>':'')
+    + '），毛利率 '+(gpD!==null?((gpD>=0?'+':'')+gpD.toFixed(2)+'pct'):'-')+'；<br>'
+    + (worst? '② <b>恶化最大的费用项：'+worst.k+'</b> '+worst.prv.toFixed(2)+'% → <b style="color:#c0392b">'+worst.cur.toFixed(2)+'%</b>（'
+        + (worst.d>=0?'+':'') + worst.d.toFixed(2) + 'pct）；<br>' : '')
+    + '③ 单均净利 '+(PF.per['单均净利'][L0]===null?'-':'¥'+PF.per['单均净利'][L0])+' → <b>'+(PF.per['单均净利'][L]===null?'-':'¥'+PF.per['单均净利'][L])+'</b>；'
+    + (PF.shops||[]).filter(s=>s.np<0).length
+      ? '其中 <b style="color:#c0392b">'+(PF.shops||[]).filter(s=>s.np<0).map(s=>s.shop).join('、')+'</b> 净利润为负。'
+      : '各店铺净利润均为正。'
+    + '</div>';
+  if(PF.storage && PF.storage.excess > 50){
+    dg += '<div style="margin-top:9px;background:#fff8e6;border-left:4px solid #BF8F00;border-radius:6px;padding:11px 14px;font-size:12.5px;line-height:1.85">'
+      + '<b>⚠ 仓储费口径提示：</b>' + PF.storage.note
+      + '<br>→ <b>调整后净利 $' + Math.round(PF.storage.adj_np).toLocaleString()
+      + '（净利率 ' + PF.storage.adj_np_rate + '%）</b>，环比 '
+      + (PF.storage.adj_yoy >= 0 ? '+' : '') + PF.storage.adj_yoy + '%'
+      + '　<span style="color:#888">（上周净利 $' + Math.round(PF.storage.prev_np).toLocaleString() + '）</span>'
+      + '</div>';
+  }
+  document.getElementById('pf-diag').innerHTML = dg;
+})();
+
+} catch(e) {
+  document.body.insertAdjacentHTML('afterbegin','<div style="background:#C00000;color:#fff;padding:12px;font-size:13px">面板脚本错误: '+e.message+'</div>');
+  console.error(e);
+}
+});
+
+
+
+
+
+/* ===== 左侧导航 v4：URL hash 驱动 ===== */
+(function(){
+  return;
+
+  var G = [
+    ['ov','📊 总览'],
+    ['detail','📋 明细'],
+    ['profit','💰 利润'],
+    ['market','📈 市占'],
+    ['prod','🔗 产品'],
+    ['ad','📣 广告']
+  ];
+  function build(){
+    if(document.getElementById('navsecs')) return true;
+    var blocks=[];
+    var inOv=false;
+    [].forEach.call(document.body.children, function(el){
+      if(!el.classList) return;
+      if(el.classList.contains('page-overview')){
+        inOv=true;
+        [].forEach.call(el.children, function(k){ push(k); });
+        return;
+      }
+      if(el.classList.contains('page-inv')){ inOv=false; return; }
+      if(inOv && el.classList.contains('table-card')) push(el);
+    });
+    function secOf(t){
+      if(t.indexOf('本周整体结论')>=0||t.indexOf('销量 & 销售额')>=0||t.indexOf('销量构成')>=0||t.indexOf('店铺对比')>=0||t.indexOf('新老品销量对比')>=0||t.indexOf('ACOS%')>=0||t.indexOf('退款数量')>=0) return 'ov';
+      if(t.indexOf('整体明细')>=0) return 'detail';
+      if(t.indexOf('利润周维度')>=0) return 'profit';
+      if(t.indexOf('市场市占')>=0) return 'market';
+      if(t.indexOf('广告分析')>=0||t.indexOf('品牌维度广告')>=0||t.indexOf('新老品广告')>=0) return 'ad';
+      if(t.indexOf('新老品周环比')>=0||t.indexOf('预估DD')>=0||t.indexOf('DD达成率')>=0||t.indexOf('重点链接')>=0||t.indexOf('涨跌')>=0||t.indexOf('涨幅明显')>=0||t.indexOf('下滑严重')>=0||t.indexOf('闭环总结')>=0) return 'prod';
+      return null;
+    }
+    function push(el){
+      if(!el.classList){ blocks.push({el:el,sec:'ov'}); return; }
+      var c=el.className||'';
+      if(c.indexOf('kpis')>=0||c.indexOf('conclusion')>=0){ blocks.push({el:el,sec:'ov'}); return; }
+      if(c.indexOf('grid')>=0){
+        var gh=el.querySelector('h3'), gt=gh?(gh.textContent||''):'';
+        blocks.push({el:el,sec: gt?(secOf(gt)||'ov'):'ov'});
+        return;
+      }
+      if(c.indexOf('table-card')>=0){
+        var kids=[].slice.call(el.children);
+        var hasCard=kids.some(function(k){return k.classList&&k.classList.contains('card');});
+        if(hasCard){
+          kids.forEach(function(k){
+            if(k.tagName==='H3'||k.id==='detail'||(k.classList&&k.classList.contains('note'))){ blocks.push({el:k,sec:'detail'}); }
+            else if(k.classList&&k.classList.contains('card')){
+              var h=k.querySelector('h3'), t=h?(h.textContent||''):'';
+              blocks.push({el:k,sec:secOf(t)||'detail'});
+            } else if(k.classList&&k.classList.contains('table-card')){
+              var h2=k.querySelector('h3'), t2=h2?(h2.textContent||''):'';
+              blocks.push({el:k,sec:secOf(t2)||'detail'});
+            } else { blocks.push({el:k,sec:'detail'}); }
+          });
+          el.style.display='none';
+        } else {
+          var h=el.querySelector('h3'), t=h?(h.textContent||''):'';
+          blocks.push({el:el,sec:secOf(t)||'detail'});
+        }
+        return;
+      }
+      var hh=el.querySelector?el.querySelector('h3'):null;
+      var tt=hh?(hh.textContent||''):'';
+      blocks.push({el:el,sec:secOf(tt)||'prod'});
+    }
+    if(blocks.length<3) return false;
+
+    var holder=document.createElement('div'); holder.id='navsecs';
+    var secs={};
+    G.forEach(function(g){ var d=document.createElement('div'); d.className='navsec'; d.id='sec-'+g[0]; secs[g[0]]=d; holder.appendChild(d); });
+    blocks.forEach(function(b){ (secs[b.sec]||secs['ov']).appendChild(b.el); });
+    document.body.appendChild(holder);
+
+    // 事后修正：广告/总结
+    Object.keys(secs).forEach(function(k){
+      if(k==='ad'||k==='prod') return;
+      [].slice.call(secs[k].children).forEach(function(ch){
+        var t=(ch.textContent||'').replace(/\s+/g,'');
+        if(t.indexOf('广告分析')>=0) secs['ad'].appendChild(ch);
+        else if(t.indexOf('闭环总结')>=0) secs['prod'].appendChild(ch);
+      });
+    });
+
+    // 用 <a href="#sec-xx"> 做导航（普通链接，最可靠）
+    var nav=document.getElementById('sidenav');
+    nav.innerHTML='<div class="brand">⚙️ 电磁阀<br><span style="font-size:10px;color:#7f9bb8">202646</span></div>';
+    G.forEach(function(g){
+      if(!secs[g[0]].children.length) return;
+      var a=document.createElement('a');
+      a.href='#sec-'+g[0]; a.textContent=g[1]; a.dataset.sec=g[0];
+      nav.appendChild(a);
+    });
+    return true;
+  }
+
+  function show(){
+    var h=(location.hash||'').replace('#','');
+    if(!h || h.indexOf('sec-')!==0) h='sec-ov';
+    var secs=document.querySelectorAll('.navsec');
+    if(!secs.length) return;
+    [].forEach.call(secs, function(x){ x.classList.remove('on'); });
+    var t=document.getElementById(h);
+    if(t) t.classList.add('on');
+    [].forEach.call(document.querySelectorAll('.sidenav a'), function(a){
+      a.classList.toggle('on', a.dataset.sec === h.replace('sec-',''));
+    });
+    window.scrollTo(0,0);
+    setTimeout(function(){
+      try{ if(window.echarts) document.querySelectorAll('.chart').forEach(function(c){var i=echarts.getInstanceByDom(c); if(i)i.resize();}); }catch(e){}
+    }, 80);
+  }
+
+  var tries=0;
+  function boot(){
+    tries++;
+    var ok=false;
+    try{ ok=build(); }catch(e){ console.warn('nav err',e); }
+    if(ok){ show(); window.addEventListener('hashchange', show); return; }
+    if(tries<25) setTimeout(boot, 400);
+  }
+  window.addEventListener('hashchange', function(){ if(document.getElementById('navsecs')) show(); });
+  if(document.readyState==='complete') boot();
+  else window.addEventListener('load', function(){ setTimeout(boot,150); });
+})();
+
+</script>
+</body>
+</html>
