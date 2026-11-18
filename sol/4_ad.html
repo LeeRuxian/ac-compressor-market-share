@@ -1607,5 +1607,27 @@ tr:hover td{background:#f0f7ff !important}
 [data-sec]:not([data-sec="广告"]){display:none !important}
 [data-sec="广告"]{display:block !important}
 </style>
+<script>
+/* SEC-ENFORCE-JS */
+(function(){
+  var TARGET = "广告";
+  function apply(){
+    document.querySelectorAll("[data-sec]").forEach(function(e){
+      if(e.getAttribute("data-sec") === TARGET){
+        e.style.setProperty("display", "", "important");
+        e.style.removeProperty("display");
+        if(e.classList.contains("grid")) e.style.setProperty("display","grid","important");
+        else if(e.classList.contains("kpis")) e.style.setProperty("display","grid","important");
+        else e.style.setProperty("display","block","important");
+      } else {
+        e.style.setProperty("display", "none", "important");
+      }
+    });
+  }
+  if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", apply);
+  else apply();
+  window.addEventListener("load", function(){ setTimeout(apply, 300); });
+})();
+</script>
 </body>
 </html>
