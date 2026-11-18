@@ -70,8 +70,8 @@ table th{background:var(--blue);color:#fff;white-space:nowrap;font-size:12px;}
 .sidenav a.on{background:#1F4E78;color:#fff;border-left-color:#4da3ff;font-weight:700}
 .sidenav .brand{color:#fff;font-size:12.5px;font-weight:700;padding:0 12px 11px;border-bottom:1px solid #1e4266;margin-bottom:8px}
 body{padding-left:128px !important;box-sizing:border-box}
-.navsec{display:none}
-.navsec.on{display:block}
+.navsec{display:none !important}
+.navsec.on{display:block !important}
 
 </style>
 </head>
@@ -1472,8 +1472,7 @@ renderAdZoneSol();
       a.onclick=function(){
         [].forEach.call(nav.querySelectorAll('a'),function(x){x.classList.remove('on')});
         a.classList.add('on');
-        Object.keys(secs).forEach(function(k){ secs[k].style.display='none'; secs[k].classList.remove('on'); });
-        secs[g[0]].style.display='block';
+        Object.keys(secs).forEach(function(k){ secs[k].classList.remove('on'); });
         secs[g[0]].classList.add('on');
         try{ showCh('overview'); }catch(e){}
         window.scrollTo(0,0);
@@ -1502,13 +1501,12 @@ renderAdZoneSol();
       a.onclick=function(){
         [].forEach.call(nav.querySelectorAll('a'),function(x){x.classList.remove('on')});
         a.classList.add('on');
-        Object.keys(secs).forEach(function(k){ secs[k].style.display='none'; secs[k].classList.remove('on'); });
-        secs[g[0]].style.display='block';
+        Object.keys(secs).forEach(function(k){ secs[k].classList.remove('on'); });
+        secs[g[0]].classList.add('on');
         window.scrollTo(0,0);
       };
       nav.appendChild(a);
     });
-    Object.keys(secs).forEach(function(k){ secs[k].style.display='none'; });
     var f=nav.querySelector('a'); if(f) f.click();
   }
   if(document.readyState==='complete') setTimeout(build,450);
