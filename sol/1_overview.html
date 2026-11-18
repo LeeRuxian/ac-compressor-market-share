@@ -75,8 +75,8 @@ table th{background:var(--blue);color:#fff;white-space:nowrap;font-size:12px;}
 
 
 body{padding:0 !important}
-[data-sec]{display:none !important}
-[data-sec="总览"]{display:block !important}
+
+
 .topbar{position:sticky;top:0;z-index:9999;background:#0f2942;padding:8px 14px;display:flex;gap:4px;flex-wrap:wrap;align-items:center;font-family:inherit}
 .topbar a{color:#b8c7d9;text-decoration:none;font-size:12.5px;padding:6px 11px;border-radius:6px;white-space:nowrap}
 .topbar a:hover{background:#16395c;color:#fff}
@@ -1943,6 +1943,12 @@ tr:hover td{background:#f0f7ff !important}
 .topbar{background:#0f2942 !important;padding:9px 16px !important}
 .topbar a.on{background:#2d6ba8 !important}
 .page,.page-overview{max-width:1580px !important;margin:0 auto !important;padding:0 20px 44px !important}
+</style>
+<style>
+/* SEC-HIDE */
+[data-sec]:not([data-sec="总览"]){display:none !important}
+[data-sec="总览"]{display:block !important}
+[data-sec="总览"].grid{display:grid !important}
 </style>
 </body>
 </html>
