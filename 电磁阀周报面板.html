@@ -62,9 +62,21 @@ table th{background:var(--blue);color:#fff;white-space:nowrap;font-size:12px;}
 .badge{display:inline-block;padding:2px 10px;border-radius:12px;font-size:11.5px;color:#fff;font-weight:600;}
 .b-oos{background:#C00000;}.b-low_inv{background:#E36C09;}.b-spd{background:#BF8F00;}.b-slow{background:#7F7F7F;}.b-ok{background:#00B050;}
 @media(max-width:1100px){.kpis{grid-template-columns:repeat(2,1fr);}.grid{grid-template-columns:1fr;}}
+
+/* ===== 左侧导航 ===== */
+.sidenav{position:fixed;left:0;top:0;bottom:0;width:128px;background:#0f2942;padding:14px 0;overflow-y:auto;z-index:9999}
+.sidenav a{display:block;color:#b8c7d9;text-decoration:none;font-size:12.5px;padding:10px 12px;border-left:3px solid transparent;cursor:pointer;line-height:1.3}
+.sidenav a:hover{background:#16395c;color:#fff}
+.sidenav a.on{background:#1F4E78;color:#fff;border-left-color:#4da3ff;font-weight:700}
+.sidenav .brand{color:#fff;font-size:12.5px;font-weight:700;padding:0 12px 11px;border-bottom:1px solid #1e4266;margin-bottom:8px}
+body{padding-left:128px !important;box-sizing:border-box}
+.navsec{display:none}
+.navsec.on{display:block}
+
 </style>
 </head>
 <body>
+<div class="sidenav" id="sidenav"><div class="brand">⚙️ 电磁阀<br><span style="font-size:10px;color:#7f9bb8">202646</span></div></div>
 <div class="header">
   <div>
     <h1>⚙️ 怠速电磁阀 周报面板</h1>
@@ -104,7 +116,6 @@ table th{background:var(--blue);color:#fff;white-space:nowrap;font-size:12px;}
   <b>④ 🟢 转化率是真正的引擎：</b>14.88%→<b>16.14%（+1.26pct）</b>，流量只 +2.1%（1,875→1,914）却多做 30 单——<b>不是靠流量堆出来的</b>；<br>
   <b>⑤ 🟢 广告更省更准：</b>花费 ¥1,439→<b>¥1,274（-11.5%）</b>但广告单 68→<b>70（+2）</b>、ACOS 11.97%→<b>11.60%</b>、广告CVR 14.47%→<b>15.98%</b>；<br>
   <b>⑥ 毛利 ¥9,814→¥11,686（+19.1%）、毛利率 25.9%→27.1%（+1.2pct）</b>——量价齐升，本周是全品类唯一全面转好的一周。
-</div>
 </div>
 
 <div class="grid">
@@ -229,6 +240,8 @@ table th{background:var(--blue);color:#fff;white-space:nowrap;font-size:12px;}
 
 
 <!-- ===== 库存监控 tab ===== -->
+</div>
+
 <div class="page page-inv" style="display:none">
 <div class="card" style="background:var(--card);border-radius:10px;padding:14px 16px;box-shadow:0 2px 6px rgba(0,0,0,.06);margin-bottom:16px;"><h3 style="color:var(--blue);font-size:15px;margin-bottom:8px;border-left:4px solid var(--blue2);padding-left:8px;">📦 FBA库存 & 库销比（KAX/PT/ZC 最新快照）</h3><div class="cmp" id="cmp7"></div><div class="chart" id="c7" style="height:300px"></div></div>
 <div style="background:var(--card);border-radius:10px;padding:16px 18px;box-shadow:0 2px 6px rgba(0,0,0,.06);margin-bottom:16px;">
@@ -1375,6 +1388,97 @@ renderAdZoneSol();
 
 
 
+
+
+/* ===== 左侧导航 v3 ===== */
+(function(){
+  function build(){
+    if(document.getElementById('navsecs')) return;
+    var G = [
+      ['ov','📊 总览',['本周整体结论','销量 & 销售额','销量构成','店铺对比','新老品销量对比','ACOS%','退款数量']],
+      ['detail','📋 明细',['整体明细']],
+      ['profit','💰 利润',['利润周维度']],
+      ['market','📈 市占',['市场市占']],
+      ['ad','📣 广告',['广告分析','品牌维度广告','新老品广告']],
+      ['prod','🔗 产品',['新老品周环比','预估DD','DD达成率','重点链接监控','涨跌 TOP10','涨幅明显','下滑严重']],
+      ['sum','✅ 总结',['闭环总结']]
+    ];
+    function secOf(t){ for(var i=0;i<G.length;i++) for(var j=0;j<G[i][2].length;j++) if(t.indexOf(G[i][2][j])>=0) return G[i][0]; return null; }
+
+    // 1) 收集：page-overview 的子块 + 其后到 page-inv 之前的 table-card/card
+    var blocks = [];
+    var inOv = false, seenInv = false;
+    [].forEach.call(document.body.children, function(el){
+      if(!el.classList) return;
+      if(el.classList.contains('page-overview')){
+        inOv = true;
+        [].forEach.call(el.children, function(k){ push(k); });
+        return;
+      }
+      if(el.classList.contains('page-inv')){ inOv=false; seenInv=true; return; }
+      if(inOv && el.classList.contains('table-card')) push(el);
+    });
+
+    function push(el){
+      if(!el.classList) { blocks.push({el:el, sec:'ov'}); return; }
+      var c = el.className || '';
+      if(c.indexOf('kpis')>=0 || c.indexOf('conclusion')>=0 || c.indexOf('grid')>=0){ blocks.push({el:el,sec:'ov'}); return; }
+      if(c.indexOf('table-card')>=0){
+        var kids=[].slice.call(el.children);
+        var hasCard=kids.some(function(k){return k.classList&&k.classList.contains('card');});
+        if(hasCard){
+          kids.forEach(function(k){
+            if(k.tagName==='H3'||k.id==='detail'||(k.classList&&k.classList.contains('note'))){ blocks.push({el:k,sec:'detail'}); }
+            else if(k.classList&&k.classList.contains('card')){
+              var h=k.querySelector('h3'), t=h?h.innerText:'';
+              blocks.push({el:k,sec:secOf(t)||'detail'});
+            } else if(k.classList&&k.classList.contains('table-card')){
+              var h2=k.querySelector('h3'), t2=h2?h2.innerText:'';
+              blocks.push({el:k,sec:secOf(t2)||'detail'});
+            } else { blocks.push({el:k,sec:'detail'}); }
+          });
+          el.style.display='none';
+        } else {
+          var h=el.querySelector('h3'), t=h?h.innerText:'';
+          blocks.push({el:el,sec:secOf(t)||'detail'});
+        }
+        return;
+      }
+      if(c.indexOf('card')>=0 || el.id==='newold'){
+        var h=el.querySelector?el.querySelector('h3'):null; var t=h?h.innerText:'';
+        blocks.push({el:el,sec:secOf(t)||'prod'});
+        return;
+      }
+      blocks.push({el:el,sec:'prod'});
+    }
+
+    if(blocks.length < 5){ console.warn('nav: only', blocks.length, 'blocks'); return; }
+
+    var holder=document.createElement('div'); holder.id='navsecs';
+    var secs={};
+    G.forEach(function(g){ var d=document.createElement('div'); d.className='navsec'; d.id='sec-'+g[0]; secs[g[0]]=d; holder.appendChild(d); });
+    blocks.forEach(function(b){ (secs[b.sec]||secs['ov']).appendChild(b.el); });
+    document.body.appendChild(holder);
+
+    var nav=document.getElementById('sidenav');
+    G.forEach(function(g){
+      if(!secs[g[0]].children.length) return;
+      var a=document.createElement('a'); a.textContent=g[1]; a.dataset.sec=g[0];
+      a.onclick=function(){
+        [].forEach.call(nav.querySelectorAll('a'),function(x){x.classList.remove('on')});
+        a.classList.add('on');
+        Object.keys(secs).forEach(function(k){secs[k].classList.remove('on')});
+        secs[g[0]].classList.add('on');
+        window.scrollTo(0,0);
+        setTimeout(function(){ try{ if(window.echarts) document.querySelectorAll('.chart').forEach(function(c){var i=echarts.getInstanceByDom(c); if(i)i.resize();}); }catch(e){} }, 60);
+      };
+      nav.appendChild(a);
+    });
+    var f=nav.querySelector('a'); if(f) f.click();
+  }
+  if(document.readyState==='complete') setTimeout(build,450);
+  else window.addEventListener('load',function(){setTimeout(build,450);});
+})();
 
 </script>
 </body>
