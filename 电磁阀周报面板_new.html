@@ -1457,7 +1457,7 @@ renderAdZoneSol();
       blocks.push({el:el,sec:'prod'});
     }
 
-    if(blocks.length < 5){ console.warn('nav: only', blocks.length, 'blocks'); return; }
+    if(blocks.length < 3){ return; }
 
     var holder=document.createElement('div'); holder.id='navsecs';
     var secs={};
@@ -1509,8 +1509,14 @@ renderAdZoneSol();
     });
     var f=nav.querySelector('a'); if(f) f.click();
   }
-  if(document.readyState==='complete') setTimeout(build,450);
-  else window.addEventListener('load',function(){setTimeout(build,450);});
+  var tries=0;
+  function tryBuild(){
+    tries++;
+    try{ build(); }catch(e){ console.warn('nav build err', e); }
+    if(!document.getElementById('navsecs') && tries<20) setTimeout(tryBuild, 500);
+  }
+  if(document.readyState==='complete') tryBuild();
+  else window.addEventListener('load', function(){ setTimeout(tryBuild, 200); });
 })();
 
 </script>
