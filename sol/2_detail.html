@@ -141,7 +141,11 @@ body{padding:0 !important}
 <div class="table-card" data-sec="总览">
   <h3 style="color:var(--blue);font-size:14.5px;margin-bottom:10px;border-left:4px solid var(--blue2);padding-left:8px;">整体明细（怠速电磁阀品类，5周）</h3>
   <div id="detail"></div>
-  <div class="card" style="border-left:5px solid #16a085">
+  
+    <div class="note">口径：月度仓储费=W45（2026-10整月一次性计提）｜单件月成本=月仓储费÷当前可售库存｜年化=月费×12｜占销售额比=月仓储÷同月销售额｜库存=ERP实时可售（FBA+海外仓+本地）</div>
+  </div>
+<!-- PROFIT_MOVED -->
+<div class="card" data-sec="明细利润" style="border-left:5px solid #16a085">
     <h3 style="border-left-color:#16a085">💰 利润周维度分析（怠速电磁阀 · BI损益明细）</h3>
     <div id="pf-kpis" style="display:grid;grid-template-columns:repeat(5,1fr);gap:11px;margin-bottom:14px"></div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-bottom:15px">
@@ -165,8 +169,7 @@ body{padding:0 !important}
     <div id="pf-diag" style="margin-top:14px"></div>
     <div class="note">口径：出库口径（BI损益明细·sales_amount_m）｜毛利率=毛利润实际÷出库销售额｜净利率=净利润÷出库销售额｜费率均由金额重算（非各店铺平均）｜数据源：SmartBI bi-getdata-finance</div>
   </div>
-    <div class="note">口径：月度仓储费=W45（2026-10整月一次性计提）｜单件月成本=月仓储费÷当前可售库存｜年化=月费×12｜占销售额比=月仓储÷同月销售额｜库存=ERP实时可售（FBA+海外仓+本地）</div>
-  </div>
+
 
 <div class="card" style="border-left:5px solid #8e44ad" data-sec="市占">
     <h3 style="border-left-color:#8e44ad">📊 市场市占分析（Idle Air Control Valves · 月度）</h3>
