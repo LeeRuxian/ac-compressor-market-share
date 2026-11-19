@@ -1,0 +1,138 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>广告分析 · 怠速电磁阀 202646</title><script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script><style>
+*{box-sizing:border-box}
+body{margin:0;background:#f4f6fa;font-family:-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;
+  color:#2c3e50;font-size:13px;line-height:1.6}
+.wrap{max-width:1580px;margin:0 auto;padding:0 20px 50px}
+/* 顶部导航 */
+.topbar{background:#0f2942;padding:0;position:sticky;top:0;z-index:100;box-shadow:0 2px 10px rgba(15,41,66,.18)}
+.topbar .inner{max-width:1580px;margin:0 auto;padding:0 20px;display:flex;align-items:center;gap:3px;height:52px}
+.topbar .brand{color:#fff;font-size:14px;font-weight:700;margin-right:20px;white-space:nowrap}
+.topbar .brand span{font-size:10.5px;color:#7f9bb8;font-weight:400;margin-left:6px}
+.topbar a{color:#b8c7d9;text-decoration:none;font-size:13px;padding:7px 15px;border-radius:7px;white-space:nowrap;transition:.15s}
+.topbar a:hover{background:#16395c;color:#fff}
+.topbar a.on{background:#2d6ba8;color:#fff;font-weight:700}
+/* 页头 */
+.hd{background:linear-gradient(135deg,#0f2942 0%,#214f7d 100%);border-radius:0 0 15px 15px;
+  box-shadow:0 4px 16px rgba(15,41,66,.2);padding:17px 24px;margin-bottom:18px}
+.hd h1{margin:0;font-size:19px;color:#fff;font-weight:800;letter-spacing:.3px}
+.hd .sub{font-size:11px;color:#9db8d4;margin-top:5px}
+/* KPI 卡片 */
+.kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:13px;margin:16px 0 22px}
+@media(max-width:1500px){.kpis{grid-template-columns:repeat(5,1fr)}}
+@media(max-width:1200px){.kpis{grid-template-columns:repeat(4,1fr)}}
+@media(max-width:900px){.kpis{grid-template-columns:repeat(2,1fr)}}
+.kpi{background:#fff;border-radius:13px;padding:16px 15px;box-shadow:0 2px 9px rgba(15,41,66,.07);
+  border:1px solid #eef2f7;transition:.16s;display:flex;flex-direction:column;justify-content:center;min-height:104px}
+.kpi:hover{box-shadow:0 7px 22px rgba(15,41,66,.15);transform:translateY(-3px)}
+.kpi .kl{font-size:11px;color:#8a9bb0;font-weight:600;letter-spacing:.3px;margin-bottom:5px}
+.kpi .kv{font-size:23px;font-weight:800;color:#0f2942;line-height:1.15;letter-spacing:-.4px;
+  font-variant-numeric:tabular-nums}
+.kpi .kc{font-size:11px;color:#7d8fa3;margin-top:4px}
+.kpi.hl{background:linear-gradient(140deg,#fff 0%,#eff7ff 100%);border-left:4px solid #1F4E78;
+  box-shadow:0 4px 14px rgba(31,78,120,.14)}
+.kpi.hl .kv{font-size:26px;color:#1F4E78}
+/* 卡片 */
+.card{background:#fff;border-radius:13px;box-shadow:0 2px 11px rgba(15,41,66,.06);
+  border:1px solid #eef2f7;padding:17px 19px;margin-bottom:15px}
+.card h3{font-size:13.5px;color:#0f2942;font-weight:700;margin:0 0 13px;
+  padding-bottom:10px;border-bottom:1px solid #f0f4f9}
+.card h4{font-size:13px;color:#1F4E78;font-weight:700;margin:18px 0 9px}
+/* 表格 */
+.tb{overflow-x:auto;border-radius:9px}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+th{background:#1F4E78;color:#fff;font-size:11.5px;font-weight:600;padding:10px 8px;
+  text-align:right;white-space:nowrap;border:none}
+th:first-child,td:first-child{text-align:left}
+td{font-size:12px;padding:8px;text-align:right;border-bottom:1px solid #f1f5f9;white-space:nowrap}
+tr:nth-child(even) td{background:#fafbfd}
+tr:hover td{background:#f0f7ff}
+tr.sum td{background:#fff8e6 !important;font-weight:700}
+/* 涨跌色 */
+.up{color:#c0392b;font-weight:600}
+.down{color:#27ae60;font-weight:600}
+.flat{color:#95a5a6}
+/* 结论框 */
+.concl{background:#fff;border-left:5px solid #1F4E78;border-radius:13px;padding:20px 24px;
+  box-shadow:0 3px 14px rgba(15,41,66,.08);line-height:2.0;margin-bottom:20px}
+.concl h3{font-size:15px;color:#0f2942;font-weight:800;margin:0 0 14px;padding-bottom:10px;
+  border-bottom:2px solid #f0f4f9}
+.concl b{color:#c0392b}
+/* 图表 */
+.charts{display:grid;grid-template-columns:repeat(2,1fr);gap:15px;margin-bottom:20px}
+@media(max-width:900px){.charts{grid-template-columns:1fr}}
+.chart-box{background:#fff;border-radius:13px;box-shadow:0 2px 11px rgba(15,41,66,.06);
+  border:1px solid #eef2f7;padding:16px 18px}
+.chart-box h3{font-size:13px;color:#0f2942;font-weight:700;margin:0 0 10px}
+.chart{height:200px}
+/* 提示 */
+.note{background:#fff9f0;border-left:4px solid #e67e22;border-radius:9px;padding:12px 15px;
+  margin-top:12px;font-size:12px;line-height:1.9;color:#7a5c2e}
+.note.blue{background:#f0f7ff;border-left-color:#1F4E78;color:#2c5282}
+.tag{display:inline-block;padding:1px 7px;border-radius:5px;font-size:10.5px;font-weight:600}
+.tag.red{background:#fde8e8;color:#c0392b}
+.tag.green{background:#e8f8ef;color:#1e8449}
+.tag.orange{background:#fef3e2;color:#b9770e}
+.tag.gray{background:#eef1f5;color:#7f8c8d}
+</style></head><body><div class="topbar"><div class="inner"><div class="brand">⚙️ 怠速电磁阀<span>202646</span></div><a href="1_overview.html">总览</a><a href="2_profit.html">利润</a><a href="3_market.html">市占</a><a href="4_ad.html" class="on">广告</a><a href="5_product.html">产品</a></div></div><div class="wrap"><div class="hd"><h1>广告分析</h1><div class="sub">202646 周（2026-11-08 ~ 11-14）｜ 数据源：BI 综合数据模型 + 领星 MCP</div></div><div class="card"><h3>① 广告周数据（202646）</h3><div class="kpis"><div class="kpi hl"><div class="kl">广告花费</div><div class="kv">¥1,272</div><div class="kc"><span class="up">▼11.6%</span></div></div><div class="kpi hl"><div class="kl">广告销售额</div><div class="kv">¥11,099</div><div class="kc"><span class="down">▼7.7%</span></div></div><div class="kpi"><div class="kl">广告订单</div><div class="kv">71</div><div class="kc"><span class="up">▲4.4%</span></div></div><div class="kpi"><div class="kl">ACOS</div><div class="kv">11.5%</div><div class="kc"><span class="up">-0.51pct</span></div></div><div class="kpi"><div class="kl">广告CVR</div><div class="kv">16.2%</div><div class="kc"><span class="up">+1.78pct</span></div></div><div class="kpi"><div class="kl">CPC</div><div class="kv">¥2.91</div><div class="kc"><span class="up">▼5.0%</span></div></div><div class="kpi"><div class="kl">点击</div><div class="kv">437</div><div class="kc"><span class="down">▼7.0%</span></div></div><div class="kpi"><div class="kl">曝光量</div><div class="kv">50,887</div><div class="kc"><span class="up">▲15.0%</span></div></div><div class="kpi"><div class="kl">CTR</div><div class="kv">0.86%</div><div class="kc"><span class="down">-0.20pct</span></div></div><div class="kpi"><div class="kl">客单价</div><div class="kv">¥156.3</div><div class="kc"><span class="down">▼11.6%</span></div></div><div class="kpi"><div class="kl">活动数</div><div class="kv">8</div><div class="kc"><span class="flat">—</span></div></div></div><div class="charts"><div class="chart-box"><h3>CTR 趋势（5周）</h3><div class="chart" id="c_ctr" style="height:200px"></div></div><div class="chart-box"><h3>CPC 趋势（5周）</h3><div class="chart" id="c_cpc" style="height:200px"></div></div><div class="chart-box"><h3>广告CVR 趋势（5周）</h3><div class="chart" id="c_cvr" style="height:200px"></div></div><div class="chart-box"><h3>ACOS 趋势（5周）</h3><div class="chart" id="c_acos" style="height:200px"></div></div></div><div class="concl"><h3>📌 本周广告结论（202645 vs 202646）</h3>① <b>广告花费</b> ¥1,439 → <b>¥1,272</b>（<span class="up">▼11.6%</span>）<br>② <b>ACOS</b> 12.0% → <b>11.5%</b>（-0.51pct）<br>③ <b>广告CVR</b> 14.5% → <b>16.2%</b>（1.78pct）<br>④ <b>CTR</b> 1.06% → <b>0.86%</b>（-0.20pct）—— 曝光质量下降<br>⑤ <b>广告销售额</b> ¥12,021 → <b>¥11,099</b>（<span class="down">▼7.7%</span>）<br>⑥ <b>活动数</b> 8 个（US19 + US22）</div></div><div class="card"><h3>② 广告周环比 · 品类整体（17列 · BI）</h3><div class="tb"><table><thead><tr><th>周</th><th>流量</th><th>展示量</th><th>点击数</th><th>页面浏览量</th><th>广告花费</th><th>CPC</th><th>ACOS</th><th>广告转化率</th><th>广告SKU销售额</th><th>广告SKU销量</th><th>促销占比</th><th>推广占比</th><th>coupon使用费</th><th>自然单</th><th>毛利润</th><th>毛利率</th></tr></thead><tbody><tr><td>202642</td><td>2,186</td><td>53,591</td><td>611</td><td>3,184</td><td>¥2,080</td><td>¥3.40</td><td>11.7%</td><td>16.7%</td><td>¥17,841</td><td>102</td><td>—</td><td>—</td><td>¥474</td><td>184</td><td>¥10,092</td><td>22.8%</td></tr><tr><td>202643</td><td>2,267</td><td>50,548</td><td>619</td><td>3,435</td><td>¥2,096</td><td>¥3.38</td><td>11.3%</td><td>16.8%</td><td>¥18,519</td><td>104</td><td>—</td><td>—</td><td>¥69</td><td>245</td><td>¥11,982</td><td>22.0%</td></tr><tr><td>202644</td><td>1,978</td><td>41,786</td><td>488</td><td>2,982</td><td>¥1,602</td><td>¥3.28</td><td>11.9%</td><td>16.4%</td><td>¥13,496</td><td>80</td><td>—</td><td>—</td><td>¥167</td><td>223</td><td>¥10,508</td><td>21.7%</td></tr><tr><td>202645</td><td>1,868</td><td>44,239</td><td>470</td><td>2,810</td><td>¥1,439</td><td>¥3.06</td><td>12.0%</td><td>14.5%</td><td>¥12,021</td><td>68</td><td>—</td><td>—</td><td>¥53</td><td>211</td><td>¥9,378</td><td>22.1%</td></tr><tr><td>202646</td><td>1,911</td><td>50,887</td><td>437</td><td>2,895</td><td>¥1,272</td><td>¥2.91</td><td>11.5%</td><td>16.2%</td><td>¥11,099</td><td>71</td><td>—</td><td>—</td><td>¥645</td><td>238</td><td>¥11,610</td><td>24.6%</td></tr><tr class="sum__"><td>周环比</td><td><span class="up">▲2.3%</span></td><td><span class="up">▲15.0%</span></td><td><span class="down">▼7.0%</span></td><td><span class="up">▲3.0%</span></td><td><span class="up">▼11.6%</span></td><td><span class="up">▼5.0%</span></td><td><span class="up">-0.51pct</span></td><td><span class="up">+1.78pct</span></td><td><span class="down">▼7.7%</span></td><td><span class="up">▲4.4%</span></td><td>—</td><td>—</td><td><span class="down">▲1123.8%</span></td><td><span class="up">▲12.8%</span></td><td><span class="up">▲23.8%</span></td><td><span class="up">+2.54pct</span></td></tr></tbody></table></div></div><div class="card"><h3>② 广告周环比 · 分品牌（店铺）</h3><h4>KAX（US19）</h4><div class="tb"><table><thead><tr><th>周</th><th>流量</th><th>展示量</th><th>点击数</th><th>页面浏览量</th><th>广告花费</th><th>CPC</th><th>ACOS</th><th>广告转化率</th><th>广告SKU销售额</th><th>广告SKU销量</th><th>促销占比</th><th>推广占比</th><th>coupon使用费</th><th>自然单</th><th>毛利润</th><th>毛利率</th></tr></thead><tbody><tr><td>202642</td><td>1,325</td><td>22,157</td><td>379</td><td>1,948</td><td>¥1,189</td><td>¥3.14</td><td>10.6%</td><td>17.4%</td><td>¥11,273</td><td>66</td><td>—</td><td>—</td><td>¥268</td><td>105</td><td>¥7,426</td><td>26.3%</td></tr><tr><td>202643</td><td>1,520</td><td>28,320</td><td>460</td><td>2,312</td><td>¥1,478</td><td>¥3.21</td><td>12.2%</td><td>14.8%</td><td>¥12,108</td><td>68</td><td>—</td><td>—</td><td>¥50</td><td>140</td><td>¥8,359</td><td>23.6%</td></tr><tr><td>202644</td><td>1,348</td><td>25,931</td><td>397</td><td>1,978</td><td>¥1,300</td><td>¥3.27</td><td>14.2%</td><td>13.8%</td><td>¥9,174</td><td>55</td><td>—</td><td>—</td><td>¥94</td><td>158</td><td>¥8,094</td><td>22.9%</td></tr><tr><td>202645</td><td>1,259</td><td>24,805</td><td>360</td><td>1,921</td><td>¥1,124</td><td>¥3.12</td><td>13.8%</td><td>13.1%</td><td>¥8,163</td><td>47</td><td>—</td><td>—</td><td>¥45</td><td>127</td><td>¥5,594</td><td>20.5%</td></tr><tr><td>202646</td><td>1,318</td><td>26,641</td><td>325</td><td>2,030</td><td>¥929</td><td>¥2.86</td><td>11.3%</td><td>15.4%</td><td>¥8,223</td><td>50</td><td>—</td><td>—</td><td>¥491</td><td>167</td><td>¥9,262</td><td>26.6%</td></tr><tr class="sum__"><td>周环比</td><td><span class="up">▲4.7%</span></td><td><span class="up">▲7.4%</span></td><td><span class="down">▼9.7%</span></td><td><span class="up">▲5.7%</span></td><td><span class="up">▼17.4%</span></td><td><span class="up">▼8.5%</span></td><td><span class="up">-2.47pct</span></td><td><span class="up">+2.32pct</span></td><td><span class="up">▲0.7%</span></td><td><span class="up">▲6.4%</span></td><td>—</td><td>—</td><td><span class="down">▲994.5%</span></td><td><span class="up">▲31.5%</span></td><td><span class="up">▲65.6%</span></td><td><span class="up">+6.10pct</span></td></tr></tbody></table></div><h4>PHILTOP（US22）</h4><div class="tb"><table><thead><tr><th>周</th><th>流量</th><th>展示量</th><th>点击数</th><th>页面浏览量</th><th>广告花费</th><th>CPC</th><th>ACOS</th><th>广告转化率</th><th>广告SKU销售额</th><th>广告SKU销量</th><th>促销占比</th><th>推广占比</th><th>coupon使用费</th><th>自然单</th><th>毛利润</th><th>毛利率</th></tr></thead><tbody><tr><td>202642</td><td>815</td><td>31,434</td><td>232</td><td>1,173</td><td>¥890</td><td>¥3.84</td><td>13.6%</td><td>15.5%</td><td>¥6,568</td><td>36</td><td>—</td><td>—</td><td>¥206</td><td>78</td><td>¥2,665</td><td>16.9%</td></tr><tr><td>202643</td><td>697</td><td>22,229</td><td>159</td><td>1,047</td><td>¥618</td><td>¥3.88</td><td>9.6%</td><td>22.6%</td><td>¥6,412</td><td>36</td><td>—</td><td>—</td><td>¥20</td><td>99</td><td>¥3,623</td><td>19.7%</td></tr><tr><td>202644</td><td>603</td><td>15,855</td><td>91</td><td>970</td><td>¥302</td><td>¥3.31</td><td>7.0%</td><td>27.4%</td><td>¥4,322</td><td>25</td><td>—</td><td>—</td><td>¥73</td><td>61</td><td>¥2,414</td><td>19.4%</td></tr><tr><td>202645</td><td>582</td><td>19,433</td><td>110</td><td>860</td><td>¥315</td><td>¥2.86</td><td>8.2%</td><td>19.1%</td><td>¥3,858</td><td>21</td><td>—</td><td>—</td><td>¥8</td><td>82</td><td>¥3,784</td><td>25.7%</td></tr><tr><td>202646</td><td>571</td><td>24,246</td><td>112</td><td>834</td><td>¥343</td><td>¥3.06</td><td>11.9%</td><td>18.7%</td><td>¥2,876</td><td>21</td><td>—</td><td>—</td><td>¥154</td><td>70</td><td>¥2,348</td><td>19.3%</td></tr><tr class="sum__"><td>周环比</td><td><span class="down">▼1.9%</span></td><td><span class="up">▲24.8%</span></td><td><span class="up">▲1.8%</span></td><td><span class="down">▼3.0%</span></td><td><span class="down">▲8.8%</span></td><td><span class="down">▲6.9%</span></td><td><span class="down">+3.76pct</span></td><td><span class="down">-0.34pct</span></td><td><span class="down">▼25.4%</span></td><td><span class="flat">—0.0%</span></td><td>—</td><td>—</td><td><span class="down">▲1864.2%</span></td><td><span class="down">▼14.6%</span></td><td><span class="down">▼37.9%</span></td><td><span class="down">-6.37pct</span></td></tr></tbody></table></div></div><div class="card"><h3>② 广告周环比 · 分新老品</h3><div class="tb"><table><thead><tr><th>分类</th><th>周</th><th>花费</th><th>订单</th><th>点击</th><th>展示</th><th>ACOS</th><th>CVR</th><th>CTR</th><th>CPC</th></tr></thead><tbody><tr><td>新品</td><td>202642</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr><tr><td>新品</td><td>202643</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr><tr><td>新品</td><td>202644</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr><tr><td>新品</td><td>202645</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr><tr><td>新品</td><td>202646</td><td>¥51</td><td>8</td><td>78</td><td>4,066</td><td>20.3%</td><td>10.3%</td><td>1.9%</td><td>¥0.65</td></tr><tr><td>老品</td><td>202642</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr><tr><td>老品</td><td>202643</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr><tr><td>老品</td><td>202644</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr><tr><td>老品</td><td>202645</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr><tr><td>老品</td><td>202646</td><td>¥11</td><td>2</td><td>21</td><td>1,697</td><td>17.2%</td><td>9.5%</td><td>1.2%</td><td>¥0.54</td></tr></tbody></table></div></div><div class="card"><h3>③ 策略细化对比（策略组 × 竞价策略 · 202645~202646）</h3>
+<div class="note blue">全部电磁阀活动合并 ｜ 策略组从活动名解析（AUTO-紧密/宽泛/MIXS、KW-广泛/词组/MIXS、PT、SD） ｜ 竞价策略优先取活动名标注，未标注的归「未标注」</div>
+<h4>③-1 策略组 × 周趋势（近 5 周 · 折线图 · 花费 TOP4）</h4>
+<div class="charts"><div class="chart-box"><h3>💰 周花费（¥）</h3><div class="chart" id="c_sg_spend" style="height:220px"></div></div><div class="chart-box"><h3>📉 周 ACOS（%）</h3><div class="chart" id="c_sg_acos" style="height:220px"></div></div></div>
+<div class="note">共 4 个策略组 ｜ 折线取花费 TOP4 ｜ 图例：单击显示/隐藏，双击只看该策略</div>
+<h4>③-2 策略组 × 竞价策略（当周明细 · 202646 vs 202645）</h4>
+<div class="tb"><table><thead><tr><th>策略组</th><th>竞价策略</th><th>活动数</th><th>花费</th><th>花费WoW</th><th>销售</th><th>订单</th><th>ACOS</th><th>ACOSWoW</th><th>CVR</th><th>CPC</th></tr></thead><tbody><tr><td>KW-广泛</td><td>未标注</td><td>4</td><td>¥51</td><td><span class="flat">—</span></td><td>¥282</td><td>10</td><td>18.0%</td><td><span class="flat">—</span></td><td>10.6%</td><td>¥1</td></tr><tr><td>AUTO-紧密</td><td>未标注</td><td>2</td><td>¥24</td><td><span class="flat">—</span></td><td>¥151</td><td>5</td><td>16.2%</td><td><span class="flat">—</span></td><td>11.1%</td><td>¥1</td></tr><tr><td>SD广告</td><td>未标注</td><td>1</td><td>¥24</td><td><span class="flat">—</span></td><td>¥459</td><td>16</td><td>5.2%</td><td><span class="flat">—</span></td><td>48.5%</td><td>¥1</td></tr><tr><td>AUTO-宽泛</td><td>未标注</td><td>1</td><td>¥16</td><td><span class="flat">—</span></td><td>¥65</td><td>4</td><td>24.9%</td><td><span class="flat">—</span></td><td>12.9%</td><td>¥1</td></tr></tbody></table></div>
+<div class="note">共 4 个「策略组 × 竞价策略」组合（按花费排序）</div>
+<h4>📌 本周策略建议（基于上表自动生成）</h4>
+<div class="note">✅ <b>加投</b>｜SD广告 × 未标注：ACOS 5.2%（组合最低），花费 ¥24，16 单 → 可提预算/拓词<br>🔻 <b>收缩</b>｜AUTO-宽泛 × 未标注：ACOS 24.9%（效率最低），花费 ¥16 → 降价 10% 或否词</div>
+<h4>竞价策略维度汇总</h4>
+<div class="tb"><table><thead><tr><th>竞价策略</th><th>活动数</th><th>花费</th><th>花费占比</th><th>销售</th><th>订单</th><th>ACOS</th><th>CVR</th><th>CPC</th></tr></thead><tbody><tr><td>未标注</td><td>8</td><td>¥115</td><td>100.0%</td><td>¥957</td><td>35</td><td>12.1%</td><td>17.2%</td><td>¥1</td></tr></tbody></table></div>
+</div><div class="card"><h3>④ 周维度异常分析 · 问题活动（按花费排序）</h3><div class="tb"><table><thead><tr><th>广告活动</th><th>CPC</th><th>ACOS</th><th>花费</th><th>CVR</th><th>订单</th><th>问题</th><th>建议优化</th></tr></thead><tbody><tr><td>SP-AUTO-LS-李汝娴-怠速电磁阀-B0GHS8CN74</td><td>¥0.52</td><td>24.9%</td><td>¥16.1</td><td>12.9%</td><td>4</td><td><span class="tag orange">ACOS 25%</span></td><td>观察，微调bid</td></tr><tr><td>SP-KW-BR-李汝娴-怠速电磁阀-B0GHS1ZT9H-车型词-批量:26072003</td><td>¥0.77</td><td>15.5%</td><td>¥15.3</td><td>15.0%</td><td>3</td><td><span class="tag orange">ACOS 15%</span></td><td>观察，微调bid</td></tr><tr><td>SP-AUTO-CL-李汝娴-怠速电磁阀-B0GHS8CJVQ-批量:26070701</td><td>¥0.53</td><td>44.0%</td><td>¥13.2</td><td>4.0%</td><td>1</td><td><span class="tag red">ACOS 44%</span></td><td>降bid 20-30% + 收紧匹配</td></tr><tr><td>SP-KW-BR-怠速电磁阀-李汝娴-B0D7GXCYC7</td><td>¥0.54</td><td>17.2%</td><td>¥11.4</td><td>9.5%</td><td>2</td><td><span class="tag orange">ACOS 17%</span></td><td>观察，微调bid</td></tr><tr><td>SP-KW-BR-李汝娴-怠速电磁阀-B0GHS19GJ5-车型词-批量:26072001</td><td>¥0.85</td><td>—</td><td>¥11.1</td><td>0.0%</td><td>0</td><td><span class="tag red">烧钱无单</span></td><td>降bid 30-40%或暂停；查链接/价格/评论</td></tr></tbody></table></div><div class="note blue">措施记录请在面板对应输入框填写，会实时同步云端。</div></div></div>
+<script>
+var W5 = ["202642", "202643", "202644", "202645", "202646"];
+var D = {"ctr": [1.14, 1.225, 1.169, 1.063, 0.859], "cpc": [3.403, 3.384, 3.28, 3.061, 2.909], "cvr": [16.691, 16.792, 16.378, 14.466, 16.242], "acos": [11.658, 11.317, 11.87, 11.969, 11.458]};
+function mk(id, name, data, color, isMoney){
+  var c = echarts.init(document.getElementById(id));
+  c.setOption({
+    grid:{left:52,right:18,top:26,bottom:28},
+    tooltip:{trigger:'axis',valueFormatter:function(v){return isMoney?('¥'+v.toFixed(2)):(v.toFixed(2)+'%')}},
+    xAxis:{type:'category',data:W5,axisLabel:{fontSize:10.5,color:'#7d8fa3'},axisLine:{lineStyle:{color:'#e6ebf2'}}},
+    yAxis:{type:'value',axisLabel:{fontSize:10.5,color:'#7d8fa3',formatter:function(v){return isMoney?v:(v+'%')}},
+           splitLine:{lineStyle:{color:'#f1f5f9'}}},
+    series:[{type:'line',name:name,data:data,smooth:true,symbolSize:7,
+      lineStyle:{width:3,color:color},itemStyle:{color:color},
+      label:{show:true,fontSize:10,formatter:function(p){return isMoney?('¥'+p.value.toFixed(2)):(p.value.toFixed(1)+'%')},
+             color:'#555',position:'top'}}]
+  });
+  window.addEventListener('resize',function(){c.resize()});
+  return c;
+}
+mk('c_ctr','CTR',D.ctr,'#1F4E78',false);
+mk('c_cpc','CPC',D.cpc,'#e67e22',true);
+mk('c_cvr','广告CVR',D.cvr,'#27ae60',false);
+mk('c_acos','ACOS',D.acos,'#c0392b',false);
+</script>
+
+<script>
+var TREND = {"weeks": ["202642", "202643", "202644", "202645", "202646"], "spend": {"KW-广泛": [0.0, 0.0, 0.0, 0.0, 50.91], "AUTO-紧密": [0.0, 0.0, 0.0, 0.0, 24.4], "SD广告": [0.0, 0.0, 0.0, 0.0, 23.94], "AUTO-宽泛": [0.0, 0.0, 0.0, 0.0, 16.1]}, "acos": {"KW-广泛": [0, 0, 0, 0, 18.03], "AUTO-紧密": [0, 0, 0, 0, 16.16], "SD广告": [0, 0, 0, 0, 5.22], "AUTO-宽泛": [0, 0, 0, 0, 24.86]}};
+(function(){
+  function mkSG(id, key, isMoney){
+    var series = Object.keys(TREND[key]).map(function(g){
+      return {type:'line',name:g,data:TREND[key][g],smooth:true,symbolSize:6,
+        lineStyle:{width:2.5}, emphasis:{focus:'series'}};
+    });
+    var c = echarts.init(document.getElementById(id));
+    c.setOption({
+      grid:{left:56,right:16,top:38,bottom:30},
+      tooltip:{trigger:'axis'},
+      legend:{type:'scroll',top:0,textStyle:{fontSize:10.5}},
+      xAxis:{type:'category',data:TREND.weeks,axisLabel:{fontSize:10.5,color:'#7d8fa3'}},
+      yAxis:{type:'value',axisLabel:{fontSize:10,color:'#7d8fa3',
+        formatter:function(v){return isMoney?('¥'+v):(v+'%')}},splitLine:{lineStyle:{color:'#f1f5f9'}}},
+      series:series
+    });
+    window.addEventListener('resize',function(){c.resize()});
+  }
+  mkSG('c_sg_spend','spend',true);
+  mkSG('c_sg_acos','acos',false);
+})();
+</script>
+</body></html>
