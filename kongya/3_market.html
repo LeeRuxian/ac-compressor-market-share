@@ -1,0 +1,88 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>市占分析 · 翻新空调压缩机 202647</title><script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script><style>
+*{box-sizing:border-box}
+body{margin:0;background:#f4f6fa;font-family:-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;
+  color:#2c3e50;font-size:13px;line-height:1.6}
+.wrap{max-width:1580px !important;margin:0 auto !important;padding:0 18px 44px !important}
+/* 顶部导航 */
+.topbar{background:#0f2942;padding:0;position:sticky;top:0;z-index:100;box-shadow:0 2px 10px rgba(15,41,66,.18)}
+.topbar .inner{max-width:1580px;margin:0 auto;padding:0 20px;display:flex;align-items:center;gap:3px;height:52px}
+.topbar .brand{color:#fff;font-size:14px;font-weight:700;margin-right:20px;white-space:nowrap}
+.topbar .brand span{font-size:10.5px;color:#7f9bb8;font-weight:400;margin-left:6px}
+.topbar a{color:#b8c7d9;text-decoration:none;font-size:13px;padding:7px 15px;border-radius:7px;white-space:nowrap;transition:.15s}
+.topbar a:hover{background:#16395c;color:#fff}
+.topbar a.on{background:#2d6ba8;color:#fff;font-weight:700}
+/* 页头 */
+.hd{background:linear-gradient(135deg,#0f2942 0%,#214f7d 100%);border-radius:0;
+  box-shadow:0 4px 16px rgba(15,41,66,.2);padding:17px 24px;margin:0 0 18px}
+.hd h1{margin:0;font-size:19px;color:#fff;font-weight:800;letter-spacing:.3px}
+.hd .sub{font-size:11px;color:#9db8d4;margin-top:5px}
+/* KPI 卡片 */
+.kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:13px;margin:16px 0 22px}
+@media(max-width:1300px){.kpis{grid-template-columns:repeat(5,1fr)}}
+@media(max-width:1200px){.kpis{grid-template-columns:repeat(4,1fr)}}
+@media(max-width:900px){.kpis{grid-template-columns:repeat(2,1fr)}}
+.kpi{background:#fff;border-radius:13px;padding:16px 15px;box-shadow:0 2px 9px rgba(15,41,66,.07);
+  border:1px solid #eef2f7;transition:.16s;display:flex;flex-direction:column;justify-content:center;min-height:104px}
+.kpi:hover{box-shadow:0 7px 22px rgba(15,41,66,.15);transform:translateY(-3px)}
+.kpi .kl{font-size:11px;color:#8a9bb0;font-weight:600;letter-spacing:.3px;margin-bottom:5px}
+.kpi .kv{font-size:23px;font-weight:800;color:#0f2942;line-height:1.15;letter-spacing:-.4px;
+  font-variant-numeric:tabular-nums}
+.kpi .kc{font-size:11px;color:#7d8fa3;margin-top:4px}
+.kpi.hl{background:linear-gradient(140deg,#fff 0%,#eff7ff 100%);border-left:4px solid #1F4E78;
+  box-shadow:0 4px 14px rgba(31,78,120,.14)}
+.kpi.hl .kv{font-size:26px;color:#1F4E78}
+.card>.kpis{margin-left:-19px;margin-right:-19px}
+/* 卡片 */
+.card{background:#fff;border-radius:13px;box-shadow:0 2px 11px rgba(15,41,66,.06);
+  border:1px solid #eef2f7;padding:17px 19px;margin-bottom:15px}
+.card h3{font-size:13.5px;color:#0f2942;font-weight:700;margin:0 0 13px;
+  padding-bottom:10px;border-bottom:1px solid #f0f4f9}
+.card h4{font-size:13px;color:#1F4E78;font-weight:700;margin:18px 0 9px}
+/* 表格 */
+.tb{overflow-x:auto;border-radius:9px}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+th{background:#1F4E78;color:#fff;font-size:11.5px;font-weight:600;padding:10px 8px;
+  text-align:right;white-space:nowrap;border:none}
+th:first-child,td:first-child{text-align:left}
+td{font-size:12px;padding:8px;text-align:right;border-bottom:1px solid #f1f5f9;white-space:nowrap}
+tr:nth-child(even) td{background:#fafbfd}
+tr:hover td{background:#f0f7ff}
+tr.sum td{background:#fff8e6 !important;font-weight:700}
+/* 周环比高亮 */
+td.wow,th.wow{background:#fff3cd !important;font-weight:700 !important;
+  border-left:1px solid #f0c36d !important;border-right:1px solid #f0c36d !important}
+th.wow{background:#e8a33d !important;color:#fff !important}
+tr.sum td{background:#fff3cd !important;font-weight:800 !important;border-top:2px solid #e8a33d !important}
+tr.sum td:first-child{background:#fde8b8 !important;color:#8a5a00 !important}
+/* 涨跌色 */
+.up{color:#c0392b;font-weight:600}
+.down{color:#27ae60;font-weight:600}
+.flat{color:#95a5a6}
+/* 结论框 */
+.concl{background:#fff;border-left:5px solid #1F4E78;border-radius:13px;padding:20px 24px;
+  box-shadow:0 3px 14px rgba(15,41,66,.08);line-height:2.0;margin-bottom:20px}
+.concl h3{font-size:15px;color:#0f2942;font-weight:800;margin:0 0 14px;padding-bottom:10px;
+  border-bottom:2px solid #f0f4f9}
+.concl b{color:#c0392b}
+/* 图表 */
+.charts{display:grid;grid-template-columns:repeat(2,1fr);gap:15px;margin-bottom:20px}
+@media(max-width:900px){.charts{grid-template-columns:1fr}}
+.chart-box{background:#fff;border-radius:13px;box-shadow:0 2px 11px rgba(15,41,66,.06);
+  border:1px solid #eef2f7;padding:16px 18px}
+.chart-box h3{font-size:13px;color:#0f2942;font-weight:700;margin:0 0 10px}
+.chart{height:200px}
+.card>.charts{margin-left:-19px;margin-right:-19px}
+/* 裸铺段落标题 */
+.sec-t{font-size:13.5px;color:#0f2942;font-weight:700;margin:6px 0 13px;padding:14px 19px;
+  background:#fff;border-radius:13px 13px 0 0;border-bottom:1px solid #f0f4f9;
+  box-shadow:0 -2px 11px rgba(15,41,66,.04)}
+/* 提示 */
+.note{background:#fff9f0;border-left:4px solid #e67e22;border-radius:9px;padding:12px 15px;
+  margin-top:12px;font-size:12px;line-height:1.9;color:#7a5c2e}
+.note.blue{background:#f0f7ff;border-left-color:#1F4E78;color:#2c5282}
+.tag{display:inline-block;padding:1px 7px;border-radius:5px;font-size:10.5px;font-weight:600}
+.tag.red{background:#fde8e8;color:#c0392b}
+.tag.green{background:#e8f8ef;color:#1e8449}
+.tag.orange{background:#fef3e2;color:#b9770e}
+.tag.gray{background:#eef1f5;color:#7f8c8d}
+</style></head><body><div class="topbar"><div class="inner"><div class="brand">⚙️ 翻新空调压缩机<span>202647</span></div><a href="1_overview.html">总览</a><a href="2_profit.html">利润</a><a href="3_market.html">市占</a><a href="4_ad.html">广告</a><a href="5_product.html">产品</a></div></div><div class="hd"><h1>市占分析</h1><div class="sub">202647 周｜市场预测口径</div></div><div class="wrap"><h3 class="sec-t">🌍 市场市占（202647）</h3><div class="card"><div class="note"><b>数据待补</b>：市占需 MCP market_forecast_sales（node_name=空压相关类目）拉取市场预测销量，再对比我方销量计算份额。当前版本尚未接入。</div><div style="padding:30px;text-align:center;color:#8492a6"><div style="font-size:40px;margin-bottom:10px">🌍</div><div style="font-size:14px;font-weight:600;margin-bottom:6px">市占数据下一版接入</div><div style="font-size:12px">将展示：市场总销量 / 我方份额 / 品牌排行（KAX·PHILTOP·ZonCar）/ 周度趋势</div></div></div></div></body></html>
